@@ -1,6 +1,9 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CalendarModule } from 'primeng/calendar';
+
 import { StoreSharedModule } from '../../shared';
 import {
     ProductOrderService,
@@ -24,6 +27,8 @@ const ENTITY_STATES = [
 @NgModule({
     imports: [
         StoreSharedModule,
+        BrowserAnimationsModule,
+        CalendarModule,
         RouterModule.forChild(ENTITY_STATES)
     ],
     declarations: [

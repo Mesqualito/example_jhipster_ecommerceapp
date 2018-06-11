@@ -18,6 +18,7 @@ export class ProductOrderPopupService {
 
     ) {
         this.ngbModalRef = null;
+
     }
 
     open(component: Component, id?: number | any): Promise<NgbModalRef> {
@@ -31,8 +32,7 @@ export class ProductOrderPopupService {
                 this.productOrderService.find(id)
                     .subscribe((productOrderResponse: HttpResponse<ProductOrder>) => {
                         const productOrder: ProductOrder = productOrderResponse.body;
-                        productOrder.placedDate = this.datePipe
-                            .transform(productOrder.placedDate, 'yyyy-MM-ddTHH:mm:ss');
+                        productOrder.placedDate = this.datePipe.transform(productOrder.placedDate, 'yyyy-MM-dd HH:mm');
                         this.ngbModalRef = this.productOrderModalRef(component, productOrder);
                         resolve(this.ngbModalRef);
                     });

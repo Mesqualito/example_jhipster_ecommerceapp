@@ -73,8 +73,8 @@ export class ProductOrderService {
      */
     private convert(productOrder: ProductOrder): ProductOrder {
         const copy: ProductOrder = Object.assign({}, productOrder);
-
-        copy.placedDate = this.dateUtils.toDate(productOrder.placedDate);
-        return copy;
+       // copy.placedDate = this.dateUtils.toDate(productOrder.placedDate);
+    return copy;
     }
+
 }
