@@ -3,6 +3,8 @@ package rocks.gebsattel.ecommerceapp.store.web.rest;
 import rocks.gebsattel.ecommerceapp.store.StoreApp;
 
 import rocks.gebsattel.ecommerceapp.store.domain.OrderItem;
+import rocks.gebsattel.ecommerceapp.store.domain.Product;
+import rocks.gebsattel.ecommerceapp.store.domain.ProductOrder;
 import rocks.gebsattel.ecommerceapp.store.repository.OrderItemRepository;
 import rocks.gebsattel.ecommerceapp.store.service.OrderItemService;
 import rocks.gebsattel.ecommerceapp.store.web.rest.errors.ExceptionTranslator;
@@ -94,6 +96,16 @@ public class OrderItemResourceIntTest {
             .quantity(DEFAULT_QUANTITY)
             .totalPrice(DEFAULT_TOTAL_PRICE)
             .status(DEFAULT_STATUS);
+        // Add required entity
+        Product product = ProductResourceIntTest.createEntity(em);
+        em.persist(product);
+        em.flush();
+        orderItem.setProduct(product);
+        // Add required entity
+        ProductOrder order = ProductOrderResourceIntTest.createEntity(em);
+        em.persist(order);
+        em.flush();
+        orderItem.setOrder(order);
         return orderItem;
     }
 
