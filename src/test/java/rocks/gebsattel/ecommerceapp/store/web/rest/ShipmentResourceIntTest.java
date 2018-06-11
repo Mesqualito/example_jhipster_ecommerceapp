@@ -3,6 +3,7 @@ package rocks.gebsattel.ecommerceapp.store.web.rest;
 import rocks.gebsattel.ecommerceapp.store.StoreApp;
 
 import rocks.gebsattel.ecommerceapp.store.domain.Shipment;
+import rocks.gebsattel.ecommerceapp.store.domain.Invoice;
 import rocks.gebsattel.ecommerceapp.store.repository.ShipmentRepository;
 import rocks.gebsattel.ecommerceapp.store.service.ShipmentService;
 import rocks.gebsattel.ecommerceapp.store.web.rest.errors.ExceptionTranslator;
@@ -94,6 +95,11 @@ public class ShipmentResourceIntTest {
             .trackingCode(DEFAULT_TRACKING_CODE)
             .date(DEFAULT_DATE)
             .details(DEFAULT_DETAILS);
+        // Add required entity
+        Invoice invoice = InvoiceResourceIntTest.createEntity(em);
+        em.persist(invoice);
+        em.flush();
+        shipment.setInvoice(invoice);
         return shipment;
     }
 

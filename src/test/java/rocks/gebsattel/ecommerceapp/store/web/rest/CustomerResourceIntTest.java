@@ -3,6 +3,7 @@ package rocks.gebsattel.ecommerceapp.store.web.rest;
 import rocks.gebsattel.ecommerceapp.store.StoreApp;
 
 import rocks.gebsattel.ecommerceapp.store.domain.Customer;
+import rocks.gebsattel.ecommerceapp.store.domain.User;
 import rocks.gebsattel.ecommerceapp.store.repository.CustomerRepository;
 import rocks.gebsattel.ecommerceapp.store.service.CustomerService;
 import rocks.gebsattel.ecommerceapp.store.web.rest.errors.ExceptionTranslator;
@@ -117,6 +118,11 @@ public class CustomerResourceIntTest {
             .addressLine2(DEFAULT_ADDRESS_LINE_2)
             .city(DEFAULT_CITY)
             .country(DEFAULT_COUNTRY);
+        // Add required entity
+        User user = UserResourceIntTest.createEntity(em);
+        em.persist(user);
+        em.flush();
+        customer.setUser(user);
         return customer;
     }
 

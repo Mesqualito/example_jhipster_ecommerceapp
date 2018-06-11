@@ -3,6 +3,7 @@ package rocks.gebsattel.ecommerceapp.store.web.rest;
 import rocks.gebsattel.ecommerceapp.store.StoreApp;
 
 import rocks.gebsattel.ecommerceapp.store.domain.ProductOrder;
+import rocks.gebsattel.ecommerceapp.store.domain.Customer;
 import rocks.gebsattel.ecommerceapp.store.repository.ProductOrderRepository;
 import rocks.gebsattel.ecommerceapp.store.service.ProductOrderService;
 import rocks.gebsattel.ecommerceapp.store.web.rest.errors.ExceptionTranslator;
@@ -95,6 +96,11 @@ public class ProductOrderResourceIntTest {
             .placedDate(DEFAULT_PLACED_DATE)
             .status(DEFAULT_STATUS)
             .code(DEFAULT_CODE);
+        // Add required entity
+        Customer customer = CustomerResourceIntTest.createEntity(em);
+        em.persist(customer);
+        em.flush();
+        productOrder.setCustomer(customer);
         return productOrder;
     }
 

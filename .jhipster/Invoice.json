@@ -9,9 +9,10 @@
         },
         {
             "relationshipType": "many-to-one",
+            "relationshipValidateRules": "required",
             "relationshipName": "order",
             "otherEntityName": "productOrder",
-            "otherEntityField": "id"
+            "otherEntityField": "code"
         }
     ],
     "fields": [
@@ -52,6 +53,13 @@
         {
             "fieldName": "paymentAmount",
             "fieldType": "BigDecimal",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "code",
+            "fieldType": "String",
             "fieldValidateRules": [
                 "required"
             ]

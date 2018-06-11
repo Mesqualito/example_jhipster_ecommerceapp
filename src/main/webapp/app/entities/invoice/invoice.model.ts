@@ -21,6 +21,7 @@ export class Invoice implements BaseEntity {
         public paymentMethod?: PaymentMethod,
         public paymentDate?: any,
         public paymentAmount?: number,
+        public code?: string,
         public shipments?: BaseEntity[],
         public order?: BaseEntity,
     ) {
