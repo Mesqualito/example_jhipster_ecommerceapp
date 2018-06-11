@@ -28,6 +28,7 @@ currentAccount: any;
     predicate: any;
     previousPage: any;
     reverse: any;
+    filter: string;
 
     constructor(
         private productService: ProductService,

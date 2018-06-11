@@ -1,7 +1,7 @@
 <div>
     <h2>
         <span jhiTranslate="storeApp.product.home.title">Products</span>
-        <button class="btn btn-primary float-right jh-create-entity create-product" [routerLink]="['/', { outlets: { popup: ['product-new'] } }]">
+        <button *jhiHasAnyAuthority="'ROLE_ADMIN'" class="btn btn-primary float-right jh-create-entity create-product" [routerLink]="['/', { outlets: { popup: ['product-new'] } }]">
             <span class="fa fa-plus"></span>
             <span  jhiTranslate="storeApp.product.home.createLabel">
             Create new Product
@@ -13,11 +13,36 @@
     </div>
     <br/>
     <div *ngIf="products">
+        <div class="mb-2 d-flex justify-content-end align-items-center">
+            <span class="mr-2 col-2">Filter by name</span>
+            <input type="search" class="form-control" [(ngModel)]="filter">
+            <span class="mx-2 col-1">Sort by</span>
+            <div class="btn-group" role="group"
+                jhiSort [(predicate)]="predicate" [(ascending)]="reverse"
+                [callback]="transition.bind(this)">
+                <button type="button" class="btn btn-light" jhiSortBy="name">
+                    <span jhiTranslate="storeApp.product.name">Name</span>
+                    <span class="fa fa-sort"></span>
+                </button>
+                <button type="button" class="btn btn-light" jhiSortBy="price">
+                    <span jhiTranslate="storeApp.product.price">Price</span>
+                    <span class="fa fa-sort"></span>
+                </button>
+                <button type="button" class="btn btn-light" jhiSortBy="size">
+                    <span jhiTranslate="storeApp.product.size">Size</span>
+                    <span class="fa fa-sort"></span>
+                </button>
+                <button type="button" class="btn btn-light" jhiSortBy="productCategory.id">
+                    <span jhiTranslate="storeApp.product.productCategory">Product Category</span>
+                    <span class="fa fa-sort"></span>
+                </button>
+            </div>
+        </div>
         <div class="list-group">
             <a [routerLink]="['../product', product.id ]"
                class="list-group-item list-group-item-action flex-column
             align-items-start"
-               *ngFor="let product of products; trackBy: trackId">
+               *ngFor="let product of (products | pureFilter:filter:'name'); trackBy: trackId">
                 <div class="row">
                     <div class="col-2 col-xs-12 justify-content-center">
                         <img [src]="'data:' + product.imageContentType +
