@@ -1,6 +1,7 @@
 package rocks.gebsattel.ecommerceapp.store.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import org.springframework.security.access.prepost.PreAuthorize;
 import rocks.gebsattel.ecommerceapp.store.domain.OrderItem;
 import rocks.gebsattel.ecommerceapp.store.service.OrderItemService;
 import rocks.gebsattel.ecommerceapp.store.web.rest.errors.BadRequestAlertException;

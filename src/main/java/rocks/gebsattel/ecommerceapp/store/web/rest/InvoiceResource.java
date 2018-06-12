@@ -1,6 +1,7 @@
 package rocks.gebsattel.ecommerceapp.store.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import org.springframework.security.access.prepost.PreAuthorize;
 import rocks.gebsattel.ecommerceapp.store.domain.Invoice;
 import rocks.gebsattel.ecommerceapp.store.service.InvoiceService;
 import rocks.gebsattel.ecommerceapp.store.web.rest.errors.BadRequestAlertException;
@@ -49,6 +50,7 @@ public class InvoiceResource {
      */
     @PostMapping("/invoices")
     @Timed
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Invoice> createInvoice(@Valid @RequestBody Invoice invoice) throws URISyntaxException {
         log.debug("REST request to save Invoice : {}", invoice);
         if (invoice.getId() != null) {
@@ -71,6 +73,7 @@ public class InvoiceResource {
      */
     @PutMapping("/invoices")
     @Timed
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Invoice> updateInvoice(@Valid @RequestBody Invoice invoice) throws URISyntaxException {
         log.debug("REST request to update Invoice : {}", invoice);
         if (invoice.getId() == null) {
@@ -119,6 +122,7 @@ public class InvoiceResource {
      */
     @DeleteMapping("/invoices/{id}")
     @Timed
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteInvoice(@PathVariable Long id) {
         log.debug("REST request to delete Invoice : {}", id);
         invoiceService.delete(id);

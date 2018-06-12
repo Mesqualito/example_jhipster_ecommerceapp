@@ -1,7 +1,7 @@
 <div>
     <h2>
         <span jhiTranslate="storeApp.invoice.home.title">Invoices</span>
-        <button class="btn btn-primary float-right jh-create-entity create-invoice" [routerLink]="['/', { outlets: { popup: ['invoice-new'] } }]">
+        <button *jhiHasAnyAuthority="'ROLE_ADMIN'" class="btn btn-primary float-right jh-create-entity create-invoice" [routerLink]="['/', { outlets: { popup: ['invoice-new'] } }]">
             <span class="fa fa-plus"></span>
             <span  jhiTranslate="storeApp.invoice.home.createLabel">
             Create new Invoice
