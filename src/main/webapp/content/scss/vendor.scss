@@ -7,8 +7,10 @@ eg $input-color: red;
 ****************************/
 // Override Boostrap variables
 @import "bootstrap-variables";
+@import 'node_modules/bootswatch/dist/materia/variables';
 // Import Bootstrap source files from node_modules
 @import 'node_modules/bootstrap/scss/bootstrap';
+@import 'node_modules/bootswatch/dist/materia/bootswatch';
 @import 'node_modules/font-awesome/scss/font-awesome';
 // Import PrimeNG
 @import 'node_modules/primeng/resources/primeng.min';
