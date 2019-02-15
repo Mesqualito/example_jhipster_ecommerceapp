@@ -34,7 +34,7 @@ public class ProfileInfoResource {
     }
 
     private String getRibbonEnv(String[] activeProfiles) {
-        String[] displayOnActiveProfiles = jHipsterProperties.getRibbon().getDisplayOnActiveProfiles();
+        String[] displayOnActiveProfiles = null; // jHipsterProperties.getRibbon().getDisplayOnActiveProfiles();
         if (displayOnActiveProfiles == null) {
             return null;
         }
