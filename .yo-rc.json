@@ -1,13 +1,14 @@
 {
     "generator-jhipster": {
         "promptValues": {
-            "packageName": "rocks.gebsattel.ecommerceapp.store",
+            "packageName": "net.generica.store",
             "nativeLanguage": "de"
         },
         "jhipsterVersion": "5.8.1",
+        "applicationType": "monolith",
         "baseName": "store",
-        "packageName": "rocks.gebsattel.ecommerceapp.store",
-        "packageFolder": "rocks/gebsattel/ecommerceapp/store",
+        "packageName": "net.generica.store",
+        "packageFolder": "net/generica/store",
         "serverPort": "8080",
         "authenticationType": "jwt",
         "cacheProvider": "hazelcast",
@@ -15,25 +16,23 @@
         "websocket": "spring-websocket",
         "databaseType": "sql",
         "devDatabaseType": "h2Disk",
-        "prodDatabaseType": "mysql",
+        "prodDatabaseType": "postgresql",
         "searchEngine": false,
         "messageBroker": false,
         "serviceDiscoveryType": false,
         "buildTool": "gradle",
-        "enableSocialSignIn": false,
         "enableSwaggerCodegen": false,
-        "jwtSecretKey": "ed95b6c24a5c4821efa1fed6cfb8d87758432e37",
+        "jwtSecretKey": "Y2Y1ODY0NjZhN2M5ZjkzZDBiY2YzN2M0Njc3NjYwMmEyNjM4ZTg5NDgzZjkxYTNjNTkyOTU1YjYzYWViMTBhNzg1OTNiYTc2OGUyYWRiMDQxYWU4NzI0MmQwYTk5MjRkN2ZhODI2MTVhYTAwNjc2NjhiYzlhOTRiOThhN2EzYTc=",
         "clientFramework": "angularX",
         "useSass": true,
         "clientPackageManager": "npm",
-        "applicationType": "monolith",
         "testFrameworks": ["protractor"],
         "jhiPrefix": "jhi",
-        "enableTranslation": true,
-        "nativeLanguage": "de",
-        "languages": ["de", "en"],
         "entitySuffix": "",
         "dtoSuffix": "DTO",
-        "otherModules": []
+        "otherModules": [],
+        "enableTranslation": true,
+        "nativeLanguage": "de",
+        "languages": ["de", "en"]
     }
 }
