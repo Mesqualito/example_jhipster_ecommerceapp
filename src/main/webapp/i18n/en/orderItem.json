@@ -1,7 +1,6 @@
-
 {
     "storeApp": {
-        "orderItem" : {
+        "orderItem": {
             "home": {
                 "title": "Order Items",
                 "createLabel": "Create a new Order Item",

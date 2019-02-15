@@ -1,6 +1,4 @@
 package rocks.gebsattel.ecommerceapp.store.web.rest;
-
-import com.codahale.metrics.annotation.Timed;
 import rocks.gebsattel.ecommerceapp.store.domain.Customer;
 import rocks.gebsattel.ecommerceapp.store.service.CustomerService;
 import rocks.gebsattel.ecommerceapp.store.web.rest.errors.BadRequestAlertException;
@@ -48,7 +46,6 @@ public class CustomerResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/customers")
-    @Timed
     public ResponseEntity<Customer> createCustomer(@Valid @RequestBody Customer customer) throws URISyntaxException {
         log.debug("REST request to save Customer : {}", customer);
         if (customer.getId() != null) {
@@ -70,11 +67,10 @@ public class CustomerResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/customers")
-    @Timed
     public ResponseEntity<Customer> updateCustomer(@Valid @RequestBody Customer customer) throws URISyntaxException {
         log.debug("REST request to update Customer : {}", customer);
         if (customer.getId() == null) {
-            return createCustomer(customer);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         Customer result = customerService.save(customer);
         return ResponseEntity.ok()
@@ -89,12 +85,11 @@ public class CustomerResource {
      * @return the ResponseEntity with status 200 (OK) and the list of customers in body
      */
     @GetMapping("/customers")
-    @Timed
     public ResponseEntity<List<Customer>> getAllCustomers(Pageable pageable) {
         log.debug("REST request to get a page of Customers");
         Page<Customer> page = customerService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/customers");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**
@@ -104,11 +99,10 @@ public class CustomerResource {
      * @return the ResponseEntity with status 200 (OK) and with body the customer, or with status 404 (Not Found)
      */
     @GetMapping("/customers/{id}")
-    @Timed
     public ResponseEntity<Customer> getCustomer(@PathVariable Long id) {
         log.debug("REST request to get Customer : {}", id);
-        Customer customer = customerService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(customer));
+        Optional<Customer> customer = customerService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(customer);
     }
 
     /**
@@ -118,7 +112,6 @@ public class CustomerResource {
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/customers/{id}")
-    @Timed
     public ResponseEntity<Void> deleteCustomer(@PathVariable Long id) {
         log.debug("REST request to delete Customer : {}", id);
         customerService.delete(id);

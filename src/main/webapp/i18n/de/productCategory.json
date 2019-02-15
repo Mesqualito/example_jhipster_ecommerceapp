@@ -1,7 +1,6 @@
-
 {
     "storeApp": {
-        "productCategory" : {
+        "productCategory": {
             "home": {
                 "title": "Product Categories",
                 "createLabel": "Product Category erstellen",

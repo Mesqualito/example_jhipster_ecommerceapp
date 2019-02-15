@@ -1,6 +1,6 @@
 {
     "storeApp": {
-        "Gender" : {
+        "Gender": {
             "null": "",
             "MALE": "MALE",
             "FEMALE": "FEMALE",

@@ -1,11 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager } from 'ng-jhipster';
 
-import { Customer } from './customer.model';
-import { CustomerPopupService } from './customer-popup.service';
+import { ICustomer } from 'app/shared/model/customer.model';
 import { CustomerService } from './customer.service';
 
 @Component({
@@ -13,22 +12,16 @@ import { CustomerService } from './customer.service';
     templateUrl: './customer-delete-dialog.component.html'
 })
 export class CustomerDeleteDialogComponent {
+    customer: ICustomer;
 
-    customer: Customer;
-
-    constructor(
-        private customerService: CustomerService,
-        public activeModal: NgbActiveModal,
-        private eventManager: JhiEventManager
-    ) {
-    }
+    constructor(protected customerService: CustomerService, public activeModal: NgbActiveModal, protected eventManager: JhiEventManager) {}
 
     clear() {
         this.activeModal.dismiss('cancel');
     }
 
     confirmDelete(id: number) {
-        this.customerService.delete(id).subscribe((response) => {
+        this.customerService.delete(id).subscribe(response => {
             this.eventManager.broadcast({
                 name: 'customerListModification',
                 content: 'Deleted an customer'
@@ -43,22 +36,30 @@ export class CustomerDeleteDialogComponent {
     template: ''
 })
 export class CustomerDeletePopupComponent implements OnInit, OnDestroy {
+    protected ngbModalRef: NgbModalRef;
 
-    routeSub: any;
-
-    constructor(
-        private route: ActivatedRoute,
-        private customerPopupService: CustomerPopupService
-    ) {}
+    constructor(protected activatedRoute: ActivatedRoute, protected router: Router, protected modalService: NgbModal) {}
 
     ngOnInit() {
-        this.routeSub = this.route.params.subscribe((params) => {
-            this.customerPopupService
-                .open(CustomerDeleteDialogComponent as Component, params['id']);
+        this.activatedRoute.data.subscribe(({ customer }) => {
+            setTimeout(() => {
+                this.ngbModalRef = this.modalService.open(CustomerDeleteDialogComponent as Component, { size: 'lg', backdrop: 'static' });
+                this.ngbModalRef.componentInstance.customer = customer;
+                this.ngbModalRef.result.then(
+                    result => {
+                        this.router.navigate(['/customer', { outlets: { popup: null } }]);
+                        this.ngbModalRef = null;
+                    },
+                    reason => {
+                        this.router.navigate(['/customer', { outlets: { popup: null } }]);
+                        this.ngbModalRef = null;
+                    }
+                );
+            }, 0);
         });
     }
 
     ngOnDestroy() {
-        this.routeSub.unsubscribe();
+        this.ngbModalRef = null;
     }
 }

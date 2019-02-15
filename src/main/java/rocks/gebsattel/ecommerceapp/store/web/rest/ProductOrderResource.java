@@ -1,7 +1,4 @@
 package rocks.gebsattel.ecommerceapp.store.web.rest;
-
-import com.codahale.metrics.annotation.Timed;
-import org.springframework.security.access.prepost.PreAuthorize;
 import rocks.gebsattel.ecommerceapp.store.domain.ProductOrder;
 import rocks.gebsattel.ecommerceapp.store.service.ProductOrderService;
 import rocks.gebsattel.ecommerceapp.store.web.rest.errors.BadRequestAlertException;
@@ -49,8 +46,6 @@ public class ProductOrderResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/product-orders")
-    @Timed
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<ProductOrder> createProductOrder(@Valid @RequestBody ProductOrder productOrder) throws URISyntaxException {
         log.debug("REST request to save ProductOrder : {}", productOrder);
         if (productOrder.getId() != null) {
@@ -72,12 +67,10 @@ public class ProductOrderResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/product-orders")
-    @Timed
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<ProductOrder> updateProductOrder(@Valid @RequestBody ProductOrder productOrder) throws URISyntaxException {
         log.debug("REST request to update ProductOrder : {}", productOrder);
         if (productOrder.getId() == null) {
-            return createProductOrder(productOrder);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         ProductOrder result = productOrderService.save(productOrder);
         return ResponseEntity.ok()
@@ -92,12 +85,11 @@ public class ProductOrderResource {
      * @return the ResponseEntity with status 200 (OK) and the list of productOrders in body
      */
     @GetMapping("/product-orders")
-    @Timed
     public ResponseEntity<List<ProductOrder>> getAllProductOrders(Pageable pageable) {
         log.debug("REST request to get a page of ProductOrders");
         Page<ProductOrder> page = productOrderService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/product-orders");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**
@@ -107,11 +99,10 @@ public class ProductOrderResource {
      * @return the ResponseEntity with status 200 (OK) and with body the productOrder, or with status 404 (Not Found)
      */
     @GetMapping("/product-orders/{id}")
-    @Timed
     public ResponseEntity<ProductOrder> getProductOrder(@PathVariable Long id) {
         log.debug("REST request to get ProductOrder : {}", id);
-        ProductOrder productOrder = productOrderService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(productOrder));
+        Optional<ProductOrder> productOrder = productOrderService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(productOrder);
     }
 
     /**
@@ -121,8 +112,6 @@ public class ProductOrderResource {
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/product-orders/{id}")
-    @Timed
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteProductOrder(@PathVariable Long id) {
         log.debug("REST request to delete ProductOrder : {}", id);
         productOrderService.delete(id);

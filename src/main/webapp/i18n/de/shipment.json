@@ -1,7 +1,6 @@
-
 {
     "storeApp": {
-        "shipment" : {
+        "shipment": {
             "home": {
                 "title": "Shipments",
                 "createLabel": "Shipment erstellen",

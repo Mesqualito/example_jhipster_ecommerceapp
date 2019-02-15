@@ -22,10 +22,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.util.List;
+
 
 import static rocks.gebsattel.ecommerceapp.store.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -70,6 +72,9 @@ public class OrderItemResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private Validator validator;
+
     private MockMvc restOrderItemMockMvc;
 
     private OrderItem orderItem;
@@ -82,7 +87,8 @@ public class OrderItemResourceIntTest {
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
+            .setMessageConverters(jacksonMessageConverter)
+            .setValidator(validator).build();
     }
 
     /**
@@ -102,10 +108,10 @@ public class OrderItemResourceIntTest {
         em.flush();
         orderItem.setProduct(product);
         // Add required entity
-        ProductOrder order = ProductOrderResourceIntTest.createEntity(em);
-        em.persist(order);
+        ProductOrder productOrder = ProductOrderResourceIntTest.createEntity(em);
+        em.persist(productOrder);
         em.flush();
-        orderItem.setOrder(order);
+        orderItem.setOrder(productOrder);
         return orderItem;
     }
 
@@ -222,7 +228,7 @@ public class OrderItemResourceIntTest {
             .andExpect(jsonPath("$.[*].totalPrice").value(hasItem(DEFAULT_TOTAL_PRICE.intValue())))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())));
     }
-
+    
     @Test
     @Transactional
     public void getOrderItem() throws Exception {
@@ -256,7 +262,7 @@ public class OrderItemResourceIntTest {
         int databaseSizeBeforeUpdate = orderItemRepository.findAll().size();
 
         // Update the orderItem
-        OrderItem updatedOrderItem = orderItemRepository.findOne(orderItem.getId());
+        OrderItem updatedOrderItem = orderItemRepository.findById(orderItem.getId()).get();
         // Disconnect from session so that the updates on updatedOrderItem are not directly saved in db
         em.detach(updatedOrderItem);
         updatedOrderItem
@@ -285,15 +291,15 @@ public class OrderItemResourceIntTest {
 
         // Create the OrderItem
 
-        // If the entity doesn't have an ID, it will be created instead of just being updated
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restOrderItemMockMvc.perform(put("/api/order-items")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(orderItem)))
-            .andExpect(status().isCreated());
+            .andExpect(status().isBadRequest());
 
         // Validate the OrderItem in the database
         List<OrderItem> orderItemList = orderItemRepository.findAll();
-        assertThat(orderItemList).hasSize(databaseSizeBeforeUpdate + 1);
+        assertThat(orderItemList).hasSize(databaseSizeBeforeUpdate);
     }
 
     @Test
@@ -304,7 +310,7 @@ public class OrderItemResourceIntTest {
 
         int databaseSizeBeforeDelete = orderItemRepository.findAll().size();
 
-        // Get the orderItem
+        // Delete the orderItem
         restOrderItemMockMvc.perform(delete("/api/order-items/{id}", orderItem.getId())
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());

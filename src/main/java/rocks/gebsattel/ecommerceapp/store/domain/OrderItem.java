@@ -1,5 +1,7 @@
 package rocks.gebsattel.ecommerceapp.store.domain;
 
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -21,7 +23,7 @@ import rocks.gebsattel.ecommerceapp.store.domain.enumeration.OrderItemStatus;
 public class OrderItem implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -33,7 +35,7 @@ public class OrderItem implements Serializable {
 
     @NotNull
     @DecimalMin(value = "0")
-    @Column(name = "total_price", precision=10, scale=2, nullable = false)
+    @Column(name = "total_price", precision = 10, scale = 2, nullable = false)
     private BigDecimal totalPrice;
 
     @NotNull
@@ -43,10 +45,12 @@ public class OrderItem implements Serializable {
 
     @ManyToOne(optional = false)
     @NotNull
+    @JsonIgnoreProperties("orderItems")
     private Product product;
 
     @ManyToOne(optional = false)
     @NotNull
+    @JsonIgnoreProperties("orderItems")
     private ProductOrder order;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

@@ -21,11 +21,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+
 
 import static rocks.gebsattel.ecommerceapp.store.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -70,6 +72,9 @@ public class ProductOrderResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private Validator validator;
+
     private MockMvc restProductOrderMockMvc;
 
     private ProductOrder productOrder;
@@ -82,7 +87,8 @@ public class ProductOrderResourceIntTest {
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
+            .setMessageConverters(jacksonMessageConverter)
+            .setValidator(validator).build();
     }
 
     /**
@@ -217,7 +223,7 @@ public class ProductOrderResourceIntTest {
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())))
             .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE.toString())));
     }
-
+    
     @Test
     @Transactional
     public void getProductOrder() throws Exception {
@@ -251,7 +257,7 @@ public class ProductOrderResourceIntTest {
         int databaseSizeBeforeUpdate = productOrderRepository.findAll().size();
 
         // Update the productOrder
-        ProductOrder updatedProductOrder = productOrderRepository.findOne(productOrder.getId());
+        ProductOrder updatedProductOrder = productOrderRepository.findById(productOrder.getId()).get();
         // Disconnect from session so that the updates on updatedProductOrder are not directly saved in db
         em.detach(updatedProductOrder);
         updatedProductOrder
@@ -280,15 +286,15 @@ public class ProductOrderResourceIntTest {
 
         // Create the ProductOrder
 
-        // If the entity doesn't have an ID, it will be created instead of just being updated
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restProductOrderMockMvc.perform(put("/api/product-orders")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(productOrder)))
-            .andExpect(status().isCreated());
+            .andExpect(status().isBadRequest());
 
         // Validate the ProductOrder in the database
         List<ProductOrder> productOrderList = productOrderRepository.findAll();
-        assertThat(productOrderList).hasSize(databaseSizeBeforeUpdate + 1);
+        assertThat(productOrderList).hasSize(databaseSizeBeforeUpdate);
     }
 
     @Test
@@ -299,7 +305,7 @@ public class ProductOrderResourceIntTest {
 
         int databaseSizeBeforeDelete = productOrderRepository.findAll().size();
 
-        // Get the productOrder
+        // Delete the productOrder
         restProductOrderMockMvc.perform(delete("/api/product-orders/{id}", productOrder.getId())
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());

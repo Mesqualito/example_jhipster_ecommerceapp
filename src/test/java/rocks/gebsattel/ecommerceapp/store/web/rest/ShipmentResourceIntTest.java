@@ -21,11 +21,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+
 
 import static rocks.gebsattel.ecommerceapp.store.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -69,6 +71,9 @@ public class ShipmentResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private Validator validator;
+
     private MockMvc restShipmentMockMvc;
 
     private Shipment shipment;
@@ -81,7 +86,8 @@ public class ShipmentResourceIntTest {
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
+            .setMessageConverters(jacksonMessageConverter)
+            .setValidator(validator).build();
     }
 
     /**
@@ -180,7 +186,7 @@ public class ShipmentResourceIntTest {
             .andExpect(jsonPath("$.[*].date").value(hasItem(DEFAULT_DATE.toString())))
             .andExpect(jsonPath("$.[*].details").value(hasItem(DEFAULT_DETAILS.toString())));
     }
-
+    
     @Test
     @Transactional
     public void getShipment() throws Exception {
@@ -214,7 +220,7 @@ public class ShipmentResourceIntTest {
         int databaseSizeBeforeUpdate = shipmentRepository.findAll().size();
 
         // Update the shipment
-        Shipment updatedShipment = shipmentRepository.findOne(shipment.getId());
+        Shipment updatedShipment = shipmentRepository.findById(shipment.getId()).get();
         // Disconnect from session so that the updates on updatedShipment are not directly saved in db
         em.detach(updatedShipment);
         updatedShipment
@@ -243,15 +249,15 @@ public class ShipmentResourceIntTest {
 
         // Create the Shipment
 
-        // If the entity doesn't have an ID, it will be created instead of just being updated
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restShipmentMockMvc.perform(put("/api/shipments")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(shipment)))
-            .andExpect(status().isCreated());
+            .andExpect(status().isBadRequest());
 
         // Validate the Shipment in the database
         List<Shipment> shipmentList = shipmentRepository.findAll();
-        assertThat(shipmentList).hasSize(databaseSizeBeforeUpdate + 1);
+        assertThat(shipmentList).hasSize(databaseSizeBeforeUpdate);
     }
 
     @Test
@@ -262,7 +268,7 @@ public class ShipmentResourceIntTest {
 
         int databaseSizeBeforeDelete = shipmentRepository.findAll().size();
 
-        // Get the shipment
+        // Delete the shipment
         restShipmentMockMvc.perform(delete("/api/shipments/{id}", shipment.getId())
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());

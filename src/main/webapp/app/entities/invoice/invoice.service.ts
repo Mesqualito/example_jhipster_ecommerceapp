@@ -1,84 +1,77 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import { SERVER_API_URL } from '../../app.constants';
+import { Observable } from 'rxjs';
+import * as moment from 'moment';
+import { DATE_FORMAT } from 'app/shared/constants/input.constants';
+import { map } from 'rxjs/operators';
 
-import { JhiDateUtils } from 'ng-jhipster';
+import { SERVER_API_URL } from 'app/app.constants';
+import { createRequestOption } from 'app/shared';
+import { IInvoice } from 'app/shared/model/invoice.model';
 
-import { Invoice } from './invoice.model';
-import { createRequestOption } from '../../shared';
+type EntityResponseType = HttpResponse<IInvoice>;
+type EntityArrayResponseType = HttpResponse<IInvoice[]>;
 
-export type EntityResponseType = HttpResponse<Invoice>;
-
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class InvoiceService {
+    public resourceUrl = SERVER_API_URL + 'api/invoices';
 
-    private resourceUrl =  SERVER_API_URL + 'api/invoices';
+    constructor(protected http: HttpClient) {}
 
-    constructor(private http: HttpClient, private dateUtils: JhiDateUtils) { }
-
-    create(invoice: Invoice): Observable<EntityResponseType> {
-        const copy = this.convert(invoice);
-        return this.http.post<Invoice>(this.resourceUrl, copy, { observe: 'response' })
-            .map((res: EntityResponseType) => this.convertResponse(res));
+    create(invoice: IInvoice): Observable<EntityResponseType> {
+        const copy = this.convertDateFromClient(invoice);
+        return this.http
+            .post<IInvoice>(this.resourceUrl, copy, { observe: 'response' })
+            .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
     }
 
-    update(invoice: Invoice): Observable<EntityResponseType> {
-        const copy = this.convert(invoice);
-        return this.http.put<Invoice>(this.resourceUrl, copy, { observe: 'response' })
-            .map((res: EntityResponseType) => this.convertResponse(res));
+    update(invoice: IInvoice): Observable<EntityResponseType> {
+        const copy = this.convertDateFromClient(invoice);
+        return this.http
+            .put<IInvoice>(this.resourceUrl, copy, { observe: 'response' })
+            .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
     }
 
     find(id: number): Observable<EntityResponseType> {
-        return this.http.get<Invoice>(`${this.resourceUrl}/${id}`, { observe: 'response'})
-            .map((res: EntityResponseType) => this.convertResponse(res));
+        return this.http
+            .get<IInvoice>(`${this.resourceUrl}/${id}`, { observe: 'response' })
+            .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
     }
 
-    query(req?: any): Observable<HttpResponse<Invoice[]>> {
+    query(req?: any): Observable<EntityArrayResponseType> {
         const options = createRequestOption(req);
-        return this.http.get<Invoice[]>(this.resourceUrl, { params: options, observe: 'response' })
-            .map((res: HttpResponse<Invoice[]>) => this.convertArrayResponse(res));
+        return this.http
+            .get<IInvoice[]>(this.resourceUrl, { params: options, observe: 'response' })
+            .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
     }
 
     delete(id: number): Observable<HttpResponse<any>> {
-        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response'});
+        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response' });
     }
 
-    private convertResponse(res: EntityResponseType): EntityResponseType {
-        const body: Invoice = this.convertItemFromServer(res.body);
-        return res.clone({body});
+    protected convertDateFromClient(invoice: IInvoice): IInvoice {
+        const copy: IInvoice = Object.assign({}, invoice, {
+            date: invoice.date != null && invoice.date.isValid() ? invoice.date.toJSON() : null,
+            paymentDate: invoice.paymentDate != null && invoice.paymentDate.isValid() ? invoice.paymentDate.toJSON() : null
+        });
+        return copy;
     }
 
-    private convertArrayResponse(res: HttpResponse<Invoice[]>): HttpResponse<Invoice[]> {
-        const jsonResponse: Invoice[] = res.body;
-        const body: Invoice[] = [];
-        for (let i = 0; i < jsonResponse.length; i++) {
-            body.push(this.convertItemFromServer(jsonResponse[i]));
+    protected convertDateFromServer(res: EntityResponseType): EntityResponseType {
+        if (res.body) {
+            res.body.date = res.body.date != null ? moment(res.body.date) : null;
+            res.body.paymentDate = res.body.paymentDate != null ? moment(res.body.paymentDate) : null;
         }
-        return res.clone({body});
+        return res;
     }
 
-    /**
-     * Convert a returned JSON object to Invoice.
-     */
-    private convertItemFromServer(invoice: Invoice): Invoice {
-        const copy: Invoice = Object.assign({}, invoice);
-        copy.date = this.dateUtils
-            .convertDateTimeFromServer(invoice.date);
-        copy.paymentDate = this.dateUtils
-            .convertDateTimeFromServer(invoice.paymentDate);
-        return copy;
-    }
-
-    /**
-     * Convert a Invoice to a JSON which can be sent to the server.
-     */
-    private convert(invoice: Invoice): Invoice {
-        const copy: Invoice = Object.assign({}, invoice);
-
-        copy.date = this.dateUtils.toDate(invoice.date);
-
-        copy.paymentDate = this.dateUtils.toDate(invoice.paymentDate);
-        return copy;
+    protected convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
+        if (res.body) {
+            res.body.forEach((invoice: IInvoice) => {
+                invoice.date = invoice.date != null ? moment(invoice.date) : null;
+                invoice.paymentDate = invoice.paymentDate != null ? moment(invoice.paymentDate) : null;
+            });
+        }
+        return res;
     }
 }

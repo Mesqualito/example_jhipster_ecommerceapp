@@ -1,44 +1,78 @@
 import { Injectable } from '@angular/core';
+import { HttpResponse } from '@angular/common/http';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
-import { JhiPaginationUtil } from 'ng-jhipster';
-
-import { UserRouteAccessService } from '../../shared';
+import { JhiPaginationUtil, JhiResolvePagingParams } from 'ng-jhipster';
+import { UserRouteAccessService } from 'app/core';
+import { Observable, of } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
+import { Invoice } from 'app/shared/model/invoice.model';
+import { InvoiceService } from './invoice.service';
 import { InvoiceComponent } from './invoice.component';
 import { InvoiceDetailComponent } from './invoice-detail.component';
-import { InvoicePopupComponent } from './invoice-dialog.component';
+import { InvoiceUpdateComponent } from './invoice-update.component';
 import { InvoiceDeletePopupComponent } from './invoice-delete-dialog.component';
+import { IInvoice } from 'app/shared/model/invoice.model';
 
-@Injectable()
-export class InvoiceResolvePagingParams implements Resolve<any> {
+@Injectable({ providedIn: 'root' })
+export class InvoiceResolve implements Resolve<IInvoice> {
+    constructor(private service: InvoiceService) {}
 
-    constructor(private paginationUtil: JhiPaginationUtil) {}
-
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-        const page = route.queryParams['page'] ? route.queryParams['page'] : '1';
-        const sort = route.queryParams['sort'] ? route.queryParams['sort'] : 'id,asc';
-        return {
-            page: this.paginationUtil.parsePage(page),
-            predicate: this.paginationUtil.parsePredicate(sort),
-            ascending: this.paginationUtil.parseAscending(sort)
-      };
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<IInvoice> {
+        const id = route.params['id'] ? route.params['id'] : null;
+        if (id) {
+            return this.service.find(id).pipe(
+                filter((response: HttpResponse<Invoice>) => response.ok),
+                map((invoice: HttpResponse<Invoice>) => invoice.body)
+            );
+        }
+        return of(new Invoice());
     }
 }
 
 export const invoiceRoute: Routes = [
     {
-        path: 'invoice',
+        path: '',
         component: InvoiceComponent,
         resolve: {
-            'pagingParams': InvoiceResolvePagingParams
+            pagingParams: JhiResolvePagingParams
+        },
+        data: {
+            authorities: ['ROLE_USER'],
+            defaultSort: 'id,asc',
+            pageTitle: 'storeApp.invoice.home.title'
+        },
+        canActivate: [UserRouteAccessService]
+    },
+    {
+        path: ':id/view',
+        component: InvoiceDetailComponent,
+        resolve: {
+            invoice: InvoiceResolve
         },
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'storeApp.invoice.home.title'
         },
         canActivate: [UserRouteAccessService]
-    }, {
-        path: 'invoice/:id',
-        component: InvoiceDetailComponent,
+    },
+    {
+        path: 'new',
+        component: InvoiceUpdateComponent,
+        resolve: {
+            invoice: InvoiceResolve
+        },
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'storeApp.invoice.home.title'
+        },
+        canActivate: [UserRouteAccessService]
+    },
+    {
+        path: ':id/edit',
+        component: InvoiceUpdateComponent,
+        resolve: {
+            invoice: InvoiceResolve
+        },
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'storeApp.invoice.home.title'
@@ -49,28 +83,11 @@ export const invoiceRoute: Routes = [
 
 export const invoicePopupRoute: Routes = [
     {
-        path: 'invoice-new',
-        component: InvoicePopupComponent,
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'storeApp.invoice.home.title'
-        },
-        canActivate: [UserRouteAccessService],
-        outlet: 'popup'
-    },
-    {
-        path: 'invoice/:id/edit',
-        component: InvoicePopupComponent,
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'storeApp.invoice.home.title'
-        },
-        canActivate: [UserRouteAccessService],
-        outlet: 'popup'
-    },
-    {
-        path: 'invoice/:id/delete',
+        path: ':id/delete',
         component: InvoiceDeletePopupComponent,
+        resolve: {
+            invoice: InvoiceResolve
+        },
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'storeApp.invoice.home.title'

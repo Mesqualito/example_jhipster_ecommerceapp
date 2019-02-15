@@ -4,11 +4,13 @@ import rocks.gebsattel.ecommerceapp.store.domain.Invoice;
 import rocks.gebsattel.ecommerceapp.store.repository.InvoiceRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
 
 /**
  * Service Implementation for managing Invoice.
@@ -48,6 +50,7 @@ public class InvoiceService {
         return invoiceRepository.findAll(pageable);
     }
 
+
     /**
      * Get one invoice by id.
      *
@@ -55,9 +58,9 @@ public class InvoiceService {
      * @return the entity
      */
     @Transactional(readOnly = true)
-    public Invoice findOne(Long id) {
+    public Optional<Invoice> findOne(Long id) {
         log.debug("Request to get Invoice : {}", id);
-        return invoiceRepository.findOne(id);
+        return invoiceRepository.findById(id);
     }
 
     /**
@@ -66,7 +69,6 @@ public class InvoiceService {
      * @param id the id of the entity
      */
     public void delete(Long id) {
-        log.debug("Request to delete Invoice : {}", id);
-        invoiceRepository.delete(id);
+        log.debug("Request to delete Invoice : {}", id);        invoiceRepository.deleteById(id);
     }
 }

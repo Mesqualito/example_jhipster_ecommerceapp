@@ -1,6 +1,6 @@
 {
     "storeApp": {
-        "OrderStatus" : {
+        "OrderStatus": {
             "null": "",
             "COMPLETED": "COMPLETED",
             "PENDING": "PENDING",

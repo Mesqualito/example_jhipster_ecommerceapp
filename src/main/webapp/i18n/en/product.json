@@ -1,7 +1,6 @@
-
 {
     "storeApp": {
-        "product" : {
+        "product": {
             "home": {
                 "title": "Products",
                 "createLabel": "Create a new Product",

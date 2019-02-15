@@ -1,56 +1,45 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { JhiLanguageService } from 'ng-jhipster';
+import { JhiLanguageHelper } from 'app/core';
 
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { CalendarModule } from 'primeng/calendar';
-
-import { StoreSharedModule } from '../../shared';
+import { StoreSharedModule } from 'app/shared';
 import {
-    ProductOrderService,
-    ProductOrderPopupService,
     ProductOrderComponent,
     ProductOrderDetailComponent,
-    ProductOrderDialogComponent,
-    ProductOrderPopupComponent,
+    ProductOrderUpdateComponent,
     ProductOrderDeletePopupComponent,
     ProductOrderDeleteDialogComponent,
     productOrderRoute,
-    productOrderPopupRoute,
-    ProductOrderResolvePagingParams,
+    productOrderPopupRoute
 } from './';
 
-const ENTITY_STATES = [
-    ...productOrderRoute,
-    ...productOrderPopupRoute,
-];
+const ENTITY_STATES = [...productOrderRoute, ...productOrderPopupRoute];
 
 @NgModule({
-    imports: [
-        StoreSharedModule,
-        BrowserAnimationsModule,
-        CalendarModule,
-        RouterModule.forChild(ENTITY_STATES)
-    ],
+    imports: [StoreSharedModule, RouterModule.forChild(ENTITY_STATES)],
     declarations: [
         ProductOrderComponent,
         ProductOrderDetailComponent,
-        ProductOrderDialogComponent,
+        ProductOrderUpdateComponent,
         ProductOrderDeleteDialogComponent,
-        ProductOrderPopupComponent,
-        ProductOrderDeletePopupComponent,
+        ProductOrderDeletePopupComponent
     ],
     entryComponents: [
         ProductOrderComponent,
-        ProductOrderDialogComponent,
-        ProductOrderPopupComponent,
+        ProductOrderUpdateComponent,
         ProductOrderDeleteDialogComponent,
-        ProductOrderDeletePopupComponent,
+        ProductOrderDeletePopupComponent
     ],
-    providers: [
-        ProductOrderService,
-        ProductOrderPopupService,
-        ProductOrderResolvePagingParams,
-    ],
+    providers: [{ provide: JhiLanguageService, useClass: JhiLanguageService }],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class StoreProductOrderModule {}
+export class StoreProductOrderModule {
+    constructor(private languageService: JhiLanguageService, private languageHelper: JhiLanguageHelper) {
+        this.languageHelper.language.subscribe((languageKey: string) => {
+            if (languageKey !== undefined) {
+                this.languageService.changeLanguage(languageKey);
+            }
+        });
+    }
+}

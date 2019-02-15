@@ -1,24 +1,39 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-
-import { StoreProductModule } from './product/product.module';
-import { StoreProductCategoryModule } from './product-category/product-category.module';
-import { StoreCustomerModule } from './customer/customer.module';
-import { StoreProductOrderModule } from './product-order/product-order.module';
-import { StoreOrderItemModule } from './order-item/order-item.module';
-import { StoreInvoiceModule } from './invoice/invoice.module';
-import { StoreShipmentModule } from './shipment/shipment.module';
-/* jhipster-needle-add-entity-module-import - JHipster will add entity modules imports here */
+import { RouterModule } from '@angular/router';
 
 @NgModule({
     imports: [
-        StoreProductModule,
-        StoreProductCategoryModule,
-        StoreCustomerModule,
-        StoreProductOrderModule,
-        StoreOrderItemModule,
-        StoreInvoiceModule,
-        StoreShipmentModule,
-        /* jhipster-needle-add-entity-module - JHipster will add entity modules here */
+        RouterModule.forChild([
+            {
+                path: 'product',
+                loadChildren: './product/product.module#StoreProductModule'
+            },
+            {
+                path: 'product-category',
+                loadChildren: './product-category/product-category.module#StoreProductCategoryModule'
+            },
+            {
+                path: 'customer',
+                loadChildren: './customer/customer.module#StoreCustomerModule'
+            },
+            {
+                path: 'product-order',
+                loadChildren: './product-order/product-order.module#StoreProductOrderModule'
+            },
+            {
+                path: 'order-item',
+                loadChildren: './order-item/order-item.module#StoreOrderItemModule'
+            },
+            {
+                path: 'invoice',
+                loadChildren: './invoice/invoice.module#StoreInvoiceModule'
+            },
+            {
+                path: 'shipment',
+                loadChildren: './shipment/shipment.module#StoreShipmentModule'
+            }
+            /* jhipster-needle-add-entity-route - JHipster will add entity modules routes here */
+        ])
     ],
     declarations: [],
     entryComponents: [],

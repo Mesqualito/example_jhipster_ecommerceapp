@@ -1,13 +1,12 @@
 package rocks.gebsattel.ecommerceapp.store.repository;
 
 import rocks.gebsattel.ecommerceapp.store.domain.Invoice;
-import org.springframework.stereotype.Repository;
-
 import org.springframework.data.jpa.repository.*;
+import org.springframework.stereotype.Repository;
 
 
 /**
- * Spring Data JPA repository for the Invoice entity.
+ * Spring Data  repository for the Invoice entity.
  */
 @SuppressWarnings("unused")
 @Repository

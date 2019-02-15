@@ -4,13 +4,13 @@ import rocks.gebsattel.ecommerceapp.store.domain.ProductOrder;
 import rocks.gebsattel.ecommerceapp.store.repository.ProductOrderRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import rocks.gebsattel.ecommerceapp.store.security.AuthoritiesConstants;
-import rocks.gebsattel.ecommerceapp.store.security.SecurityUtils;
 
+import java.util.Optional;
 
 /**
  * Service Implementation for managing ProductOrder.
@@ -47,11 +47,9 @@ public class ProductOrderService {
     @Transactional(readOnly = true)
     public Page<ProductOrder> findAll(Pageable pageable) {
         log.debug("Request to get all ProductOrders");
-        if(SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN)) {
-            return productOrderRepository.findAll(pageable);
-        } else
-            return productOrderRepository.findAllByCustomerUserLogin(SecurityUtils.getCurrentUserLogin().get(), pageable);
+        return productOrderRepository.findAll(pageable);
     }
+
 
     /**
      * Get one productOrder by id.
@@ -60,9 +58,9 @@ public class ProductOrderService {
      * @return the entity
      */
     @Transactional(readOnly = true)
-    public ProductOrder findOne(Long id) {
+    public Optional<ProductOrder> findOne(Long id) {
         log.debug("Request to get ProductOrder : {}", id);
-        return productOrderRepository.findOne(id);
+        return productOrderRepository.findById(id);
     }
 
     /**
@@ -71,7 +69,6 @@ public class ProductOrderService {
      * @param id the id of the entity
      */
     public void delete(Long id) {
-        log.debug("Request to delete ProductOrder : {}", id);
-        productOrderRepository.delete(id);
+        log.debug("Request to delete ProductOrder : {}", id);        productOrderRepository.deleteById(id);
     }
 }

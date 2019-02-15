@@ -1,16 +1,14 @@
 <div>
-    <h2>
+    <h2 id="page-heading">
         <span jhiTranslate="storeApp.productCategory.home.title">Product Categories</span>
-        <button class="btn btn-primary float-right jh-create-entity create-product-category" [routerLink]="['/', { outlets: { popup: ['product-category-new'] } }]">
-            <span class="fa fa-plus"></span>
+        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-product-category" [routerLink]="['/product-category/new']">
+            <fa-icon [icon]="'plus'"></fa-icon>
             <span  jhiTranslate="storeApp.productCategory.home.createLabel">
             Create new Product Category
             </span>
         </button>
     </h2>
     <jhi-alert></jhi-alert>
-    <div class="row">
-    </div>
     <br/>
     <div class="table-responsive" *ngIf="productCategories">
         <table class="table table-striped">
@@ -24,31 +22,29 @@
             </thead>
             <tbody>
             <tr *ngFor="let productCategory of productCategories ;trackBy: trackId">
-                <td><a [routerLink]="['../product-category', productCategory.id ]">{{productCategory.id}}</a></td>
+                <td><a [routerLink]="['/product-category', productCategory.id, 'view' ]">{{productCategory.id}}</a></td>
                 <td>{{productCategory.name}}</td>
                 <td>{{productCategory.description}}</td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"
-                                [routerLink]="['../product-category', productCategory.id ]"
+                                [routerLink]="['/product-category', productCategory.id, 'view' ]"
                                 class="btn btn-info btn-sm">
-                            <span class="fa fa-eye"></span>
+                            <fa-icon [icon]="'eye'"></fa-icon>
                             <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
                         </button>
                         <button type="submit"
-                                [routerLink]="['/', { outlets: { popup: 'product-category/'+ productCategory.id + '/edit'} }]"
-                                replaceUrl="true"
-                                queryParamsHandling="merge"
+                                [routerLink]="['/product-category', productCategory.id, 'edit']"
                                 class="btn btn-primary btn-sm">
-                            <span class="fa fa-pencil"></span>
+                            <fa-icon [icon]="'pencil-alt'"></fa-icon>
                             <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
                         </button>
                         <button type="submit"
-                                [routerLink]="['/', { outlets: { popup: 'product-category/'+ productCategory.id + '/delete'} }]"
+                                [routerLink]="['/', 'product-category', { outlets: { popup: productCategory.id + '/delete'} }]"
                                 replaceUrl="true"
                                 queryParamsHandling="merge"
                                 class="btn btn-danger btn-sm">
-                            <span class="fa fa-remove"></span>
+                            <fa-icon [icon]="'times'"></fa-icon>
                             <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
                         </button>
                     </div>

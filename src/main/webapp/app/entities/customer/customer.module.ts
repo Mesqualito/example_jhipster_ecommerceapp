@@ -1,53 +1,40 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { JhiLanguageService } from 'ng-jhipster';
+import { JhiLanguageHelper } from 'app/core';
 
-import { StoreSharedModule } from '../../shared';
-import { StoreAdminModule } from '../../admin/admin.module';
+import { StoreSharedModule } from 'app/shared';
 import {
-    CustomerService,
-    CustomerPopupService,
     CustomerComponent,
     CustomerDetailComponent,
-    CustomerDialogComponent,
-    CustomerPopupComponent,
+    CustomerUpdateComponent,
     CustomerDeletePopupComponent,
     CustomerDeleteDialogComponent,
     customerRoute,
-    customerPopupRoute,
-    CustomerResolvePagingParams,
+    customerPopupRoute
 } from './';
 
-const ENTITY_STATES = [
-    ...customerRoute,
-    ...customerPopupRoute,
-];
+const ENTITY_STATES = [...customerRoute, ...customerPopupRoute];
 
 @NgModule({
-    imports: [
-        StoreSharedModule,
-        StoreAdminModule,
-        RouterModule.forChild(ENTITY_STATES)
-    ],
+    imports: [StoreSharedModule, RouterModule.forChild(ENTITY_STATES)],
     declarations: [
         CustomerComponent,
         CustomerDetailComponent,
-        CustomerDialogComponent,
+        CustomerUpdateComponent,
         CustomerDeleteDialogComponent,
-        CustomerPopupComponent,
-        CustomerDeletePopupComponent,
+        CustomerDeletePopupComponent
     ],
-    entryComponents: [
-        CustomerComponent,
-        CustomerDialogComponent,
-        CustomerPopupComponent,
-        CustomerDeleteDialogComponent,
-        CustomerDeletePopupComponent,
-    ],
-    providers: [
-        CustomerService,
-        CustomerPopupService,
-        CustomerResolvePagingParams,
-    ],
+    entryComponents: [CustomerComponent, CustomerUpdateComponent, CustomerDeleteDialogComponent, CustomerDeletePopupComponent],
+    providers: [{ provide: JhiLanguageService, useClass: JhiLanguageService }],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class StoreCustomerModule {}
+export class StoreCustomerModule {
+    constructor(private languageService: JhiLanguageService, private languageHelper: JhiLanguageHelper) {
+        this.languageHelper.language.subscribe((languageKey: string) => {
+            if (languageKey !== undefined) {
+                this.languageService.changeLanguage(languageKey);
+            }
+        });
+    }
+}

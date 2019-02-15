@@ -1,6 +1,8 @@
 package rocks.gebsattel.ecommerceapp.store.domain;
 
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -24,7 +26,7 @@ import rocks.gebsattel.ecommerceapp.store.domain.enumeration.OrderStatus;
 public class ProductOrder implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -43,17 +45,14 @@ public class ProductOrder implements Serializable {
     private String code;
 
     @OneToMany(mappedBy = "order")
-    @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<OrderItem> orderItems = new HashSet<>();
-
     @OneToMany(mappedBy = "order")
-    @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Invoice> invoices = new HashSet<>();
-
     @ManyToOne(optional = false)
     @NotNull
+    @JsonIgnoreProperties("orders")
     private Customer customer;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

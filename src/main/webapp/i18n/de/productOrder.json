@@ -1,7 +1,6 @@
-
 {
     "storeApp": {
-        "productOrder" : {
+        "productOrder": {
             "home": {
                 "title": "Product Orders",
                 "createLabel": "Product Order erstellen",

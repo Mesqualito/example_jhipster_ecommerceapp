@@ -1,15 +1,14 @@
 /* tslint:disable max-line-length */
-import { ComponentFixture, TestBed, async, inject, fakeAsync, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed, inject, fakeAsync, tick } from '@angular/core/testing';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { Observable } from 'rxjs/Observable';
+import { Observable, of } from 'rxjs';
 import { JhiEventManager } from 'ng-jhipster';
 
 import { StoreTestModule } from '../../../test.module';
-import { ShipmentDeleteDialogComponent } from '../../../../../../main/webapp/app/entities/shipment/shipment-delete-dialog.component';
-import { ShipmentService } from '../../../../../../main/webapp/app/entities/shipment/shipment.service';
+import { ShipmentDeleteDialogComponent } from 'app/entities/shipment/shipment-delete-dialog.component';
+import { ShipmentService } from 'app/entities/shipment/shipment.service';
 
 describe('Component Tests', () => {
-
     describe('Shipment Management Delete Component', () => {
         let comp: ShipmentDeleteDialogComponent;
         let fixture: ComponentFixture<ShipmentDeleteDialogComponent>;
@@ -17,19 +16,13 @@ describe('Component Tests', () => {
         let mockEventManager: any;
         let mockActiveModal: any;
 
-        beforeEach(async(() => {
+        beforeEach(() => {
             TestBed.configureTestingModule({
                 imports: [StoreTestModule],
-                declarations: [ShipmentDeleteDialogComponent],
-                providers: [
-                    ShipmentService
-                ]
+                declarations: [ShipmentDeleteDialogComponent]
             })
-            .overrideTemplate(ShipmentDeleteDialogComponent, '')
-            .compileComponents();
-        }));
-
-        beforeEach(() => {
+                .overrideTemplate(ShipmentDeleteDialogComponent, '')
+                .compileComponents();
             fixture = TestBed.createComponent(ShipmentDeleteDialogComponent);
             comp = fixture.componentInstance;
             service = fixture.debugElement.injector.get(ShipmentService);
@@ -38,24 +31,22 @@ describe('Component Tests', () => {
         });
 
         describe('confirmDelete', () => {
-            it('Should call delete service on confirmDelete',
-                inject([],
-                    fakeAsync(() => {
-                        // GIVEN
-                        spyOn(service, 'delete').and.returnValue(Observable.of({}));
+            it('Should call delete service on confirmDelete', inject(
+                [],
+                fakeAsync(() => {
+                    // GIVEN
+                    spyOn(service, 'delete').and.returnValue(of({}));
 
-                        // WHEN
-                        comp.confirmDelete(123);
-                        tick();
+                    // WHEN
+                    comp.confirmDelete(123);
+                    tick();
 
-                        // THEN
-                        expect(service.delete).toHaveBeenCalledWith(123);
-                        expect(mockActiveModal.dismissSpy).toHaveBeenCalled();
-                        expect(mockEventManager.broadcastSpy).toHaveBeenCalled();
-                    })
-                )
-            );
+                    // THEN
+                    expect(service.delete).toHaveBeenCalledWith(123);
+                    expect(mockActiveModal.dismissSpy).toHaveBeenCalled();
+                    expect(mockEventManager.broadcastSpy).toHaveBeenCalled();
+                })
+            ));
         });
     });
-
 });

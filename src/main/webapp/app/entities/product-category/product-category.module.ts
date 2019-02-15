@@ -1,49 +1,45 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { JhiLanguageService } from 'ng-jhipster';
+import { JhiLanguageHelper } from 'app/core';
 
-import { StoreSharedModule } from '../../shared';
+import { StoreSharedModule } from 'app/shared';
 import {
-    ProductCategoryService,
-    ProductCategoryPopupService,
     ProductCategoryComponent,
     ProductCategoryDetailComponent,
-    ProductCategoryDialogComponent,
-    ProductCategoryPopupComponent,
+    ProductCategoryUpdateComponent,
     ProductCategoryDeletePopupComponent,
     ProductCategoryDeleteDialogComponent,
     productCategoryRoute,
-    productCategoryPopupRoute,
+    productCategoryPopupRoute
 } from './';
 
-const ENTITY_STATES = [
-    ...productCategoryRoute,
-    ...productCategoryPopupRoute,
-];
+const ENTITY_STATES = [...productCategoryRoute, ...productCategoryPopupRoute];
 
 @NgModule({
-    imports: [
-        StoreSharedModule,
-        RouterModule.forChild(ENTITY_STATES)
-    ],
+    imports: [StoreSharedModule, RouterModule.forChild(ENTITY_STATES)],
     declarations: [
         ProductCategoryComponent,
         ProductCategoryDetailComponent,
-        ProductCategoryDialogComponent,
+        ProductCategoryUpdateComponent,
         ProductCategoryDeleteDialogComponent,
-        ProductCategoryPopupComponent,
-        ProductCategoryDeletePopupComponent,
+        ProductCategoryDeletePopupComponent
     ],
     entryComponents: [
         ProductCategoryComponent,
-        ProductCategoryDialogComponent,
-        ProductCategoryPopupComponent,
+        ProductCategoryUpdateComponent,
         ProductCategoryDeleteDialogComponent,
-        ProductCategoryDeletePopupComponent,
+        ProductCategoryDeletePopupComponent
     ],
-    providers: [
-        ProductCategoryService,
-        ProductCategoryPopupService,
-    ],
+    providers: [{ provide: JhiLanguageService, useClass: JhiLanguageService }],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class StoreProductCategoryModule {}
+export class StoreProductCategoryModule {
+    constructor(private languageService: JhiLanguageService, private languageHelper: JhiLanguageHelper) {
+        this.languageHelper.language.subscribe((languageKey: string) => {
+            if (languageKey !== undefined) {
+                this.languageService.changeLanguage(languageKey);
+            }
+        });
+    }
+}

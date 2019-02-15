@@ -1,51 +1,40 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { JhiLanguageService } from 'ng-jhipster';
+import { JhiLanguageHelper } from 'app/core';
 
-import { StoreSharedModule } from '../../shared';
+import { StoreSharedModule } from 'app/shared';
 import {
-    InvoiceService,
-    InvoicePopupService,
     InvoiceComponent,
     InvoiceDetailComponent,
-    InvoiceDialogComponent,
-    InvoicePopupComponent,
+    InvoiceUpdateComponent,
     InvoiceDeletePopupComponent,
     InvoiceDeleteDialogComponent,
     invoiceRoute,
-    invoicePopupRoute,
-    InvoiceResolvePagingParams,
+    invoicePopupRoute
 } from './';
 
-const ENTITY_STATES = [
-    ...invoiceRoute,
-    ...invoicePopupRoute,
-];
+const ENTITY_STATES = [...invoiceRoute, ...invoicePopupRoute];
 
 @NgModule({
-    imports: [
-        StoreSharedModule,
-        RouterModule.forChild(ENTITY_STATES)
-    ],
+    imports: [StoreSharedModule, RouterModule.forChild(ENTITY_STATES)],
     declarations: [
         InvoiceComponent,
         InvoiceDetailComponent,
-        InvoiceDialogComponent,
+        InvoiceUpdateComponent,
         InvoiceDeleteDialogComponent,
-        InvoicePopupComponent,
-        InvoiceDeletePopupComponent,
+        InvoiceDeletePopupComponent
     ],
-    entryComponents: [
-        InvoiceComponent,
-        InvoiceDialogComponent,
-        InvoicePopupComponent,
-        InvoiceDeleteDialogComponent,
-        InvoiceDeletePopupComponent,
-    ],
-    providers: [
-        InvoiceService,
-        InvoicePopupService,
-        InvoiceResolvePagingParams,
-    ],
+    entryComponents: [InvoiceComponent, InvoiceUpdateComponent, InvoiceDeleteDialogComponent, InvoiceDeletePopupComponent],
+    providers: [{ provide: JhiLanguageService, useClass: JhiLanguageService }],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class StoreInvoiceModule {}
+export class StoreInvoiceModule {
+    constructor(private languageService: JhiLanguageService, private languageHelper: JhiLanguageHelper) {
+        this.languageHelper.language.subscribe((languageKey: string) => {
+            if (languageKey !== undefined) {
+                this.languageService.changeLanguage(languageKey);
+            }
+        });
+    }
+}

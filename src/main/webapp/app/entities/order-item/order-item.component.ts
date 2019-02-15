@@ -1,28 +1,29 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import { JhiEventManager, JhiParseLinks, JhiAlertService } from 'ng-jhipster';
 
-import { OrderItem } from './order-item.model';
+import { IOrderItem } from 'app/shared/model/order-item.model';
+import { AccountService } from 'app/core';
+
+import { ITEMS_PER_PAGE } from 'app/shared';
 import { OrderItemService } from './order-item.service';
-import { ITEMS_PER_PAGE, Principal } from '../../shared';
 
 @Component({
     selector: 'jhi-order-item',
     templateUrl: './order-item.component.html'
 })
 export class OrderItemComponent implements OnInit, OnDestroy {
-
-currentAccount: any;
-    orderItems: OrderItem[];
+    currentAccount: any;
+    orderItems: IOrderItem[];
     error: any;
     success: any;
     eventSubscriber: Subscription;
     routeData: any;
     links: any;
     totalItems: any;
-    queryCount: any;
     itemsPerPage: any;
     page: any;
     predicate: any;
@@ -30,16 +31,16 @@ currentAccount: any;
     reverse: any;
 
     constructor(
-        private orderItemService: OrderItemService,
-        private parseLinks: JhiParseLinks,
-        private jhiAlertService: JhiAlertService,
-        private principal: Principal,
-        private activatedRoute: ActivatedRoute,
-        private router: Router,
-        private eventManager: JhiEventManager
+        protected orderItemService: OrderItemService,
+        protected parseLinks: JhiParseLinks,
+        protected jhiAlertService: JhiAlertService,
+        protected accountService: AccountService,
+        protected activatedRoute: ActivatedRoute,
+        protected router: Router,
+        protected eventManager: JhiEventManager
     ) {
         this.itemsPerPage = ITEMS_PER_PAGE;
-        this.routeData = this.activatedRoute.data.subscribe((data) => {
+        this.routeData = this.activatedRoute.data.subscribe(data => {
             this.page = data.pagingParams.page;
             this.previousPage = data.pagingParams.page;
             this.reverse = data.pagingParams.ascending;
@@ -48,23 +49,28 @@ currentAccount: any;
     }
 
     loadAll() {
-        this.orderItemService.query({
-            page: this.page - 1,
-            size: this.itemsPerPage,
-            sort: this.sort()}).subscribe(
-                (res: HttpResponse<OrderItem[]>) => this.onSuccess(res.body, res.headers),
+        this.orderItemService
+            .query({
+                page: this.page - 1,
+                size: this.itemsPerPage,
+                sort: this.sort()
+            })
+            .subscribe(
+                (res: HttpResponse<IOrderItem[]>) => this.paginateOrderItems(res.body, res.headers),
                 (res: HttpErrorResponse) => this.onError(res.message)
-        );
+            );
     }
+
     loadPage(page: number) {
         if (page !== this.previousPage) {
             this.previousPage = page;
             this.transition();
         }
     }
+
     transition() {
-        this.router.navigate(['/order-item'], {queryParams:
-            {
+        this.router.navigate(['/order-item'], {
+            queryParams: {
                 page: this.page,
                 size: this.itemsPerPage,
                 sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')
@@ -75,15 +81,19 @@ currentAccount: any;
 
     clear() {
         this.page = 0;
-        this.router.navigate(['/order-item', {
-            page: this.page,
-            sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')
-        }]);
+        this.router.navigate([
+            '/order-item',
+            {
+                page: this.page,
+                sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')
+            }
+        ]);
         this.loadAll();
     }
+
     ngOnInit() {
         this.loadAll();
-        this.principal.identity().then((account) => {
+        this.accountService.identity().then(account => {
             this.currentAccount = account;
         });
         this.registerChangeInOrderItems();
@@ -93,11 +103,12 @@ currentAccount: any;
         this.eventManager.destroy(this.eventSubscriber);
     }
 
-    trackId(index: number, item: OrderItem) {
+    trackId(index: number, item: IOrderItem) {
         return item.id;
     }
+
     registerChangeInOrderItems() {
-        this.eventSubscriber = this.eventManager.subscribe('orderItemListModification', (response) => this.loadAll());
+        this.eventSubscriber = this.eventManager.subscribe('orderItemListModification', response => this.loadAll());
     }
 
     sort() {
@@ -108,14 +119,13 @@ currentAccount: any;
         return result;
     }
 
-    private onSuccess(data, headers) {
+    protected paginateOrderItems(data: IOrderItem[], headers: HttpHeaders) {
         this.links = this.parseLinks.parse(headers.get('link'));
-        this.totalItems = headers.get('X-Total-Count');
-        this.queryCount = this.totalItems;
-        // this.page = pagingParams.page;
+        this.totalItems = parseInt(headers.get('X-Total-Count'), 10);
         this.orderItems = data;
     }
-    private onError(error) {
-        this.jhiAlertService.error(error.message, null, null);
+
+    protected onError(errorMessage: string) {
+        this.jhiAlertService.error(errorMessage, null, null);
     }
 }

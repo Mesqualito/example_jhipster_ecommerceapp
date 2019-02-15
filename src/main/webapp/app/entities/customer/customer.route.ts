@@ -1,44 +1,78 @@
 import { Injectable } from '@angular/core';
+import { HttpResponse } from '@angular/common/http';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
-import { JhiPaginationUtil } from 'ng-jhipster';
-
-import { UserRouteAccessService } from '../../shared';
+import { JhiPaginationUtil, JhiResolvePagingParams } from 'ng-jhipster';
+import { UserRouteAccessService } from 'app/core';
+import { Observable, of } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
+import { Customer } from 'app/shared/model/customer.model';
+import { CustomerService } from './customer.service';
 import { CustomerComponent } from './customer.component';
 import { CustomerDetailComponent } from './customer-detail.component';
-import { CustomerPopupComponent } from './customer-dialog.component';
+import { CustomerUpdateComponent } from './customer-update.component';
 import { CustomerDeletePopupComponent } from './customer-delete-dialog.component';
+import { ICustomer } from 'app/shared/model/customer.model';
 
-@Injectable()
-export class CustomerResolvePagingParams implements Resolve<any> {
+@Injectable({ providedIn: 'root' })
+export class CustomerResolve implements Resolve<ICustomer> {
+    constructor(private service: CustomerService) {}
 
-    constructor(private paginationUtil: JhiPaginationUtil) {}
-
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-        const page = route.queryParams['page'] ? route.queryParams['page'] : '1';
-        const sort = route.queryParams['sort'] ? route.queryParams['sort'] : 'id,asc';
-        return {
-            page: this.paginationUtil.parsePage(page),
-            predicate: this.paginationUtil.parsePredicate(sort),
-            ascending: this.paginationUtil.parseAscending(sort)
-      };
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<ICustomer> {
+        const id = route.params['id'] ? route.params['id'] : null;
+        if (id) {
+            return this.service.find(id).pipe(
+                filter((response: HttpResponse<Customer>) => response.ok),
+                map((customer: HttpResponse<Customer>) => customer.body)
+            );
+        }
+        return of(new Customer());
     }
 }
 
 export const customerRoute: Routes = [
     {
-        path: 'customer',
+        path: '',
         component: CustomerComponent,
         resolve: {
-            'pagingParams': CustomerResolvePagingParams
+            pagingParams: JhiResolvePagingParams
+        },
+        data: {
+            authorities: ['ROLE_USER'],
+            defaultSort: 'id,asc',
+            pageTitle: 'storeApp.customer.home.title'
+        },
+        canActivate: [UserRouteAccessService]
+    },
+    {
+        path: ':id/view',
+        component: CustomerDetailComponent,
+        resolve: {
+            customer: CustomerResolve
         },
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'storeApp.customer.home.title'
         },
         canActivate: [UserRouteAccessService]
-    }, {
-        path: 'customer/:id',
-        component: CustomerDetailComponent,
+    },
+    {
+        path: 'new',
+        component: CustomerUpdateComponent,
+        resolve: {
+            customer: CustomerResolve
+        },
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'storeApp.customer.home.title'
+        },
+        canActivate: [UserRouteAccessService]
+    },
+    {
+        path: ':id/edit',
+        component: CustomerUpdateComponent,
+        resolve: {
+            customer: CustomerResolve
+        },
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'storeApp.customer.home.title'
@@ -49,28 +83,11 @@ export const customerRoute: Routes = [
 
 export const customerPopupRoute: Routes = [
     {
-        path: 'customer-new',
-        component: CustomerPopupComponent,
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'storeApp.customer.home.title'
-        },
-        canActivate: [UserRouteAccessService],
-        outlet: 'popup'
-    },
-    {
-        path: 'customer/:id/edit',
-        component: CustomerPopupComponent,
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'storeApp.customer.home.title'
-        },
-        canActivate: [UserRouteAccessService],
-        outlet: 'popup'
-    },
-    {
-        path: 'customer/:id/delete',
+        path: ':id/delete',
         component: CustomerDeletePopupComponent,
+        resolve: {
+            customer: CustomerResolve
+        },
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'storeApp.customer.home.title'

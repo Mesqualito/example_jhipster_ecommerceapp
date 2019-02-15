@@ -1,74 +1,38 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import { SERVER_API_URL } from '../../app.constants';
+import { Observable } from 'rxjs';
 
-import { ProductCategory } from './product-category.model';
-import { createRequestOption } from '../../shared';
+import { SERVER_API_URL } from 'app/app.constants';
+import { createRequestOption } from 'app/shared';
+import { IProductCategory } from 'app/shared/model/product-category.model';
 
-export type EntityResponseType = HttpResponse<ProductCategory>;
+type EntityResponseType = HttpResponse<IProductCategory>;
+type EntityArrayResponseType = HttpResponse<IProductCategory[]>;
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class ProductCategoryService {
+    public resourceUrl = SERVER_API_URL + 'api/product-categories';
 
-    private resourceUrl =  SERVER_API_URL + 'api/product-categories';
+    constructor(protected http: HttpClient) {}
 
-    constructor(private http: HttpClient) { }
-
-    create(productCategory: ProductCategory): Observable<EntityResponseType> {
-        const copy = this.convert(productCategory);
-        return this.http.post<ProductCategory>(this.resourceUrl, copy, { observe: 'response' })
-            .map((res: EntityResponseType) => this.convertResponse(res));
+    create(productCategory: IProductCategory): Observable<EntityResponseType> {
+        return this.http.post<IProductCategory>(this.resourceUrl, productCategory, { observe: 'response' });
     }
 
-    update(productCategory: ProductCategory): Observable<EntityResponseType> {
-        const copy = this.convert(productCategory);
-        return this.http.put<ProductCategory>(this.resourceUrl, copy, { observe: 'response' })
-            .map((res: EntityResponseType) => this.convertResponse(res));
+    update(productCategory: IProductCategory): Observable<EntityResponseType> {
+        return this.http.put<IProductCategory>(this.resourceUrl, productCategory, { observe: 'response' });
     }
 
     find(id: number): Observable<EntityResponseType> {
-        return this.http.get<ProductCategory>(`${this.resourceUrl}/${id}`, { observe: 'response'})
-            .map((res: EntityResponseType) => this.convertResponse(res));
+        return this.http.get<IProductCategory>(`${this.resourceUrl}/${id}`, { observe: 'response' });
     }
 
-    query(req?: any): Observable<HttpResponse<ProductCategory[]>> {
+    query(req?: any): Observable<EntityArrayResponseType> {
         const options = createRequestOption(req);
-        return this.http.get<ProductCategory[]>(this.resourceUrl, { params: options, observe: 'response' })
-            .map((res: HttpResponse<ProductCategory[]>) => this.convertArrayResponse(res));
+        return this.http.get<IProductCategory[]>(this.resourceUrl, { params: options, observe: 'response' });
     }
 
     delete(id: number): Observable<HttpResponse<any>> {
-        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response'});
-    }
-
-    private convertResponse(res: EntityResponseType): EntityResponseType {
-        const body: ProductCategory = this.convertItemFromServer(res.body);
-        return res.clone({body});
-    }
-
-    private convertArrayResponse(res: HttpResponse<ProductCategory[]>): HttpResponse<ProductCategory[]> {
-        const jsonResponse: ProductCategory[] = res.body;
-        const body: ProductCategory[] = [];
-        for (let i = 0; i < jsonResponse.length; i++) {
-            body.push(this.convertItemFromServer(jsonResponse[i]));
-        }
-        return res.clone({body});
-    }
-
-    /**
-     * Convert a returned JSON object to ProductCategory.
-     */
-    private convertItemFromServer(productCategory: ProductCategory): ProductCategory {
-        const copy: ProductCategory = Object.assign({}, productCategory);
-        return copy;
-    }
-
-    /**
-     * Convert a ProductCategory to a JSON which can be sent to the server.
-     */
-    private convert(productCategory: ProductCategory): ProductCategory {
-        const copy: ProductCategory = Object.assign({}, productCategory);
-        return copy;
+        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response' });
     }
 }

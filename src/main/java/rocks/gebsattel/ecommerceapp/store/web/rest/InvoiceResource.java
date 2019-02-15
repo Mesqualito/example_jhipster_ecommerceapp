@@ -1,7 +1,4 @@
 package rocks.gebsattel.ecommerceapp.store.web.rest;
-
-import com.codahale.metrics.annotation.Timed;
-import org.springframework.security.access.prepost.PreAuthorize;
 import rocks.gebsattel.ecommerceapp.store.domain.Invoice;
 import rocks.gebsattel.ecommerceapp.store.service.InvoiceService;
 import rocks.gebsattel.ecommerceapp.store.web.rest.errors.BadRequestAlertException;
@@ -49,8 +46,6 @@ public class InvoiceResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/invoices")
-    @Timed
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Invoice> createInvoice(@Valid @RequestBody Invoice invoice) throws URISyntaxException {
         log.debug("REST request to save Invoice : {}", invoice);
         if (invoice.getId() != null) {
@@ -72,12 +67,10 @@ public class InvoiceResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/invoices")
-    @Timed
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Invoice> updateInvoice(@Valid @RequestBody Invoice invoice) throws URISyntaxException {
         log.debug("REST request to update Invoice : {}", invoice);
         if (invoice.getId() == null) {
-            return createInvoice(invoice);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         Invoice result = invoiceService.save(invoice);
         return ResponseEntity.ok()
@@ -92,12 +85,11 @@ public class InvoiceResource {
      * @return the ResponseEntity with status 200 (OK) and the list of invoices in body
      */
     @GetMapping("/invoices")
-    @Timed
     public ResponseEntity<List<Invoice>> getAllInvoices(Pageable pageable) {
         log.debug("REST request to get a page of Invoices");
         Page<Invoice> page = invoiceService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/invoices");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**
@@ -107,11 +99,10 @@ public class InvoiceResource {
      * @return the ResponseEntity with status 200 (OK) and with body the invoice, or with status 404 (Not Found)
      */
     @GetMapping("/invoices/{id}")
-    @Timed
     public ResponseEntity<Invoice> getInvoice(@PathVariable Long id) {
         log.debug("REST request to get Invoice : {}", id);
-        Invoice invoice = invoiceService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(invoice));
+        Optional<Invoice> invoice = invoiceService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(invoice);
     }
 
     /**
@@ -121,8 +112,6 @@ public class InvoiceResource {
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/invoices/{id}")
-    @Timed
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteInvoice(@PathVariable Long id) {
         log.debug("REST request to delete Invoice : {}", id);
         invoiceService.delete(id);

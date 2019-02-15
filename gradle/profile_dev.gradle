@@ -12,17 +12,39 @@ def profiles = 'dev'
 if (project.hasProperty('no-liquibase')) {
     profiles += ',no-liquibase'
 }
+if (project.hasProperty('tls')) {
+    profiles += ',tls'
+}
+
+springBoot {
+    buildInfo {
+		properties {
+			time = null
+		}
+	}
+}
 
 bootRun {
     args = []
 }
 
-task webpackBuildDev(type: YarnTask) {
+task webpackBuildDev(type: NpmTask) {
+    inputs.files(fileTree('src/main/webapp/'))
+
+    def webpackDevFiles = fileTree('webpack//')
+    webpackDevFiles.exclude('webpack.prod.js')
+    inputs.files(webpackDevFiles)
+
+    outputs.files(fileTree("build/www/"))
+
+    dependsOn npmInstall
+
     args = ["run", "webpack:build"]
 }
 
-war {
-    webAppDirName = 'build/www/'
+task copyIntoStatic (type: Copy) {
+    from 'build/www/'
+    into 'build/resources/main/static'
 }
 
 processResources {
@@ -37,4 +59,5 @@ processResources {
 }
 
 processResources.dependsOn webpackBuildDev
-webpackBuildDev.onlyIf { project.hasProperty('webpack') }
+copyIntoStatic.dependsOn processResources
+bootJar.dependsOn copyIntoStatic

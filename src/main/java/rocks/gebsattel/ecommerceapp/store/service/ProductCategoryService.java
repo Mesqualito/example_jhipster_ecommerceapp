@@ -4,10 +4,12 @@ import rocks.gebsattel.ecommerceapp.store.domain.ProductCategory;
 import rocks.gebsattel.ecommerceapp.store.repository.ProductCategoryRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Service Implementation for managing ProductCategory.
@@ -46,6 +48,7 @@ public class ProductCategoryService {
         return productCategoryRepository.findAll();
     }
 
+
     /**
      * Get one productCategory by id.
      *
@@ -53,9 +56,9 @@ public class ProductCategoryService {
      * @return the entity
      */
     @Transactional(readOnly = true)
-    public ProductCategory findOne(Long id) {
+    public Optional<ProductCategory> findOne(Long id) {
         log.debug("Request to get ProductCategory : {}", id);
-        return productCategoryRepository.findOne(id);
+        return productCategoryRepository.findById(id);
     }
 
     /**
@@ -64,7 +67,6 @@ public class ProductCategoryService {
      * @param id the id of the entity
      */
     public void delete(Long id) {
-        log.debug("Request to delete ProductCategory : {}", id);
-        productCategoryRepository.delete(id);
+        log.debug("Request to delete ProductCategory : {}", id);        productCategoryRepository.deleteById(id);
     }
 }

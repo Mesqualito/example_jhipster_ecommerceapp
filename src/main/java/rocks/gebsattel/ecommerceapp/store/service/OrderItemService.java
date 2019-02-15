@@ -4,11 +4,13 @@ import rocks.gebsattel.ecommerceapp.store.domain.OrderItem;
 import rocks.gebsattel.ecommerceapp.store.repository.OrderItemRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
 
 /**
  * Service Implementation for managing OrderItem.
@@ -48,6 +50,7 @@ public class OrderItemService {
         return orderItemRepository.findAll(pageable);
     }
 
+
     /**
      * Get one orderItem by id.
      *
@@ -55,9 +58,9 @@ public class OrderItemService {
      * @return the entity
      */
     @Transactional(readOnly = true)
-    public OrderItem findOne(Long id) {
+    public Optional<OrderItem> findOne(Long id) {
         log.debug("Request to get OrderItem : {}", id);
-        return orderItemRepository.findOne(id);
+        return orderItemRepository.findById(id);
     }
 
     /**
@@ -66,7 +69,6 @@ public class OrderItemService {
      * @param id the id of the entity
      */
     public void delete(Long id) {
-        log.debug("Request to delete OrderItem : {}", id);
-        orderItemRepository.delete(id);
+        log.debug("Request to delete OrderItem : {}", id);        orderItemRepository.deleteById(id);
     }
 }

@@ -4,11 +4,13 @@ import rocks.gebsattel.ecommerceapp.store.domain.Customer;
 import rocks.gebsattel.ecommerceapp.store.repository.CustomerRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
 
 /**
  * Service Implementation for managing Customer.
@@ -48,6 +50,7 @@ public class CustomerService {
         return customerRepository.findAll(pageable);
     }
 
+
     /**
      * Get one customer by id.
      *
@@ -55,9 +58,9 @@ public class CustomerService {
      * @return the entity
      */
     @Transactional(readOnly = true)
-    public Customer findOne(Long id) {
+    public Optional<Customer> findOne(Long id) {
         log.debug("Request to get Customer : {}", id);
-        return customerRepository.findOne(id);
+        return customerRepository.findById(id);
     }
 
     /**
@@ -66,7 +69,6 @@ public class CustomerService {
      * @param id the id of the entity
      */
     public void delete(Long id) {
-        log.debug("Request to delete Customer : {}", id);
-        customerRepository.delete(id);
+        log.debug("Request to delete Customer : {}", id);        customerRepository.deleteById(id);
     }
 }

@@ -1,40 +1,47 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
-import { Subscription } from 'rxjs/Subscription';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { Subscription } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
-import { ProductCategory } from './product-category.model';
+import { IProductCategory } from 'app/shared/model/product-category.model';
+import { AccountService } from 'app/core';
 import { ProductCategoryService } from './product-category.service';
-import { Principal } from '../../shared';
 
 @Component({
     selector: 'jhi-product-category',
     templateUrl: './product-category.component.html'
 })
 export class ProductCategoryComponent implements OnInit, OnDestroy {
-productCategories: ProductCategory[];
+    productCategories: IProductCategory[];
     currentAccount: any;
     eventSubscriber: Subscription;
 
     constructor(
-        private productCategoryService: ProductCategoryService,
-        private jhiAlertService: JhiAlertService,
-        private eventManager: JhiEventManager,
-        private principal: Principal
-    ) {
-    }
+        protected productCategoryService: ProductCategoryService,
+        protected jhiAlertService: JhiAlertService,
+        protected eventManager: JhiEventManager,
+        protected accountService: AccountService
+    ) {}
 
     loadAll() {
-        this.productCategoryService.query().subscribe(
-            (res: HttpResponse<ProductCategory[]>) => {
-                this.productCategories = res.body;
-            },
-            (res: HttpErrorResponse) => this.onError(res.message)
-        );
+        this.productCategoryService
+            .query()
+            .pipe(
+                filter((res: HttpResponse<IProductCategory[]>) => res.ok),
+                map((res: HttpResponse<IProductCategory[]>) => res.body)
+            )
+            .subscribe(
+                (res: IProductCategory[]) => {
+                    this.productCategories = res;
+                },
+                (res: HttpErrorResponse) => this.onError(res.message)
+            );
     }
+
     ngOnInit() {
         this.loadAll();
-        this.principal.identity().then((account) => {
+        this.accountService.identity().then(account => {
             this.currentAccount = account;
         });
         this.registerChangeInProductCategories();
@@ -44,14 +51,15 @@ productCategories: ProductCategory[];
         this.eventManager.destroy(this.eventSubscriber);
     }
 
-    trackId(index: number, item: ProductCategory) {
+    trackId(index: number, item: IProductCategory) {
         return item.id;
     }
+
     registerChangeInProductCategories() {
-        this.eventSubscriber = this.eventManager.subscribe('productCategoryListModification', (response) => this.loadAll());
+        this.eventSubscriber = this.eventManager.subscribe('productCategoryListModification', response => this.loadAll());
     }
 
-    private onError(error) {
-        this.jhiAlertService.error(error.message, null, null);
+    protected onError(errorMessage: string) {
+        this.jhiAlertService.error(errorMessage, null, null);
     }
 }

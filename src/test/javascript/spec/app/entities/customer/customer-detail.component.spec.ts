@@ -1,54 +1,40 @@
 /* tslint:disable max-line-length */
-import { ComponentFixture, TestBed, async } from '@angular/core/testing';
-import { HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 
 import { StoreTestModule } from '../../../test.module';
-import { CustomerDetailComponent } from '../../../../../../main/webapp/app/entities/customer/customer-detail.component';
-import { CustomerService } from '../../../../../../main/webapp/app/entities/customer/customer.service';
-import { Customer } from '../../../../../../main/webapp/app/entities/customer/customer.model';
+import { CustomerDetailComponent } from 'app/entities/customer/customer-detail.component';
+import { Customer } from 'app/shared/model/customer.model';
 
 describe('Component Tests', () => {
-
     describe('Customer Management Detail Component', () => {
         let comp: CustomerDetailComponent;
         let fixture: ComponentFixture<CustomerDetailComponent>;
-        let service: CustomerService;
+        const route = ({ data: of({ customer: new Customer(123) }) } as any) as ActivatedRoute;
 
-        beforeEach(async(() => {
+        beforeEach(() => {
             TestBed.configureTestingModule({
                 imports: [StoreTestModule],
                 declarations: [CustomerDetailComponent],
-                providers: [
-                    CustomerService
-                ]
+                providers: [{ provide: ActivatedRoute, useValue: route }]
             })
-            .overrideTemplate(CustomerDetailComponent, '')
-            .compileComponents();
-        }));
-
-        beforeEach(() => {
+                .overrideTemplate(CustomerDetailComponent, '')
+                .compileComponents();
             fixture = TestBed.createComponent(CustomerDetailComponent);
             comp = fixture.componentInstance;
-            service = fixture.debugElement.injector.get(CustomerService);
         });
 
         describe('OnInit', () => {
             it('Should call load all on init', () => {
                 // GIVEN
 
-                spyOn(service, 'find').and.returnValue(Observable.of(new HttpResponse({
-                    body: new Customer(123)
-                })));
-
                 // WHEN
                 comp.ngOnInit();
 
                 // THEN
-                expect(service.find).toHaveBeenCalledWith(123);
-                expect(comp.customer).toEqual(jasmine.objectContaining({id: 123}));
+                expect(comp.customer).toEqual(jasmine.objectContaining({ id: 123 }));
             });
         });
     });
-
 });
