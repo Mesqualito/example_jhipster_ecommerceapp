@@ -1,5 +1,5 @@
 #!/usr/bin/env groovy
-// use Pipeline in Jenkins-Server - 'Pipeline-Script from SCM'!
+// use Pipeline in Jenkins-Server - 'Pipeline-Script from SCM'
 
 node {
     stage('checkout') {
