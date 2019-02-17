@@ -54,7 +54,7 @@ node {
     }
 
     stage('publish docker') {
-        docker.withRegistry('https://dockerregistry.eigenbaumarkt.com', '35c08f27-4962-4992-b840-4f81d69cb966') {
+        docker.withRegistry('https://dockerregistry.eigenbaumarkt.com', 'dockerregistry-login') {
             dockerImage.push 'latest'
         }
     }
