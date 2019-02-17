@@ -1,4 +1,5 @@
 #!/usr/bin/env groovy
+// triggered by GitHub in Jenkins-Pipeline
 
 node {
     stage('checkout') {
