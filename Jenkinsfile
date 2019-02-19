@@ -1,6 +1,12 @@
 #!/usr/bin/env groovy
 // triggered by GitHub in Jenkins-Pipeline
 
+def REGISTRY_URL='https://dockerregistry.eigenbaumarkt.com'
+def REGISTRY_USER='dockerregistry-login'
+def DOCKER_IMG_NAME='mesqualito/gen_commerce'
+def CONTAINER_TAG='0.0.5'
+def CONTAINER_HTTP_PORT='8080'
+
 node {
     stage('checkout') {
         checkout scm
@@ -51,12 +57,18 @@ node {
     stage('build docker') {
         sh "cp -R src/main/docker build/"
         sh "cp build/libs/*.war build/docker/"
-        dockerImage = docker.build('docker-login/store', 'build/docker')
+        dockerImage = docker.build('$CONTAINER_NAME:$TAG', 'build/docker')
     }
 
     stage('publish docker') {
-        docker.withRegistry('https://dockerregistry.eigenbaumarkt.com', 'dockerregistry-login') {
-            dockerImage.push 'latest'
+        docker.withRegistry('$REGISTRY_URL', '$REGISTRY_USER') {
+            dockerImage.push '$CONTAINER_TAG'
+        }
+    }
+
+    stage('Remove Unused docker image') {
+        steps{
+            sh "docker rmi '$CONTAINER_NAME:$TAG"
         }
     }
 }
