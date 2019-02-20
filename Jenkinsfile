@@ -1,11 +1,11 @@
 #!/usr/bin/env groovy
 // triggered by GitHub in Jenkins-Pipeline
 
-def REGISTRY_URL='https://dockerregistry.eigenbaumarkt.com'
-def REGISTRY_USER='dockerregistry-login'
-def DOCKER_IMG_NAME='mesqualito/gen_commerce'
-def CONTAINER_TAG='0.0.5'
-def CONTAINER_HTTP_PORT='8080'
+REGISTRY_URL='https://dockerregistry.eigenbaumarkt.com'
+REGISTRY_USER='dockerregistry-login'
+DOCKER_IMG_NAME='mesqualito/gen_commerce'
+CONTAINER_TAG='0.0.5'
+CONTAINER_HTTP_PORT='8080'
 
 node {
     stage('checkout') {
