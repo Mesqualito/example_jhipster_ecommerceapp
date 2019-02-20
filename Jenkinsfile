@@ -1,11 +1,12 @@
 #!/usr/bin/env groovy
 // triggered by GitHub in Jenkins-Pipeline
 
-REGISTRY_URL='https://dockerregistry.eigenbaumarkt.com'
-REGISTRY_USER='dockerregistry-login'
-DOCKER_IMG_NAME='mesqualito/gen_commerce'
-CONTAINER_TAG='0.0.5'
-CONTAINER_HTTP_PORT='8080'
+// global variables
+def REGISTRY_URL='https://dockerregistry.eigenbaumarkt.com'
+def REGISTRY_USER='dockerregistry-login'
+def DOCKER_IMG_NAME='mesqualito/gen_commerce'
+def CONTAINER_TAG='0.0.5'
+// def CONTAINER_HTTP_PORT='8080'
 
 node {
     stage('checkout') {
@@ -57,18 +58,18 @@ node {
     stage('build docker') {
         sh "cp -R src/main/docker build/"
         sh "cp build/libs/*.war build/docker/"
-        dockerImage = docker.build('$CONTAINER_NAME:$TAG', 'build/docker')
+        dockerImage = docker.build("${DOCKER_IMG_NAME}:${TAG}", "build/docker")
     }
 
     stage('publish docker') {
-        docker.withRegistry('$REGISTRY_URL', '$REGISTRY_USER') {
-            dockerImage.push '$CONTAINER_TAG'
+        docker.withRegistry("${REGISTRY_URL}", ""${REGISTRY_USER}") {
+            dockerImage.push "${CONTAINER_TAG}"
         }
     }
 
     stage('Remove Unused docker image') {
         steps{
-            sh "docker rmi '$CONTAINER_NAME:$TAG"
+            sh "docker rmi " + ${CONTAINER_NAME} + ":" + ${TAG}
         }
     }
 }
