@@ -68,8 +68,6 @@ node {
     }
 
     stage('Remove Unused docker image') {
-        steps{
-            sh "docker rmi $CONTAINER_NAME:$CONTAINER_TAG"
-        }
+        sh "docker rmi $CONTAINER_NAME:$CONTAINER_TAG"
     }
 }
