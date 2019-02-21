@@ -58,18 +58,18 @@ node {
     stage('build docker') {
         sh "cp -R src/main/docker build/"
         sh "cp build/libs/*.war build/docker/"
-        dockerImage = docker.build("${DOCKER_IMG_NAME}:${TAG}", "build/docker")
+        dockerImage = docker.build("$DOCKER_IMG_NAME:$CONTAINER_TAG", "build/docker")
     }
 
     stage('publish docker') {
-        docker.withRegistry("${REGISTRY_URL}", "${REGISTRY_USER}") {
-            dockerImage.push "${CONTAINER_TAG}"
+        docker.withRegistry($REGISTRY_URL, $REGISTRY_USER) {
+            dockerImage.push $CONTAINER_TAG
         }
     }
 
     stage('Remove Unused docker image') {
         steps{
-            sh "docker rmi " + ${CONTAINER_NAME} + ":" + ${TAG}
+            sh "docker rmi $CONTAINER_NAME:$CONTAINER_TAG"
         }
     }
 }
