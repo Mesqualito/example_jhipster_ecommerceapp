@@ -62,8 +62,8 @@ node {
     }
 
     stage('publish docker') {
-        docker.withRegistry($REGISTRY_URL, $REGISTRY_USER) {
-            dockerImage.push $CONTAINER_TAG
+        docker.withRegistry("$REGISTRY_URL", "$REGISTRY_USER") {
+            dockerImage.push "$CONTAINER_TAG"
         }
     }
 
