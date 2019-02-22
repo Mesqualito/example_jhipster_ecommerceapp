@@ -4,8 +4,8 @@
 // global variables
 def REGISTRY_URL='https://dockerregistry.eigenbaumarkt.com'
 def REGISTRY_USER='dockerregistry-login'
-def DOCKER_IMG_NAME='mesqualito/gen_commerce'
-def CONTAINER_TAG='0.0.5'
+def IMGAGE_NAME='mesqualito/gen_commerce'
+def IMAGE_TAG='0.0.5'
 // def CONTAINER_HTTP_PORT='8080'
 
 node {
@@ -58,16 +58,16 @@ node {
     stage('build docker') {
         sh "cp -R src/main/docker build/"
         sh "cp build/libs/*.war build/docker/"
-        dockerImage = docker.build("$DOCKER_IMG_NAME:$CONTAINER_TAG", "build/docker")
+        dockerImage = docker.build("$IMGAGE_NAME:$IMAGE_TAG", "build/docker")
     }
 
     stage('publish docker') {
         docker.withRegistry("$REGISTRY_URL", "$REGISTRY_USER") {
-            dockerImage.push "$CONTAINER_TAG"
+            dockerImage.push "$IMAGE_TAG"
         }
     }
 
     stage('Remove Unused docker image') {
-        sh "docker rmi $CONTAINER_NAME:$CONTAINER_TAG"
+        sh "docker rmi $IMAGE_NAME:$IMAGE_TAG"
     }
 }
