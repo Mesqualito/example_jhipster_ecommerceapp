@@ -4,7 +4,7 @@
 // global variables
 def REGISTRY_URL='https://dockerregistry.eigenbaumarkt.com'
 def REGISTRY_USER='dockerregistry-login'
-def IMGAGE_NAME='mesqualito/gen_commerce'
+def IMAGE_NAME='mesqualito/gen_commerce'
 def IMAGE_TAG='0.0.5'
 // def CONTAINER_HTTP_PORT='8080'
 
