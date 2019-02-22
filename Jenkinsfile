@@ -58,7 +58,7 @@ node {
     stage('build docker') {
         sh "cp -R src/main/docker build/"
         sh "cp build/libs/*.war build/docker/"
-        dockerImage = docker.build("$IMGAGE_NAME:$IMAGE_TAG", "build/docker")
+        dockerImage = docker.build("$IMAGE_NAME:$IMAGE_TAG", "build/docker")
     }
 
     stage('publish docker') {
