@@ -76,7 +76,7 @@
             "otherEntityField": "name"
         }
     ],
-    "changelogDate": "20190630192532",
+    "changelogDate": "20190630193301",
     "javadoc": "Product sold by the online-store",
     "entityTableName": "product",
     "dto": "mapstruct",
