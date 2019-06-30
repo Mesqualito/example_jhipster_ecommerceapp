@@ -27,10 +27,8 @@
             "fieldName": "email",
             "fieldType": "String",
             "fieldValidateRules": [
-                "required",
-                "pattern"
-            ],
-            "fieldValidateRulesPattern": "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$"
+                "required"
+            ]
         },
         {
             "fieldName": "phone",
@@ -90,7 +88,7 @@
             "relationshipName": "order"
         }
     ],
-    "changelogDate": "20190630193306",
+    "changelogDate": "20190630193956",
     "entityTableName": "customer",
     "dto": "mapstruct",
     "pagination": "pagination",

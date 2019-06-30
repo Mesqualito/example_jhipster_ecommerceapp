@@ -24,7 +24,7 @@ export class CustomerUpdateComponent implements OnInit {
     name1: [null, [Validators.required]],
     name2: [],
     name3: [],
-    email: [null, [Validators.required, Validators.pattern('^[^@s]+@[^@s]+.[^@s]+$')]],
+    email: [null, [Validators.required]],
     phone: [null, [Validators.required]],
     addressLine1: [null, [Validators.required]],
     addressLine2: [],

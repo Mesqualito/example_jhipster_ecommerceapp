@@ -38,7 +38,6 @@ public class Customer implements Serializable {
     private String name3;
 
     @NotNull
-    @Pattern(regexp = "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$")
     @Column(name = "email", nullable = false)
     private String email;
 

@@ -52,8 +52,8 @@ public class CustomerResourceIT {
     private static final String DEFAULT_NAME_3 = "AAAAAAAAAA";
     private static final String UPDATED_NAME_3 = "BBBBBBBBBB";
 
-    private static final String DEFAULT_EMAIL = "]'@].-";
-    private static final String UPDATED_EMAIL = "v/@E.L";
+    private static final String DEFAULT_EMAIL = "AAAAAAAAAA";
+    private static final String UPDATED_EMAIL = "BBBBBBBBBB";
 
     private static final String DEFAULT_PHONE = "AAAAAAAAAA";
     private static final String UPDATED_PHONE = "BBBBBBBBBB";

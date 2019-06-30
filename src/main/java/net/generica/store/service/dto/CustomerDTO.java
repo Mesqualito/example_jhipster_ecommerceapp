@@ -21,7 +21,6 @@ public class CustomerDTO implements Serializable {
     private String name3;
 
     @NotNull
-    @Pattern(regexp = "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$")
     private String email;
 
     @NotNull
