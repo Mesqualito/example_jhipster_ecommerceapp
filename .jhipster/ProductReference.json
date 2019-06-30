@@ -30,7 +30,7 @@
             "otherEntityField": "name"
         }
     ],
-    "changelogDate": "20190630184354",
+    "changelogDate": "20190630184640",
     "entityTableName": "product_reference",
     "dto": "no",
     "pagination": "no",
