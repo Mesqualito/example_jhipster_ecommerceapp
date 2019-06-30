@@ -1,16 +1,17 @@
 import { Injectable } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
-import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot, Routes } from '@angular/router';
-import { JhiResolvePagingParams } from 'ng-jhipster';
+import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
+import { JhiPaginationUtil, JhiResolvePagingParams } from 'ng-jhipster';
 import { UserRouteAccessService } from 'app/core';
 import { Observable, of } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { IOrderItem, OrderItem } from 'app/shared/model/order-item.model';
+import { OrderItem } from 'app/shared/model/order-item.model';
 import { OrderItemService } from './order-item.service';
 import { OrderItemComponent } from './order-item.component';
 import { OrderItemDetailComponent } from './order-item-detail.component';
 import { OrderItemUpdateComponent } from './order-item-update.component';
 import { OrderItemDeletePopupComponent } from './order-item-delete-dialog.component';
+import { IOrderItem } from 'app/shared/model/order-item.model';
 
 @Injectable({ providedIn: 'root' })
 export class OrderItemResolve implements Resolve<IOrderItem> {

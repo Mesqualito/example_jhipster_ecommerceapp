@@ -84,7 +84,7 @@
             "ownerSide": false
         }
     ],
-    "changelogDate": "20190630183311",
+    "changelogDate": "20190630184352",
     "javadoc": "Product sold by the online-store",
     "entityTableName": "product",
     "dto": "no",

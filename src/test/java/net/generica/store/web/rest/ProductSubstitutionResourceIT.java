@@ -3,9 +3,11 @@ package net.generica.store.web.rest;
 import net.generica.store.StoreApp;
 import net.generica.store.domain.ProductSubstitution;
 import net.generica.store.repository.ProductSubstitutionRepository;
-import net.generica.store.service.ProductSubstitutionQueryService;
 import net.generica.store.service.ProductSubstitutionService;
 import net.generica.store.web.rest.errors.ExceptionTranslator;
+import net.generica.store.service.dto.ProductSubstitutionCriteria;
+import net.generica.store.service.ProductSubstitutionQueryService;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;

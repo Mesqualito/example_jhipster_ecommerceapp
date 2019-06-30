@@ -1,14 +1,17 @@
 package net.generica.store.service.dto;
 
-import io.github.jhipster.service.Criteria;
-import io.github.jhipster.service.filter.Filter;
-import io.github.jhipster.service.filter.InstantFilter;
-import io.github.jhipster.service.filter.LongFilter;
-import io.github.jhipster.service.filter.StringFilter;
-import net.generica.store.domain.enumeration.OrderStatus;
-
 import java.io.Serializable;
 import java.util.Objects;
+import io.github.jhipster.service.Criteria;
+import net.generica.store.domain.enumeration.OrderStatus;
+import io.github.jhipster.service.filter.BooleanFilter;
+import io.github.jhipster.service.filter.DoubleFilter;
+import io.github.jhipster.service.filter.Filter;
+import io.github.jhipster.service.filter.FloatFilter;
+import io.github.jhipster.service.filter.IntegerFilter;
+import io.github.jhipster.service.filter.LongFilter;
+import io.github.jhipster.service.filter.StringFilter;
+import io.github.jhipster.service.filter.InstantFilter;
 
 /**
  * Criteria class for the {@link net.generica.store.domain.ProductOrder} entity. This class is used

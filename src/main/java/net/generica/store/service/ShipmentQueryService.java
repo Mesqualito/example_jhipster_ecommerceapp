@@ -1,11 +1,9 @@
 package net.generica.store.service;
 
-import io.github.jhipster.service.QueryService;
-import net.generica.store.domain.Invoice_;
-import net.generica.store.domain.Shipment;
-import net.generica.store.domain.Shipment_;
-import net.generica.store.repository.ShipmentRepository;
-import net.generica.store.service.dto.ShipmentCriteria;
+import java.util.List;
+
+import javax.persistence.criteria.JoinType;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -14,8 +12,12 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.criteria.JoinType;
-import java.util.List;
+import io.github.jhipster.service.QueryService;
+
+import net.generica.store.domain.Shipment;
+import net.generica.store.domain.*; // for static metamodels
+import net.generica.store.repository.ShipmentRepository;
+import net.generica.store.service.dto.ShipmentCriteria;
 
 /**
  * Service for executing complex queries for {@link Shipment} entities in the database.

@@ -1,13 +1,14 @@
 package net.generica.store.web.rest;
 
 import net.generica.store.StoreApp;
-import net.generica.store.domain.Product;
 import net.generica.store.domain.ShopImage;
-import net.generica.store.domain.enumeration.Size;
+import net.generica.store.domain.Product;
 import net.generica.store.repository.ShopImageRepository;
-import net.generica.store.service.ShopImageQueryService;
 import net.generica.store.service.ShopImageService;
 import net.generica.store.web.rest.errors.ExceptionTranslator;
+import net.generica.store.service.dto.ShopImageCriteria;
+import net.generica.store.service.ShopImageQueryService;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
@@ -30,6 +31,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import net.generica.store.domain.enumeration.Size;
 /**
  * Integration tests for the {@Link ShopImageResource} REST controller.
  */

@@ -1,10 +1,9 @@
 package net.generica.store.service;
 
-import io.github.jhipster.service.QueryService;
-import net.generica.store.domain.ProductSubstitution;
-import net.generica.store.domain.ProductSubstitution_;
-import net.generica.store.repository.ProductSubstitutionRepository;
-import net.generica.store.service.dto.ProductSubstitutionCriteria;
+import java.util.List;
+
+import javax.persistence.criteria.JoinType;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -13,7 +12,12 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import io.github.jhipster.service.QueryService;
+
+import net.generica.store.domain.ProductSubstitution;
+import net.generica.store.domain.*; // for static metamodels
+import net.generica.store.repository.ProductSubstitutionRepository;
+import net.generica.store.service.dto.ProductSubstitutionCriteria;
 
 /**
  * Service for executing complex queries for {@link ProductSubstitution} entities in the database.

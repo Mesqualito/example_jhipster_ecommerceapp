@@ -1,16 +1,17 @@
 import { Injectable } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
-import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot, Routes } from '@angular/router';
-import { JhiResolvePagingParams } from 'ng-jhipster';
+import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
+import { JhiPaginationUtil, JhiResolvePagingParams } from 'ng-jhipster';
 import { UserRouteAccessService } from 'app/core';
 import { Observable, of } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { IShipment, Shipment } from 'app/shared/model/shipment.model';
+import { Shipment } from 'app/shared/model/shipment.model';
 import { ShipmentService } from './shipment.service';
 import { ShipmentComponent } from './shipment.component';
 import { ShipmentDetailComponent } from './shipment-detail.component';
 import { ShipmentUpdateComponent } from './shipment-update.component';
 import { ShipmentDeletePopupComponent } from './shipment-delete-dialog.component';
+import { IShipment } from 'app/shared/model/shipment.model';
 
 @Injectable({ providedIn: 'root' })
 export class ShipmentResolve implements Resolve<IShipment> {

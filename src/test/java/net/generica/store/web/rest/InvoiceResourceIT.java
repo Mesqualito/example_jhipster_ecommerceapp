@@ -2,14 +2,14 @@ package net.generica.store.web.rest;
 
 import net.generica.store.StoreApp;
 import net.generica.store.domain.Invoice;
-import net.generica.store.domain.ProductOrder;
 import net.generica.store.domain.Shipment;
-import net.generica.store.domain.enumeration.InvoiceStatus;
-import net.generica.store.domain.enumeration.PaymentMethod;
+import net.generica.store.domain.ProductOrder;
 import net.generica.store.repository.InvoiceRepository;
-import net.generica.store.service.InvoiceQueryService;
 import net.generica.store.service.InvoiceService;
 import net.generica.store.web.rest.errors.ExceptionTranslator;
+import net.generica.store.service.dto.InvoiceCriteria;
+import net.generica.store.service.InvoiceQueryService;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
@@ -34,6 +34,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import net.generica.store.domain.enumeration.InvoiceStatus;
+import net.generica.store.domain.enumeration.PaymentMethod;
 /**
  * Integration tests for the {@Link InvoiceResource} REST controller.
  */

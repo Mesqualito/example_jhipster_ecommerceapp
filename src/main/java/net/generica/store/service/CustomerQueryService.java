@@ -1,12 +1,9 @@
 package net.generica.store.service;
 
-import io.github.jhipster.service.QueryService;
-import net.generica.store.domain.Customer;
-import net.generica.store.domain.Customer_;
-import net.generica.store.domain.ProductOrder_;
-import net.generica.store.domain.User_;
-import net.generica.store.repository.CustomerRepository;
-import net.generica.store.service.dto.CustomerCriteria;
+import java.util.List;
+
+import javax.persistence.criteria.JoinType;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -15,8 +12,12 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.criteria.JoinType;
-import java.util.List;
+import io.github.jhipster.service.QueryService;
+
+import net.generica.store.domain.Customer;
+import net.generica.store.domain.*; // for static metamodels
+import net.generica.store.repository.CustomerRepository;
+import net.generica.store.service.dto.CustomerCriteria;
 
 /**
  * Service for executing complex queries for {@link Customer} entities in the database.

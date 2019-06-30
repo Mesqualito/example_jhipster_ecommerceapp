@@ -1,12 +1,14 @@
 package net.generica.store.web.rest;
 
 import net.generica.store.StoreApp;
-import net.generica.store.domain.Product;
 import net.generica.store.domain.ProductReference;
+import net.generica.store.domain.Product;
 import net.generica.store.repository.ProductReferenceRepository;
-import net.generica.store.service.ProductReferenceQueryService;
 import net.generica.store.service.ProductReferenceService;
 import net.generica.store.web.rest.errors.ExceptionTranslator;
+import net.generica.store.service.dto.ProductReferenceCriteria;
+import net.generica.store.service.ProductReferenceQueryService;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;

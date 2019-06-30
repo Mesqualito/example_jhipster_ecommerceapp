@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
-import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot, Routes } from '@angular/router';
+import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
 import { UserRouteAccessService } from 'app/core';
 import { Observable, of } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { IShopImage, ShopImage } from 'app/shared/model/shop-image.model';
+import { ShopImage } from 'app/shared/model/shop-image.model';
 import { ShopImageService } from './shop-image.service';
 import { ShopImageComponent } from './shop-image.component';
 import { ShopImageDetailComponent } from './shop-image-detail.component';
 import { ShopImageUpdateComponent } from './shop-image-update.component';
 import { ShopImageDeletePopupComponent } from './shop-image-delete-dialog.component';
+import { IShopImage } from 'app/shared/model/shop-image.model';
 
 @Injectable({ providedIn: 'root' })
 export class ShopImageResolve implements Resolve<IShopImage> {

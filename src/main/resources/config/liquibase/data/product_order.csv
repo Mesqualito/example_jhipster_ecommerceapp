@@ -1,11 +1,11 @@
 id;placed_date;status;code;customer_id
-1;2019-06-29T20:47:52;COMPLETED;experiences;4
-2;2019-06-30T03:29:17;CANCELLED;Borders reboot;6
-3;2019-06-29T23:37:36;PENDING;Steel salmon application;5
-4;2019-06-29T21:30:39;PENDING;Creek Investment Account Buckinghamshire;6
-5;2019-06-30T14:57:18;PENDING;Baby Credit Card Account Nevada;8
-6;2019-06-30T12:30:35;COMPLETED;front-end Intuitive vortals;3
-7;2019-06-29T19:49:06;PENDING;Generic Advanced;8
-8;2019-06-29T21:37:20;COMPLETED;solid state Clothing deposit;8
-9;2019-06-30T04:43:20;COMPLETED;Unbranded programming District;2
-10;2019-06-30T15:50:07;PENDING;yellow programming strategy;4
+1;2019-06-29T20:58:34;CANCELLED;experiences;4
+2;2019-06-30T03:39:59;CANCELLED;Borders reboot;6
+3;2019-06-29T23:48:18;COMPLETED;Steel salmon application;5
+4;2019-06-29T21:41:20;PENDING;Creek Investment Account Buckinghamshire;6
+5;2019-06-30T15:07:59;CANCELLED;Baby Credit Card Account Nevada;8
+6;2019-06-30T12:41:17;PENDING;front-end Intuitive vortals;3
+7;2019-06-29T19:59:48;COMPLETED;Generic Advanced;8
+8;2019-06-29T21:48:01;PENDING;solid state Clothing deposit;8
+9;2019-06-30T04:54:01;CANCELLED;Unbranded programming District;2
+10;2019-06-30T16:00:48;CANCELLED;yellow programming strategy;4

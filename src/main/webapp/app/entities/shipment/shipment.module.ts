@@ -1,4 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { JhiLanguageService } from 'ng-jhipster';
 import { JhiLanguageHelper } from 'app/core';
@@ -6,12 +6,12 @@ import { JhiLanguageHelper } from 'app/core';
 import { StoreSharedModule } from 'app/shared';
 import {
   ShipmentComponent,
-  ShipmentDeleteDialogComponent,
-  ShipmentDeletePopupComponent,
   ShipmentDetailComponent,
-  shipmentPopupRoute,
+  ShipmentUpdateComponent,
+  ShipmentDeletePopupComponent,
+  ShipmentDeleteDialogComponent,
   shipmentRoute,
-  ShipmentUpdateComponent
+  shipmentPopupRoute
 } from './';
 
 const ENTITY_STATES = [...shipmentRoute, ...shipmentPopupRoute];

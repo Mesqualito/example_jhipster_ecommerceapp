@@ -1,4 +1,4 @@
-import { by, element, ElementFinder } from 'protractor';
+import { browser, ExpectedConditions, element, by, ElementFinder } from 'protractor';
 
 export class ProductSubstitutionComponentsPage {
   createButton = element(by.id('jh-create-entity'));

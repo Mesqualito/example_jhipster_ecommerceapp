@@ -1,11 +1,13 @@
 /* tslint:disable max-line-length */
-import { getTestBed, TestBed } from '@angular/core/testing';
+import { TestBed, getTestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { map, take } from 'rxjs/operators';
+import { HttpClient, HttpResponse } from '@angular/common/http';
+import { of } from 'rxjs';
+import { take, map } from 'rxjs/operators';
 import * as moment from 'moment';
 import { DATE_TIME_FORMAT } from 'app/shared/constants/input.constants';
 import { ProductOrderService } from 'app/entities/product-order/product-order.service';
-import { IProductOrder, OrderStatus, ProductOrder } from 'app/shared/model/product-order.model';
+import { IProductOrder, ProductOrder, OrderStatus } from 'app/shared/model/product-order.model';
 
 describe('Service Tests', () => {
   describe('ProductOrder Service', () => {

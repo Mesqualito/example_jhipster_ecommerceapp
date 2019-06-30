@@ -4,11 +4,12 @@ import net.generica.store.StoreApp;
 import net.generica.store.domain.OrderItem;
 import net.generica.store.domain.Product;
 import net.generica.store.domain.ProductOrder;
-import net.generica.store.domain.enumeration.OrderItemStatus;
 import net.generica.store.repository.OrderItemRepository;
-import net.generica.store.service.OrderItemQueryService;
 import net.generica.store.service.OrderItemService;
 import net.generica.store.web.rest.errors.ExceptionTranslator;
+import net.generica.store.service.dto.OrderItemCriteria;
+import net.generica.store.service.OrderItemQueryService;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
@@ -31,6 +32,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import net.generica.store.domain.enumeration.OrderItemStatus;
 /**
  * Integration tests for the {@Link OrderItemResource} REST controller.
  */

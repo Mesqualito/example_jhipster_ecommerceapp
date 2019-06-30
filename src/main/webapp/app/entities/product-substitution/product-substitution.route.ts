@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
-import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot, Routes } from '@angular/router';
+import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
 import { UserRouteAccessService } from 'app/core';
 import { Observable, of } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { IProductSubstitution, ProductSubstitution } from 'app/shared/model/product-substitution.model';
+import { ProductSubstitution } from 'app/shared/model/product-substitution.model';
 import { ProductSubstitutionService } from './product-substitution.service';
 import { ProductSubstitutionComponent } from './product-substitution.component';
 import { ProductSubstitutionDetailComponent } from './product-substitution-detail.component';
 import { ProductSubstitutionUpdateComponent } from './product-substitution-update.component';
 import { ProductSubstitutionDeletePopupComponent } from './product-substitution-delete-dialog.component';
+import { IProductSubstitution } from 'app/shared/model/product-substitution.model';
 
 @Injectable({ providedIn: 'root' })
 export class ProductSubstitutionResolve implements Resolve<IProductSubstitution> {

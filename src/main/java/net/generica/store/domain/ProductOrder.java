@@ -1,16 +1,17 @@
 package net.generica.store.domain;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import net.generica.store.domain.enumeration.OrderStatus;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
+
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
+
+import net.generica.store.domain.enumeration.OrderStatus;
 
 /**
  * A ProductOrder.

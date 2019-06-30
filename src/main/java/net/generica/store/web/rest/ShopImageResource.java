@@ -1,12 +1,13 @@
 package net.generica.store.web.rest;
 
+import net.generica.store.domain.ShopImage;
+import net.generica.store.service.ShopImageService;
+import net.generica.store.web.rest.errors.BadRequestAlertException;
+import net.generica.store.service.dto.ShopImageCriteria;
+import net.generica.store.service.ShopImageQueryService;
+
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
-import net.generica.store.domain.ShopImage;
-import net.generica.store.service.ShopImageQueryService;
-import net.generica.store.service.ShopImageService;
-import net.generica.store.service.dto.ShopImageCriteria;
-import net.generica.store.web.rest.errors.BadRequestAlertException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+
 import java.util.List;
 import java.util.Optional;
 

@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
-import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot, Routes } from '@angular/router';
+import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
 import { UserRouteAccessService } from 'app/core';
 import { Observable, of } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { IProductReference, ProductReference } from 'app/shared/model/product-reference.model';
+import { ProductReference } from 'app/shared/model/product-reference.model';
 import { ProductReferenceService } from './product-reference.service';
 import { ProductReferenceComponent } from './product-reference.component';
 import { ProductReferenceDetailComponent } from './product-reference-detail.component';
 import { ProductReferenceUpdateComponent } from './product-reference-update.component';
 import { ProductReferenceDeletePopupComponent } from './product-reference-delete-dialog.component';
+import { IProductReference } from 'app/shared/model/product-reference.model';
 
 @Injectable({ providedIn: 'root' })
 export class ProductReferenceResolve implements Resolve<IProductReference> {

@@ -1,16 +1,17 @@
 import { Injectable } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
-import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot, Routes } from '@angular/router';
-import { JhiResolvePagingParams } from 'ng-jhipster';
+import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
+import { JhiPaginationUtil, JhiResolvePagingParams } from 'ng-jhipster';
 import { UserRouteAccessService } from 'app/core';
 import { Observable, of } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { IProduct, Product } from 'app/shared/model/product.model';
+import { Product } from 'app/shared/model/product.model';
 import { ProductService } from './product.service';
 import { ProductComponent } from './product.component';
 import { ProductDetailComponent } from './product-detail.component';
 import { ProductUpdateComponent } from './product-update.component';
 import { ProductDeletePopupComponent } from './product-delete-dialog.component';
+import { IProduct } from 'app/shared/model/product.model';
 
 @Injectable({ providedIn: 'root' })
 export class ProductResolve implements Resolve<IProduct> {

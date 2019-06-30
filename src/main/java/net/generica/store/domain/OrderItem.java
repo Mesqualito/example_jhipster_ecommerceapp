@@ -1,16 +1,15 @@
 package net.generica.store.domain;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import net.generica.store.domain.enumeration.OrderItemStatus;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
-import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
+
+import net.generica.store.domain.enumeration.OrderItemStatus;
 
 /**
  * A OrderItem.

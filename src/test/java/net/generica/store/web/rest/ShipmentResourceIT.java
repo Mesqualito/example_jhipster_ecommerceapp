@@ -1,12 +1,14 @@
 package net.generica.store.web.rest;
 
 import net.generica.store.StoreApp;
-import net.generica.store.domain.Invoice;
 import net.generica.store.domain.Shipment;
+import net.generica.store.domain.Invoice;
 import net.generica.store.repository.ShipmentRepository;
-import net.generica.store.service.ShipmentQueryService;
 import net.generica.store.service.ShipmentService;
 import net.generica.store.web.rest.errors.ExceptionTranslator;
+import net.generica.store.service.dto.ShipmentCriteria;
+import net.generica.store.service.ShipmentQueryService;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
