@@ -28,7 +28,7 @@ entity ProductReference (product_reference){
   type String
 }
 entity ProductSubstitution (product_substitution){
-  name String,
+  productName String,
   exchangeable Boolean required,
   checked Boolean
 }
@@ -163,7 +163,7 @@ relationship OneToMany {
 }
 
 relationship ManyToMany {
-  Product{substitution} to ProductSubstitution{product(name)}
+  Product{substitution} to ProductSubstitution{product required}
 }
 
 
