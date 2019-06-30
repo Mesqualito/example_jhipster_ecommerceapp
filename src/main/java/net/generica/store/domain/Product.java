@@ -1,7 +1,5 @@
 package net.generica.store.domain;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import io.swagger.annotations.ApiModel;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -16,7 +14,6 @@ import java.util.Set;
 /**
  * Product sold by the online-store
  */
-@ApiModel(description = "Product sold by the online-store")
 @Entity
 @Table(name = "product")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
@@ -68,16 +65,11 @@ public class Product implements Serializable {
     @JoinTable(name = "product_substitution",
                joinColumns = @JoinColumn(name = "product_id", referencedColumnName = "id"),
                inverseJoinColumns = @JoinColumn(name = "substitution_id", referencedColumnName = "id"))
-    private Set<Product> substitutions = new HashSet<>();
+    private Set<ProductSubstitution> substitutions = new HashSet<>();
 
     @ManyToOne
     @JsonIgnoreProperties("products")
     private ProductCategory productCategory;
-
-    @ManyToMany(mappedBy = "substitutions")
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    @JsonIgnore
-    private Set<Product> products = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -229,29 +221,29 @@ public class Product implements Serializable {
         this.references = productReferences;
     }
 
-    public Set<Product> getSubstitutions() {
+    public Set<ProductSubstitution> getSubstitutions() {
         return substitutions;
     }
 
-    public Product substitutions(Set<Product> products) {
-        this.substitutions = products;
+    public Product substitutions(Set<ProductSubstitution> productSubstitutions) {
+        this.substitutions = productSubstitutions;
         return this;
     }
 
-    public Product addSubstitution(Product product) {
-        this.substitutions.add(product);
-        product.getProducts().add(this);
+    public Product addSubstitution(ProductSubstitution productSubstitution) {
+        this.substitutions.add(productSubstitution);
+        productSubstitution.getProducts().add(this);
         return this;
     }
 
-    public Product removeSubstitution(Product product) {
-        this.substitutions.remove(product);
-        product.getProducts().remove(this);
+    public Product removeSubstitution(ProductSubstitution productSubstitution) {
+        this.substitutions.remove(productSubstitution);
+        productSubstitution.getProducts().remove(this);
         return this;
     }
 
-    public void setSubstitutions(Set<Product> products) {
-        this.substitutions = products;
+    public void setSubstitutions(Set<ProductSubstitution> productSubstitutions) {
+        this.substitutions = productSubstitutions;
     }
 
     public ProductCategory getProductCategory() {
@@ -265,31 +257,6 @@ public class Product implements Serializable {
 
     public void setProductCategory(ProductCategory productCategory) {
         this.productCategory = productCategory;
-    }
-
-    public Set<Product> getProducts() {
-        return products;
-    }
-
-    public Product products(Set<Product> products) {
-        this.products = products;
-        return this;
-    }
-
-    public Product addProduct(Product product) {
-        this.products.add(product);
-        product.getSubstitutions().add(this);
-        return this;
-    }
-
-    public Product removeProduct(Product product) {
-        this.products.remove(product);
-        product.getSubstitutions().remove(this);
-        return this;
-    }
-
-    public void setProducts(Set<Product> products) {
-        this.products = products;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 

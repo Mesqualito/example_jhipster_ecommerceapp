@@ -1,4 +1,5 @@
 package net.generica.store.domain;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -6,12 +7,14 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * A ProductSubstitution.
  */
 @Entity
-@Table(name = "product_substitution")
+@Table(name = "prod_substitution")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class ProductSubstitution implements Serializable {
 
@@ -21,8 +24,8 @@ public class ProductSubstitution implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "product_name")
+    private String productName;
 
     @NotNull
     @Column(name = "exchangeable", nullable = false)
@@ -30,6 +33,11 @@ public class ProductSubstitution implements Serializable {
 
     @Column(name = "checked")
     private Boolean checked;
+
+    @ManyToMany(mappedBy = "substitutions")
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @JsonIgnore
+    private Set<Product> products = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -40,17 +48,17 @@ public class ProductSubstitution implements Serializable {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getProductName() {
+        return productName;
     }
 
-    public ProductSubstitution name(String name) {
-        this.name = name;
+    public ProductSubstitution productName(String productName) {
+        this.productName = productName;
         return this;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setProductName(String productName) {
+        this.productName = productName;
     }
 
     public Boolean isExchangeable() {
@@ -78,6 +86,31 @@ public class ProductSubstitution implements Serializable {
     public void setChecked(Boolean checked) {
         this.checked = checked;
     }
+
+    public Set<Product> getProducts() {
+        return products;
+    }
+
+    public ProductSubstitution products(Set<Product> products) {
+        this.products = products;
+        return this;
+    }
+
+    public ProductSubstitution addProduct(Product product) {
+        this.products.add(product);
+        product.getSubstitutions().add(this);
+        return this;
+    }
+
+    public ProductSubstitution removeProduct(Product product) {
+        this.products.remove(product);
+        product.getSubstitutions().remove(this);
+        return this;
+    }
+
+    public void setProducts(Set<Product> products) {
+        this.products = products;
+    }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
@@ -100,7 +133,7 @@ public class ProductSubstitution implements Serializable {
     public String toString() {
         return "ProductSubstitution{" +
             "id=" + getId() +
-            ", name='" + getName() + "'" +
+            ", productName='" + getProductName() + "'" +
             ", exchangeable='" + isExchangeable() + "'" +
             ", checked='" + isChecked() + "'" +
             "}";

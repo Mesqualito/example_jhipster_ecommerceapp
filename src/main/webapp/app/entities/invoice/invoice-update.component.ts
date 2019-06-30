@@ -30,7 +30,7 @@ export class InvoiceUpdateComponent implements OnInit {
     paymentDate: [null, [Validators.required]],
     paymentAmount: [null, [Validators.required]],
     code: [null, [Validators.required]],
-    order: [null, Validators.required]
+    orderId: [null, Validators.required]
   });
 
   constructor(
@@ -65,7 +65,7 @@ export class InvoiceUpdateComponent implements OnInit {
       paymentDate: invoice.paymentDate != null ? invoice.paymentDate.format(DATE_TIME_FORMAT) : null,
       paymentAmount: invoice.paymentAmount,
       code: invoice.code,
-      order: invoice.order
+      orderId: invoice.orderId
     });
   }
 
@@ -95,7 +95,7 @@ export class InvoiceUpdateComponent implements OnInit {
         this.editForm.get(['paymentDate']).value != null ? moment(this.editForm.get(['paymentDate']).value, DATE_TIME_FORMAT) : undefined,
       paymentAmount: this.editForm.get(['paymentAmount']).value,
       code: this.editForm.get(['code']).value,
-      order: this.editForm.get(['order']).value
+      orderId: this.editForm.get(['orderId']).value
     };
   }
 

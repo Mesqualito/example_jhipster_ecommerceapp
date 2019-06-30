@@ -23,8 +23,8 @@
                 </dd>
                 <dt><span jhiTranslate="storeApp.productReference.product">Product</span></dt>
                 <dd>
-                    <div *ngIf="productReference.product">
-                        <a [routerLink]="['/product', productReference.product?.id, 'view']">{{productReference.product?.name}}</a>
+                    <div *ngIf="productReference.productId">
+                        <a [routerLink]="['/product', productReference.productId, 'view']">{{productReference.productName}}</a>
                     </div>
                 </dd>
             </dl>

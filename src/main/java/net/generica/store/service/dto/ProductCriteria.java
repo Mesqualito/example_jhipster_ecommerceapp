@@ -49,8 +49,6 @@ public class ProductCriteria implements Serializable, Criteria {
 
     private LongFilter productCategoryId;
 
-    private LongFilter productId;
-
     public ProductCriteria(){
     }
 
@@ -67,7 +65,6 @@ public class ProductCriteria implements Serializable, Criteria {
         this.referenceId = other.referenceId == null ? null : other.referenceId.copy();
         this.substitutionId = other.substitutionId == null ? null : other.substitutionId.copy();
         this.productCategoryId = other.productCategoryId == null ? null : other.productCategoryId.copy();
-        this.productId = other.productId == null ? null : other.productId.copy();
     }
 
     @Override
@@ -171,14 +168,6 @@ public class ProductCriteria implements Serializable, Criteria {
         this.productCategoryId = productCategoryId;
     }
 
-    public LongFilter getProductId() {
-        return productId;
-    }
-
-    public void setProductId(LongFilter productId) {
-        this.productId = productId;
-    }
-
 
     @Override
     public boolean equals(Object o) {
@@ -201,8 +190,7 @@ public class ProductCriteria implements Serializable, Criteria {
             Objects.equals(shopImageId, that.shopImageId) &&
             Objects.equals(referenceId, that.referenceId) &&
             Objects.equals(substitutionId, that.substitutionId) &&
-            Objects.equals(productCategoryId, that.productCategoryId) &&
-            Objects.equals(productId, that.productId);
+            Objects.equals(productCategoryId, that.productCategoryId);
     }
 
     @Override
@@ -219,8 +207,7 @@ public class ProductCriteria implements Serializable, Criteria {
         shopImageId,
         referenceId,
         substitutionId,
-        productCategoryId,
-        productId
+        productCategoryId
         );
     }
 
@@ -239,7 +226,6 @@ public class ProductCriteria implements Serializable, Criteria {
                 (referenceId != null ? "referenceId=" + referenceId + ", " : "") +
                 (substitutionId != null ? "substitutionId=" + substitutionId + ", " : "") +
                 (productCategoryId != null ? "productCategoryId=" + productCategoryId + ", " : "") +
-                (productId != null ? "productId=" + productId + ", " : "") +
             "}";
     }
 

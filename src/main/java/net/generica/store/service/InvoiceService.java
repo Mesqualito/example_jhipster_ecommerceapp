@@ -1,42 +1,24 @@
 package net.generica.store.service;
 
-import net.generica.store.domain.Invoice;
-import net.generica.store.repository.InvoiceRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import net.generica.store.service.dto.InvoiceDTO;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 /**
- * Service Implementation for managing {@link Invoice}.
+ * Service Interface for managing {@link net.generica.store.domain.Invoice}.
  */
-@Service
-@Transactional
-public class InvoiceService {
-
-    private final Logger log = LoggerFactory.getLogger(InvoiceService.class);
-
-    private final InvoiceRepository invoiceRepository;
-
-    public InvoiceService(InvoiceRepository invoiceRepository) {
-        this.invoiceRepository = invoiceRepository;
-    }
+public interface InvoiceService {
 
     /**
      * Save a invoice.
      *
-     * @param invoice the entity to save.
+     * @param invoiceDTO the entity to save.
      * @return the persisted entity.
      */
-    public Invoice save(Invoice invoice) {
-        log.debug("Request to save Invoice : {}", invoice);
-        return invoiceRepository.save(invoice);
-    }
+    InvoiceDTO save(InvoiceDTO invoiceDTO);
 
     /**
      * Get all the invoices.
@@ -44,32 +26,21 @@ public class InvoiceService {
      * @param pageable the pagination information.
      * @return the list of entities.
      */
-    @Transactional(readOnly = true)
-    public Page<Invoice> findAll(Pageable pageable) {
-        log.debug("Request to get all Invoices");
-        return invoiceRepository.findAll(pageable);
-    }
+    Page<InvoiceDTO> findAll(Pageable pageable);
 
 
     /**
-     * Get one invoice by id.
+     * Get the "id" invoice.
      *
      * @param id the id of the entity.
      * @return the entity.
      */
-    @Transactional(readOnly = true)
-    public Optional<Invoice> findOne(Long id) {
-        log.debug("Request to get Invoice : {}", id);
-        return invoiceRepository.findById(id);
-    }
+    Optional<InvoiceDTO> findOne(Long id);
 
     /**
-     * Delete the invoice by id.
+     * Delete the "id" invoice.
      *
      * @param id the id of the entity.
      */
-    public void delete(Long id) {
-        log.debug("Request to delete Invoice : {}", id);
-        invoiceRepository.deleteById(id);
-    }
+    void delete(Long id);
 }

@@ -5,6 +5,8 @@ import net.generica.store.domain.ShopImage;
 import net.generica.store.domain.Product;
 import net.generica.store.repository.ShopImageRepository;
 import net.generica.store.service.ShopImageService;
+import net.generica.store.service.dto.ShopImageDTO;
+import net.generica.store.service.mapper.ShopImageMapper;
 import net.generica.store.web.rest.errors.ExceptionTranslator;
 import net.generica.store.service.dto.ShopImageCriteria;
 import net.generica.store.service.ShopImageQueryService;
@@ -61,6 +63,9 @@ public class ShopImageResourceIT {
 
     @Autowired
     private ShopImageRepository shopImageRepository;
+
+    @Autowired
+    private ShopImageMapper shopImageMapper;
 
     @Autowired
     private ShopImageService shopImageService;
@@ -145,9 +150,10 @@ public class ShopImageResourceIT {
         int databaseSizeBeforeCreate = shopImageRepository.findAll().size();
 
         // Create the ShopImage
+        ShopImageDTO shopImageDTO = shopImageMapper.toDto(shopImage);
         restShopImageMockMvc.perform(post("/api/shop-images")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(shopImage)))
+            .content(TestUtil.convertObjectToJsonBytes(shopImageDTO)))
             .andExpect(status().isCreated());
 
         // Validate the ShopImage in the database
@@ -170,11 +176,12 @@ public class ShopImageResourceIT {
 
         // Create the ShopImage with an existing ID
         shopImage.setId(1L);
+        ShopImageDTO shopImageDTO = shopImageMapper.toDto(shopImage);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restShopImageMockMvc.perform(post("/api/shop-images")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(shopImage)))
+            .content(TestUtil.convertObjectToJsonBytes(shopImageDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the ShopImage in the database
@@ -191,10 +198,11 @@ public class ShopImageResourceIT {
         shopImage.setName(null);
 
         // Create the ShopImage, which fails.
+        ShopImageDTO shopImageDTO = shopImageMapper.toDto(shopImage);
 
         restShopImageMockMvc.perform(post("/api/shop-images")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(shopImage)))
+            .content(TestUtil.convertObjectToJsonBytes(shopImageDTO)))
             .andExpect(status().isBadRequest());
 
         List<ShopImage> shopImageList = shopImageRepository.findAll();
@@ -209,10 +217,11 @@ public class ShopImageResourceIT {
         shopImage.setHerstArtNr(null);
 
         // Create the ShopImage, which fails.
+        ShopImageDTO shopImageDTO = shopImageMapper.toDto(shopImage);
 
         restShopImageMockMvc.perform(post("/api/shop-images")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(shopImage)))
+            .content(TestUtil.convertObjectToJsonBytes(shopImageDTO)))
             .andExpect(status().isBadRequest());
 
         List<ShopImage> shopImageList = shopImageRepository.findAll();
@@ -227,10 +236,11 @@ public class ShopImageResourceIT {
         shopImage.setSize(null);
 
         // Create the ShopImage, which fails.
+        ShopImageDTO shopImageDTO = shopImageMapper.toDto(shopImage);
 
         restShopImageMockMvc.perform(post("/api/shop-images")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(shopImage)))
+            .content(TestUtil.convertObjectToJsonBytes(shopImageDTO)))
             .andExpect(status().isBadRequest());
 
         List<ShopImage> shopImageList = shopImageRepository.findAll();
@@ -570,7 +580,7 @@ public class ShopImageResourceIT {
     @Transactional
     public void updateShopImage() throws Exception {
         // Initialize the database
-        shopImageService.save(shopImage);
+        shopImageRepository.saveAndFlush(shopImage);
 
         int databaseSizeBeforeUpdate = shopImageRepository.findAll().size();
 
@@ -586,10 +596,11 @@ public class ShopImageResourceIT {
             .description(UPDATED_DESCRIPTION)
             .image(UPDATED_IMAGE)
             .imageContentType(UPDATED_IMAGE_CONTENT_TYPE);
+        ShopImageDTO shopImageDTO = shopImageMapper.toDto(updatedShopImage);
 
         restShopImageMockMvc.perform(put("/api/shop-images")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedShopImage)))
+            .content(TestUtil.convertObjectToJsonBytes(shopImageDTO)))
             .andExpect(status().isOk());
 
         // Validate the ShopImage in the database
@@ -611,11 +622,12 @@ public class ShopImageResourceIT {
         int databaseSizeBeforeUpdate = shopImageRepository.findAll().size();
 
         // Create the ShopImage
+        ShopImageDTO shopImageDTO = shopImageMapper.toDto(shopImage);
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restShopImageMockMvc.perform(put("/api/shop-images")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(shopImage)))
+            .content(TestUtil.convertObjectToJsonBytes(shopImageDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the ShopImage in the database
@@ -627,7 +639,7 @@ public class ShopImageResourceIT {
     @Transactional
     public void deleteShopImage() throws Exception {
         // Initialize the database
-        shopImageService.save(shopImage);
+        shopImageRepository.saveAndFlush(shopImage);
 
         int databaseSizeBeforeDelete = shopImageRepository.findAll().size();
 
@@ -654,5 +666,28 @@ public class ShopImageResourceIT {
         assertThat(shopImage1).isNotEqualTo(shopImage2);
         shopImage1.setId(null);
         assertThat(shopImage1).isNotEqualTo(shopImage2);
+    }
+
+    @Test
+    @Transactional
+    public void dtoEqualsVerifier() throws Exception {
+        TestUtil.equalsVerifier(ShopImageDTO.class);
+        ShopImageDTO shopImageDTO1 = new ShopImageDTO();
+        shopImageDTO1.setId(1L);
+        ShopImageDTO shopImageDTO2 = new ShopImageDTO();
+        assertThat(shopImageDTO1).isNotEqualTo(shopImageDTO2);
+        shopImageDTO2.setId(shopImageDTO1.getId());
+        assertThat(shopImageDTO1).isEqualTo(shopImageDTO2);
+        shopImageDTO2.setId(2L);
+        assertThat(shopImageDTO1).isNotEqualTo(shopImageDTO2);
+        shopImageDTO1.setId(null);
+        assertThat(shopImageDTO1).isNotEqualTo(shopImageDTO2);
+    }
+
+    @Test
+    @Transactional
+    public void testEntityFromId() {
+        assertThat(shopImageMapper.fromId(42L).getId()).isEqualTo(42);
+        assertThat(shopImageMapper.fromId(null)).isNull();
     }
 }

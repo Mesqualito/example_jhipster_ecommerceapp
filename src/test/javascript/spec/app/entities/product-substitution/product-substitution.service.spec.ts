@@ -59,7 +59,7 @@ describe('Service Tests', () => {
       it('should update a ProductSubstitution', async () => {
         const returnedFromService = Object.assign(
           {
-            name: 'BBBBBB',
+            productName: 'BBBBBB',
             exchangeable: true,
             checked: true
           },
@@ -79,7 +79,7 @@ describe('Service Tests', () => {
       it('should return a list of ProductSubstitution', async () => {
         const returnedFromService = Object.assign(
           {
-            name: 'BBBBBB',
+            productName: 'BBBBBB',
             exchangeable: true,
             checked: true
           },

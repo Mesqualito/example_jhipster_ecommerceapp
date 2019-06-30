@@ -16,9 +16,10 @@
       "detail": {
         "title": "Product Substitution"
       },
-      "name": "Name",
+      "productName": "Product Name",
       "exchangeable": "Exchangeable",
-      "checked": "Checked"
+      "checked": "Checked",
+      "product": "Product"
     }
   }
 }

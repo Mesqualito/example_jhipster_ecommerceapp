@@ -1,8 +1,8 @@
 package net.generica.store.web.rest;
 
-import net.generica.store.domain.Product;
 import net.generica.store.service.ProductService;
 import net.generica.store.web.rest.errors.BadRequestAlertException;
+import net.generica.store.service.dto.ProductDTO;
 import net.generica.store.service.dto.ProductCriteria;
 import net.generica.store.service.ProductQueryService;
 
@@ -54,17 +54,17 @@ public class ProductResource {
     /**
      * {@code POST  /products} : Create a new product.
      *
-     * @param product the product to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new product, or with status {@code 400 (Bad Request)} if the product has already an ID.
+     * @param productDTO the productDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new productDTO, or with status {@code 400 (Bad Request)} if the product has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/products")
-    public ResponseEntity<Product> createProduct(@Valid @RequestBody Product product) throws URISyntaxException {
-        log.debug("REST request to save Product : {}", product);
-        if (product.getId() != null) {
+    public ResponseEntity<ProductDTO> createProduct(@Valid @RequestBody ProductDTO productDTO) throws URISyntaxException {
+        log.debug("REST request to save Product : {}", productDTO);
+        if (productDTO.getId() != null) {
             throw new BadRequestAlertException("A new product cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Product result = productService.save(product);
+        ProductDTO result = productService.save(productDTO);
         return ResponseEntity.created(new URI("/api/products/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -73,21 +73,21 @@ public class ProductResource {
     /**
      * {@code PUT  /products} : Updates an existing product.
      *
-     * @param product the product to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated product,
-     * or with status {@code 400 (Bad Request)} if the product is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the product couldn't be updated.
+     * @param productDTO the productDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated productDTO,
+     * or with status {@code 400 (Bad Request)} if the productDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the productDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/products")
-    public ResponseEntity<Product> updateProduct(@Valid @RequestBody Product product) throws URISyntaxException {
-        log.debug("REST request to update Product : {}", product);
-        if (product.getId() == null) {
+    public ResponseEntity<ProductDTO> updateProduct(@Valid @RequestBody ProductDTO productDTO) throws URISyntaxException {
+        log.debug("REST request to update Product : {}", productDTO);
+        if (productDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        Product result = productService.save(product);
+        ProductDTO result = productService.save(productDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, product.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, productDTO.getId().toString()))
             .body(result);
     }
 
@@ -101,9 +101,9 @@ public class ProductResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of products in body.
      */
     @GetMapping("/products")
-    public ResponseEntity<List<Product>> getAllProducts(ProductCriteria criteria, Pageable pageable, @RequestParam MultiValueMap<String, String> queryParams, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<List<ProductDTO>> getAllProducts(ProductCriteria criteria, Pageable pageable, @RequestParam MultiValueMap<String, String> queryParams, UriComponentsBuilder uriBuilder) {
         log.debug("REST request to get Products by criteria: {}", criteria);
-        Page<Product> page = productQueryService.findByCriteria(criteria, pageable);
+        Page<ProductDTO> page = productQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(uriBuilder.queryParams(queryParams), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
@@ -123,20 +123,20 @@ public class ProductResource {
     /**
      * {@code GET  /products/:id} : get the "id" product.
      *
-     * @param id the id of the product to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the product, or with status {@code 404 (Not Found)}.
+     * @param id the id of the productDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the productDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/products/{id}")
-    public ResponseEntity<Product> getProduct(@PathVariable Long id) {
+    public ResponseEntity<ProductDTO> getProduct(@PathVariable Long id) {
         log.debug("REST request to get Product : {}", id);
-        Optional<Product> product = productService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(product);
+        Optional<ProductDTO> productDTO = productService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(productDTO);
     }
 
     /**
      * {@code DELETE  /products/:id} : delete the "id" product.
      *
-     * @param id the id of the product to delete.
+     * @param id the id of the productDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/products/{id}")

@@ -34,8 +34,8 @@
                 <td>{{productReference.reference}}</td>
                 <td>{{productReference.type}}</td>
                 <td>
-                    <div *ngIf="productReference.product">
-                        <a [routerLink]="['../product', productReference.product?.id, 'view' ]" >{{productReference.product?.name}}</a>
+                    <div *ngIf="productReference.productId">
+                        <a [routerLink]="['../product', productReference.productId , 'view' ]" >{{productReference.productName}}</a>
                     </div>
                 </td>
                 <td class="text-right">

@@ -1,8 +1,8 @@
 package net.generica.store.web.rest;
 
-import net.generica.store.domain.Invoice;
 import net.generica.store.service.InvoiceService;
 import net.generica.store.web.rest.errors.BadRequestAlertException;
+import net.generica.store.service.dto.InvoiceDTO;
 import net.generica.store.service.dto.InvoiceCriteria;
 import net.generica.store.service.InvoiceQueryService;
 
@@ -54,17 +54,17 @@ public class InvoiceResource {
     /**
      * {@code POST  /invoices} : Create a new invoice.
      *
-     * @param invoice the invoice to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new invoice, or with status {@code 400 (Bad Request)} if the invoice has already an ID.
+     * @param invoiceDTO the invoiceDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new invoiceDTO, or with status {@code 400 (Bad Request)} if the invoice has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/invoices")
-    public ResponseEntity<Invoice> createInvoice(@Valid @RequestBody Invoice invoice) throws URISyntaxException {
-        log.debug("REST request to save Invoice : {}", invoice);
-        if (invoice.getId() != null) {
+    public ResponseEntity<InvoiceDTO> createInvoice(@Valid @RequestBody InvoiceDTO invoiceDTO) throws URISyntaxException {
+        log.debug("REST request to save Invoice : {}", invoiceDTO);
+        if (invoiceDTO.getId() != null) {
             throw new BadRequestAlertException("A new invoice cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Invoice result = invoiceService.save(invoice);
+        InvoiceDTO result = invoiceService.save(invoiceDTO);
         return ResponseEntity.created(new URI("/api/invoices/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -73,21 +73,21 @@ public class InvoiceResource {
     /**
      * {@code PUT  /invoices} : Updates an existing invoice.
      *
-     * @param invoice the invoice to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated invoice,
-     * or with status {@code 400 (Bad Request)} if the invoice is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the invoice couldn't be updated.
+     * @param invoiceDTO the invoiceDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated invoiceDTO,
+     * or with status {@code 400 (Bad Request)} if the invoiceDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the invoiceDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/invoices")
-    public ResponseEntity<Invoice> updateInvoice(@Valid @RequestBody Invoice invoice) throws URISyntaxException {
-        log.debug("REST request to update Invoice : {}", invoice);
-        if (invoice.getId() == null) {
+    public ResponseEntity<InvoiceDTO> updateInvoice(@Valid @RequestBody InvoiceDTO invoiceDTO) throws URISyntaxException {
+        log.debug("REST request to update Invoice : {}", invoiceDTO);
+        if (invoiceDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        Invoice result = invoiceService.save(invoice);
+        InvoiceDTO result = invoiceService.save(invoiceDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, invoice.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, invoiceDTO.getId().toString()))
             .body(result);
     }
 
@@ -101,9 +101,9 @@ public class InvoiceResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of invoices in body.
      */
     @GetMapping("/invoices")
-    public ResponseEntity<List<Invoice>> getAllInvoices(InvoiceCriteria criteria, Pageable pageable, @RequestParam MultiValueMap<String, String> queryParams, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<List<InvoiceDTO>> getAllInvoices(InvoiceCriteria criteria, Pageable pageable, @RequestParam MultiValueMap<String, String> queryParams, UriComponentsBuilder uriBuilder) {
         log.debug("REST request to get Invoices by criteria: {}", criteria);
-        Page<Invoice> page = invoiceQueryService.findByCriteria(criteria, pageable);
+        Page<InvoiceDTO> page = invoiceQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(uriBuilder.queryParams(queryParams), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
@@ -123,20 +123,20 @@ public class InvoiceResource {
     /**
      * {@code GET  /invoices/:id} : get the "id" invoice.
      *
-     * @param id the id of the invoice to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the invoice, or with status {@code 404 (Not Found)}.
+     * @param id the id of the invoiceDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the invoiceDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/invoices/{id}")
-    public ResponseEntity<Invoice> getInvoice(@PathVariable Long id) {
+    public ResponseEntity<InvoiceDTO> getInvoice(@PathVariable Long id) {
         log.debug("REST request to get Invoice : {}", id);
-        Optional<Invoice> invoice = invoiceService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(invoice);
+        Optional<InvoiceDTO> invoiceDTO = invoiceService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(invoiceDTO);
     }
 
     /**
      * {@code DELETE  /invoices/:id} : delete the "id" invoice.
      *
-     * @param id the id of the invoice to delete.
+     * @param id the id of the invoiceDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/invoices/{id}")

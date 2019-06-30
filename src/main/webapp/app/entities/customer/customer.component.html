@@ -30,7 +30,7 @@
             <th jhiSortBy="plz"><span jhiTranslate="storeApp.customer.plz">Plz</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="city"><span jhiTranslate="storeApp.customer.city">City</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="country"><span jhiTranslate="storeApp.customer.country">Country</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="user.login"><span jhiTranslate="storeApp.customer.user">User</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="userLogin"><span jhiTranslate="storeApp.customer.user">User</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th></th>
             </tr>
             </thead>
@@ -50,7 +50,7 @@
                 <td>{{customer.city}}</td>
                 <td>{{customer.country}}</td>
                 <td>
-                    {{customer.user?.login}}
+                    {{customer.userLogin}}
                 </td>
                 <td class="text-right">
                     <div class="btn-group">

@@ -12,7 +12,7 @@ import java.io.Serializable;
  * A ProductReference.
  */
 @Entity
-@Table(name = "product_reference")
+@Table(name = "prod_reference")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class ProductReference implements Serializable {
 

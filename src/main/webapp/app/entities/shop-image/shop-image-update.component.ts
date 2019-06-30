@@ -28,7 +28,7 @@ export class ShopImageUpdateComponent implements OnInit {
     description: [],
     image: [],
     imageContentType: [],
-    product: []
+    productId: []
   });
 
   constructor(
@@ -65,7 +65,7 @@ export class ShopImageUpdateComponent implements OnInit {
       description: shopImage.description,
       image: shopImage.image,
       imageContentType: shopImage.imageContentType,
-      product: shopImage.product
+      productId: shopImage.productId
     });
   }
 
@@ -136,7 +136,7 @@ export class ShopImageUpdateComponent implements OnInit {
       description: this.editForm.get(['description']).value,
       imageContentType: this.editForm.get(['imageContentType']).value,
       image: this.editForm.get(['image']).value,
-      product: this.editForm.get(['product']).value
+      productId: this.editForm.get(['productId']).value
     };
   }
 

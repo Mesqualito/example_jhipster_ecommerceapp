@@ -7,6 +7,8 @@ import { filter, map } from 'rxjs/operators';
 import { JhiAlertService } from 'ng-jhipster';
 import { IProduct, Product } from 'app/shared/model/product.model';
 import { ProductService } from './product.service';
+import { IProductSubstitution } from 'app/shared/model/product-substitution.model';
+import { ProductSubstitutionService } from 'app/entities/product-substitution';
 import { IProductCategory } from 'app/shared/model/product-category.model';
 import { ProductCategoryService } from 'app/entities/product-category';
 
@@ -17,7 +19,7 @@ import { ProductCategoryService } from 'app/entities/product-category';
 export class ProductUpdateComponent implements OnInit {
   isSaving: boolean;
 
-  products: IProduct[];
+  productsubstitutions: IProductSubstitution[];
 
   productcategories: IProductCategory[];
 
@@ -31,12 +33,13 @@ export class ProductUpdateComponent implements OnInit {
     price: [null, [Validators.required, Validators.min(0)]],
     katalogOnly: [],
     substitutions: [],
-    productCategory: []
+    productCategoryId: []
   });
 
   constructor(
     protected jhiAlertService: JhiAlertService,
     protected productService: ProductService,
+    protected productSubstitutionService: ProductSubstitutionService,
     protected productCategoryService: ProductCategoryService,
     protected activatedRoute: ActivatedRoute,
     private fb: FormBuilder
@@ -47,13 +50,13 @@ export class ProductUpdateComponent implements OnInit {
     this.activatedRoute.data.subscribe(({ product }) => {
       this.updateForm(product);
     });
-    this.productService
+    this.productSubstitutionService
       .query()
       .pipe(
-        filter((mayBeOk: HttpResponse<IProduct[]>) => mayBeOk.ok),
-        map((response: HttpResponse<IProduct[]>) => response.body)
+        filter((mayBeOk: HttpResponse<IProductSubstitution[]>) => mayBeOk.ok),
+        map((response: HttpResponse<IProductSubstitution[]>) => response.body)
       )
-      .subscribe((res: IProduct[]) => (this.products = res), (res: HttpErrorResponse) => this.onError(res.message));
+      .subscribe((res: IProductSubstitution[]) => (this.productsubstitutions = res), (res: HttpErrorResponse) => this.onError(res.message));
     this.productCategoryService
       .query()
       .pipe(
@@ -74,7 +77,7 @@ export class ProductUpdateComponent implements OnInit {
       price: product.price,
       katalogOnly: product.katalogOnly,
       substitutions: product.substitutions,
-      productCategory: product.productCategory
+      productCategoryId: product.productCategoryId
     });
   }
 
@@ -104,7 +107,7 @@ export class ProductUpdateComponent implements OnInit {
       price: this.editForm.get(['price']).value,
       katalogOnly: this.editForm.get(['katalogOnly']).value,
       substitutions: this.editForm.get(['substitutions']).value,
-      productCategory: this.editForm.get(['productCategory']).value
+      productCategoryId: this.editForm.get(['productCategoryId']).value
     };
   }
 
@@ -124,7 +127,7 @@ export class ProductUpdateComponent implements OnInit {
     this.jhiAlertService.error(errorMessage, null, null);
   }
 
-  trackProductById(index: number, item: IProduct) {
+  trackProductSubstitutionById(index: number, item: IProductSubstitution) {
     return item.id;
   }
 

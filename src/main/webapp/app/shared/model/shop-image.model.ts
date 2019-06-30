@@ -1,5 +1,3 @@
-import { IProduct } from 'app/shared/model/product.model';
-
 export const enum Size {
   S = 'S',
   M = 'M',
@@ -15,7 +13,8 @@ export interface IShopImage {
   description?: string;
   imageContentType?: string;
   image?: any;
-  product?: IProduct;
+  productName?: string;
+  productId?: number;
 }
 
 export class ShopImage implements IShopImage {
@@ -28,6 +27,7 @@ export class ShopImage implements IShopImage {
     public description?: string,
     public imageContentType?: string,
     public image?: any,
-    public product?: IProduct
+    public productName?: string,
+    public productId?: number
   ) {}
 }

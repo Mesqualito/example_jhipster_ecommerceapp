@@ -26,20 +26,23 @@ public class ProductSubstitutionCriteria implements Serializable, Criteria {
 
     private LongFilter id;
 
-    private StringFilter name;
+    private StringFilter productName;
 
     private BooleanFilter exchangeable;
 
     private BooleanFilter checked;
+
+    private LongFilter productId;
 
     public ProductSubstitutionCriteria(){
     }
 
     public ProductSubstitutionCriteria(ProductSubstitutionCriteria other){
         this.id = other.id == null ? null : other.id.copy();
-        this.name = other.name == null ? null : other.name.copy();
+        this.productName = other.productName == null ? null : other.productName.copy();
         this.exchangeable = other.exchangeable == null ? null : other.exchangeable.copy();
         this.checked = other.checked == null ? null : other.checked.copy();
+        this.productId = other.productId == null ? null : other.productId.copy();
     }
 
     @Override
@@ -55,12 +58,12 @@ public class ProductSubstitutionCriteria implements Serializable, Criteria {
         this.id = id;
     }
 
-    public StringFilter getName() {
-        return name;
+    public StringFilter getProductName() {
+        return productName;
     }
 
-    public void setName(StringFilter name) {
-        this.name = name;
+    public void setProductName(StringFilter productName) {
+        this.productName = productName;
     }
 
     public BooleanFilter getExchangeable() {
@@ -79,6 +82,14 @@ public class ProductSubstitutionCriteria implements Serializable, Criteria {
         this.checked = checked;
     }
 
+    public LongFilter getProductId() {
+        return productId;
+    }
+
+    public void setProductId(LongFilter productId) {
+        this.productId = productId;
+    }
+
 
     @Override
     public boolean equals(Object o) {
@@ -91,18 +102,20 @@ public class ProductSubstitutionCriteria implements Serializable, Criteria {
         final ProductSubstitutionCriteria that = (ProductSubstitutionCriteria) o;
         return
             Objects.equals(id, that.id) &&
-            Objects.equals(name, that.name) &&
+            Objects.equals(productName, that.productName) &&
             Objects.equals(exchangeable, that.exchangeable) &&
-            Objects.equals(checked, that.checked);
+            Objects.equals(checked, that.checked) &&
+            Objects.equals(productId, that.productId);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(
         id,
-        name,
+        productName,
         exchangeable,
-        checked
+        checked,
+        productId
         );
     }
 
@@ -110,9 +123,10 @@ public class ProductSubstitutionCriteria implements Serializable, Criteria {
     public String toString() {
         return "ProductSubstitutionCriteria{" +
                 (id != null ? "id=" + id + ", " : "") +
-                (name != null ? "name=" + name + ", " : "") +
+                (productName != null ? "productName=" + productName + ", " : "") +
                 (exchangeable != null ? "exchangeable=" + exchangeable + ", " : "") +
                 (checked != null ? "checked=" + checked + ", " : "") +
+                (productId != null ? "productId=" + productId + ", " : "") +
             "}";
     }
 

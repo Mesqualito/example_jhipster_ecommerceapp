@@ -1,8 +1,8 @@
 package net.generica.store.web.rest;
 
-import net.generica.store.domain.Shipment;
 import net.generica.store.service.ShipmentService;
 import net.generica.store.web.rest.errors.BadRequestAlertException;
+import net.generica.store.service.dto.ShipmentDTO;
 import net.generica.store.service.dto.ShipmentCriteria;
 import net.generica.store.service.ShipmentQueryService;
 
@@ -54,17 +54,17 @@ public class ShipmentResource {
     /**
      * {@code POST  /shipments} : Create a new shipment.
      *
-     * @param shipment the shipment to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new shipment, or with status {@code 400 (Bad Request)} if the shipment has already an ID.
+     * @param shipmentDTO the shipmentDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new shipmentDTO, or with status {@code 400 (Bad Request)} if the shipment has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/shipments")
-    public ResponseEntity<Shipment> createShipment(@Valid @RequestBody Shipment shipment) throws URISyntaxException {
-        log.debug("REST request to save Shipment : {}", shipment);
-        if (shipment.getId() != null) {
+    public ResponseEntity<ShipmentDTO> createShipment(@Valid @RequestBody ShipmentDTO shipmentDTO) throws URISyntaxException {
+        log.debug("REST request to save Shipment : {}", shipmentDTO);
+        if (shipmentDTO.getId() != null) {
             throw new BadRequestAlertException("A new shipment cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Shipment result = shipmentService.save(shipment);
+        ShipmentDTO result = shipmentService.save(shipmentDTO);
         return ResponseEntity.created(new URI("/api/shipments/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -73,21 +73,21 @@ public class ShipmentResource {
     /**
      * {@code PUT  /shipments} : Updates an existing shipment.
      *
-     * @param shipment the shipment to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated shipment,
-     * or with status {@code 400 (Bad Request)} if the shipment is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the shipment couldn't be updated.
+     * @param shipmentDTO the shipmentDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated shipmentDTO,
+     * or with status {@code 400 (Bad Request)} if the shipmentDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the shipmentDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/shipments")
-    public ResponseEntity<Shipment> updateShipment(@Valid @RequestBody Shipment shipment) throws URISyntaxException {
-        log.debug("REST request to update Shipment : {}", shipment);
-        if (shipment.getId() == null) {
+    public ResponseEntity<ShipmentDTO> updateShipment(@Valid @RequestBody ShipmentDTO shipmentDTO) throws URISyntaxException {
+        log.debug("REST request to update Shipment : {}", shipmentDTO);
+        if (shipmentDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        Shipment result = shipmentService.save(shipment);
+        ShipmentDTO result = shipmentService.save(shipmentDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, shipment.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, shipmentDTO.getId().toString()))
             .body(result);
     }
 
@@ -101,9 +101,9 @@ public class ShipmentResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of shipments in body.
      */
     @GetMapping("/shipments")
-    public ResponseEntity<List<Shipment>> getAllShipments(ShipmentCriteria criteria, Pageable pageable, @RequestParam MultiValueMap<String, String> queryParams, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<List<ShipmentDTO>> getAllShipments(ShipmentCriteria criteria, Pageable pageable, @RequestParam MultiValueMap<String, String> queryParams, UriComponentsBuilder uriBuilder) {
         log.debug("REST request to get Shipments by criteria: {}", criteria);
-        Page<Shipment> page = shipmentQueryService.findByCriteria(criteria, pageable);
+        Page<ShipmentDTO> page = shipmentQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(uriBuilder.queryParams(queryParams), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
@@ -123,20 +123,20 @@ public class ShipmentResource {
     /**
      * {@code GET  /shipments/:id} : get the "id" shipment.
      *
-     * @param id the id of the shipment to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the shipment, or with status {@code 404 (Not Found)}.
+     * @param id the id of the shipmentDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the shipmentDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/shipments/{id}")
-    public ResponseEntity<Shipment> getShipment(@PathVariable Long id) {
+    public ResponseEntity<ShipmentDTO> getShipment(@PathVariable Long id) {
         log.debug("REST request to get Shipment : {}", id);
-        Optional<Shipment> shipment = shipmentService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(shipment);
+        Optional<ShipmentDTO> shipmentDTO = shipmentService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(shipmentDTO);
     }
 
     /**
      * {@code DELETE  /shipments/:id} : delete the "id" shipment.
      *
-     * @param id the id of the shipment to delete.
+     * @param id the id of the shipmentDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/shipments/{id}")

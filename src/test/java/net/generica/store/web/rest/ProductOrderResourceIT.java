@@ -7,6 +7,8 @@ import net.generica.store.domain.Invoice;
 import net.generica.store.domain.Customer;
 import net.generica.store.repository.ProductOrderRepository;
 import net.generica.store.service.ProductOrderService;
+import net.generica.store.service.dto.ProductOrderDTO;
+import net.generica.store.service.mapper.ProductOrderMapper;
 import net.generica.store.web.rest.errors.ExceptionTranslator;
 import net.generica.store.service.dto.ProductOrderCriteria;
 import net.generica.store.service.ProductOrderQueryService;
@@ -53,6 +55,9 @@ public class ProductOrderResourceIT {
 
     @Autowired
     private ProductOrderRepository productOrderRepository;
+
+    @Autowired
+    private ProductOrderMapper productOrderMapper;
 
     @Autowired
     private ProductOrderService productOrderService;
@@ -149,9 +154,10 @@ public class ProductOrderResourceIT {
         int databaseSizeBeforeCreate = productOrderRepository.findAll().size();
 
         // Create the ProductOrder
+        ProductOrderDTO productOrderDTO = productOrderMapper.toDto(productOrder);
         restProductOrderMockMvc.perform(post("/api/product-orders")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(productOrder)))
+            .content(TestUtil.convertObjectToJsonBytes(productOrderDTO)))
             .andExpect(status().isCreated());
 
         // Validate the ProductOrder in the database
@@ -170,11 +176,12 @@ public class ProductOrderResourceIT {
 
         // Create the ProductOrder with an existing ID
         productOrder.setId(1L);
+        ProductOrderDTO productOrderDTO = productOrderMapper.toDto(productOrder);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restProductOrderMockMvc.perform(post("/api/product-orders")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(productOrder)))
+            .content(TestUtil.convertObjectToJsonBytes(productOrderDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the ProductOrder in the database
@@ -191,10 +198,11 @@ public class ProductOrderResourceIT {
         productOrder.setPlacedDate(null);
 
         // Create the ProductOrder, which fails.
+        ProductOrderDTO productOrderDTO = productOrderMapper.toDto(productOrder);
 
         restProductOrderMockMvc.perform(post("/api/product-orders")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(productOrder)))
+            .content(TestUtil.convertObjectToJsonBytes(productOrderDTO)))
             .andExpect(status().isBadRequest());
 
         List<ProductOrder> productOrderList = productOrderRepository.findAll();
@@ -209,10 +217,11 @@ public class ProductOrderResourceIT {
         productOrder.setStatus(null);
 
         // Create the ProductOrder, which fails.
+        ProductOrderDTO productOrderDTO = productOrderMapper.toDto(productOrder);
 
         restProductOrderMockMvc.perform(post("/api/product-orders")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(productOrder)))
+            .content(TestUtil.convertObjectToJsonBytes(productOrderDTO)))
             .andExpect(status().isBadRequest());
 
         List<ProductOrder> productOrderList = productOrderRepository.findAll();
@@ -227,10 +236,11 @@ public class ProductOrderResourceIT {
         productOrder.setCode(null);
 
         // Create the ProductOrder, which fails.
+        ProductOrderDTO productOrderDTO = productOrderMapper.toDto(productOrder);
 
         restProductOrderMockMvc.perform(post("/api/product-orders")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(productOrder)))
+            .content(TestUtil.convertObjectToJsonBytes(productOrderDTO)))
             .andExpect(status().isBadRequest());
 
         List<ProductOrder> productOrderList = productOrderRepository.findAll();
@@ -488,7 +498,7 @@ public class ProductOrderResourceIT {
     @Transactional
     public void updateProductOrder() throws Exception {
         // Initialize the database
-        productOrderService.save(productOrder);
+        productOrderRepository.saveAndFlush(productOrder);
 
         int databaseSizeBeforeUpdate = productOrderRepository.findAll().size();
 
@@ -500,10 +510,11 @@ public class ProductOrderResourceIT {
             .placedDate(UPDATED_PLACED_DATE)
             .status(UPDATED_STATUS)
             .code(UPDATED_CODE);
+        ProductOrderDTO productOrderDTO = productOrderMapper.toDto(updatedProductOrder);
 
         restProductOrderMockMvc.perform(put("/api/product-orders")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedProductOrder)))
+            .content(TestUtil.convertObjectToJsonBytes(productOrderDTO)))
             .andExpect(status().isOk());
 
         // Validate the ProductOrder in the database
@@ -521,11 +532,12 @@ public class ProductOrderResourceIT {
         int databaseSizeBeforeUpdate = productOrderRepository.findAll().size();
 
         // Create the ProductOrder
+        ProductOrderDTO productOrderDTO = productOrderMapper.toDto(productOrder);
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restProductOrderMockMvc.perform(put("/api/product-orders")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(productOrder)))
+            .content(TestUtil.convertObjectToJsonBytes(productOrderDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the ProductOrder in the database
@@ -537,7 +549,7 @@ public class ProductOrderResourceIT {
     @Transactional
     public void deleteProductOrder() throws Exception {
         // Initialize the database
-        productOrderService.save(productOrder);
+        productOrderRepository.saveAndFlush(productOrder);
 
         int databaseSizeBeforeDelete = productOrderRepository.findAll().size();
 
@@ -564,5 +576,28 @@ public class ProductOrderResourceIT {
         assertThat(productOrder1).isNotEqualTo(productOrder2);
         productOrder1.setId(null);
         assertThat(productOrder1).isNotEqualTo(productOrder2);
+    }
+
+    @Test
+    @Transactional
+    public void dtoEqualsVerifier() throws Exception {
+        TestUtil.equalsVerifier(ProductOrderDTO.class);
+        ProductOrderDTO productOrderDTO1 = new ProductOrderDTO();
+        productOrderDTO1.setId(1L);
+        ProductOrderDTO productOrderDTO2 = new ProductOrderDTO();
+        assertThat(productOrderDTO1).isNotEqualTo(productOrderDTO2);
+        productOrderDTO2.setId(productOrderDTO1.getId());
+        assertThat(productOrderDTO1).isEqualTo(productOrderDTO2);
+        productOrderDTO2.setId(2L);
+        assertThat(productOrderDTO1).isNotEqualTo(productOrderDTO2);
+        productOrderDTO1.setId(null);
+        assertThat(productOrderDTO1).isNotEqualTo(productOrderDTO2);
+    }
+
+    @Test
+    @Transactional
+    public void testEntityFromId() {
+        assertThat(productOrderMapper.fromId(42L).getId()).isEqualTo(42);
+        assertThat(productOrderMapper.fromId(null)).isNull();
     }
 }

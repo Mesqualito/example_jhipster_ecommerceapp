@@ -18,12 +18,14 @@ import net.generica.store.domain.Shipment;
 import net.generica.store.domain.*; // for static metamodels
 import net.generica.store.repository.ShipmentRepository;
 import net.generica.store.service.dto.ShipmentCriteria;
+import net.generica.store.service.dto.ShipmentDTO;
+import net.generica.store.service.mapper.ShipmentMapper;
 
 /**
  * Service for executing complex queries for {@link Shipment} entities in the database.
  * The main input is a {@link ShipmentCriteria} which gets converted to {@link Specification},
  * in a way that all the filters must apply.
- * It returns a {@link List} of {@link Shipment} or a {@link Page} of {@link Shipment} which fulfills the criteria.
+ * It returns a {@link List} of {@link ShipmentDTO} or a {@link Page} of {@link ShipmentDTO} which fulfills the criteria.
  */
 @Service
 @Transactional(readOnly = true)
@@ -33,33 +35,37 @@ public class ShipmentQueryService extends QueryService<Shipment> {
 
     private final ShipmentRepository shipmentRepository;
 
-    public ShipmentQueryService(ShipmentRepository shipmentRepository) {
+    private final ShipmentMapper shipmentMapper;
+
+    public ShipmentQueryService(ShipmentRepository shipmentRepository, ShipmentMapper shipmentMapper) {
         this.shipmentRepository = shipmentRepository;
+        this.shipmentMapper = shipmentMapper;
     }
 
     /**
-     * Return a {@link List} of {@link Shipment} which matches the criteria from the database.
+     * Return a {@link List} of {@link ShipmentDTO} which matches the criteria from the database.
      * @param criteria The object which holds all the filters, which the entities should match.
      * @return the matching entities.
      */
     @Transactional(readOnly = true)
-    public List<Shipment> findByCriteria(ShipmentCriteria criteria) {
+    public List<ShipmentDTO> findByCriteria(ShipmentCriteria criteria) {
         log.debug("find by criteria : {}", criteria);
         final Specification<Shipment> specification = createSpecification(criteria);
-        return shipmentRepository.findAll(specification);
+        return shipmentMapper.toDto(shipmentRepository.findAll(specification));
     }
 
     /**
-     * Return a {@link Page} of {@link Shipment} which matches the criteria from the database.
+     * Return a {@link Page} of {@link ShipmentDTO} which matches the criteria from the database.
      * @param criteria The object which holds all the filters, which the entities should match.
      * @param page The page, which should be returned.
      * @return the matching entities.
      */
     @Transactional(readOnly = true)
-    public Page<Shipment> findByCriteria(ShipmentCriteria criteria, Pageable page) {
+    public Page<ShipmentDTO> findByCriteria(ShipmentCriteria criteria, Pageable page) {
         log.debug("find by criteria : {}, page: {}", criteria, page);
         final Specification<Shipment> specification = createSpecification(criteria);
-        return shipmentRepository.findAll(specification, page);
+        return shipmentRepository.findAll(specification, page)
+            .map(shipmentMapper::toDto);
     }
 
     /**

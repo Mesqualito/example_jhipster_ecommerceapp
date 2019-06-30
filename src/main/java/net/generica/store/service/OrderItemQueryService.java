@@ -18,12 +18,14 @@ import net.generica.store.domain.OrderItem;
 import net.generica.store.domain.*; // for static metamodels
 import net.generica.store.repository.OrderItemRepository;
 import net.generica.store.service.dto.OrderItemCriteria;
+import net.generica.store.service.dto.OrderItemDTO;
+import net.generica.store.service.mapper.OrderItemMapper;
 
 /**
  * Service for executing complex queries for {@link OrderItem} entities in the database.
  * The main input is a {@link OrderItemCriteria} which gets converted to {@link Specification},
  * in a way that all the filters must apply.
- * It returns a {@link List} of {@link OrderItem} or a {@link Page} of {@link OrderItem} which fulfills the criteria.
+ * It returns a {@link List} of {@link OrderItemDTO} or a {@link Page} of {@link OrderItemDTO} which fulfills the criteria.
  */
 @Service
 @Transactional(readOnly = true)
@@ -33,33 +35,37 @@ public class OrderItemQueryService extends QueryService<OrderItem> {
 
     private final OrderItemRepository orderItemRepository;
 
-    public OrderItemQueryService(OrderItemRepository orderItemRepository) {
+    private final OrderItemMapper orderItemMapper;
+
+    public OrderItemQueryService(OrderItemRepository orderItemRepository, OrderItemMapper orderItemMapper) {
         this.orderItemRepository = orderItemRepository;
+        this.orderItemMapper = orderItemMapper;
     }
 
     /**
-     * Return a {@link List} of {@link OrderItem} which matches the criteria from the database.
+     * Return a {@link List} of {@link OrderItemDTO} which matches the criteria from the database.
      * @param criteria The object which holds all the filters, which the entities should match.
      * @return the matching entities.
      */
     @Transactional(readOnly = true)
-    public List<OrderItem> findByCriteria(OrderItemCriteria criteria) {
+    public List<OrderItemDTO> findByCriteria(OrderItemCriteria criteria) {
         log.debug("find by criteria : {}", criteria);
         final Specification<OrderItem> specification = createSpecification(criteria);
-        return orderItemRepository.findAll(specification);
+        return orderItemMapper.toDto(orderItemRepository.findAll(specification));
     }
 
     /**
-     * Return a {@link Page} of {@link OrderItem} which matches the criteria from the database.
+     * Return a {@link Page} of {@link OrderItemDTO} which matches the criteria from the database.
      * @param criteria The object which holds all the filters, which the entities should match.
      * @param page The page, which should be returned.
      * @return the matching entities.
      */
     @Transactional(readOnly = true)
-    public Page<OrderItem> findByCriteria(OrderItemCriteria criteria, Pageable page) {
+    public Page<OrderItemDTO> findByCriteria(OrderItemCriteria criteria, Pageable page) {
         log.debug("find by criteria : {}, page: {}", criteria, page);
         final Specification<OrderItem> specification = createSpecification(criteria);
-        return orderItemRepository.findAll(specification, page);
+        return orderItemRepository.findAll(specification, page)
+            .map(orderItemMapper::toDto);
     }
 
     /**

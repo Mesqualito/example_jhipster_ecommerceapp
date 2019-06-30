@@ -2,7 +2,7 @@
     "name": "ProductSubstitution",
     "fields": [
         {
-            "fieldName": "name",
+            "fieldName": "productName",
             "fieldType": "String"
         },
         {
@@ -17,12 +17,22 @@
             "fieldType": "Boolean"
         }
     ],
-    "relationships": [],
-    "changelogDate": "20190630184949",
-    "entityTableName": "product_substitution",
-    "dto": "no",
+    "relationships": [
+        {
+            "relationshipType": "many-to-many",
+            "otherEntityName": "product",
+            "otherEntityRelationshipName": "substitution",
+            "relationshipValidateRules": "required",
+            "relationshipName": "product",
+            "otherEntityField": "id",
+            "ownerSide": false
+        }
+    ],
+    "changelogDate": "20190630192535",
+    "entityTableName": "prod_substitution",
+    "dto": "mapstruct",
     "pagination": "no",
-    "service": "serviceClass",
+    "service": "serviceImpl",
     "jpaMetamodelFiltering": true,
     "fluentMethods": true,
     "clientRootFolder": "",

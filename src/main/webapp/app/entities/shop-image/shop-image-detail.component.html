@@ -36,8 +36,8 @@
                 </dd>
                 <dt><span jhiTranslate="storeApp.shopImage.product">Product</span></dt>
                 <dd>
-                    <div *ngIf="shopImage.product">
-                        <a [routerLink]="['/product', shopImage.product?.id, 'view']">{{shopImage.product?.name}}</a>
+                    <div *ngIf="shopImage.productId">
+                        <a [routerLink]="['/product', shopImage.productId, 'view']">{{shopImage.productName}}</a>
                     </div>
                 </dd>
             </dl>

@@ -62,7 +62,7 @@
         },
         {
             "relationshipType": "many-to-many",
-            "otherEntityName": "product",
+            "otherEntityName": "productSubstitution",
             "otherEntityRelationshipName": "product",
             "relationshipName": "substitution",
             "otherEntityField": "id",
@@ -74,22 +74,14 @@
             "otherEntityRelationshipName": "product",
             "relationshipName": "productCategory",
             "otherEntityField": "name"
-        },
-        {
-            "relationshipType": "many-to-many",
-            "otherEntityName": "product",
-            "otherEntityRelationshipName": "substitution",
-            "relationshipName": "product",
-            "otherEntityField": "name",
-            "ownerSide": false
         }
     ],
-    "changelogDate": "20190630184946",
+    "changelogDate": "20190630192532",
     "javadoc": "Product sold by the online-store",
     "entityTableName": "product",
-    "dto": "no",
+    "dto": "mapstruct",
     "pagination": "pagination",
-    "service": "serviceClass",
+    "service": "serviceImpl",
     "jpaMetamodelFiltering": true,
     "fluentMethods": true,
     "clientRootFolder": "",

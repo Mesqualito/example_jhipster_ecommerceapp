@@ -18,12 +18,14 @@ import net.generica.store.domain.ShopImage;
 import net.generica.store.domain.*; // for static metamodels
 import net.generica.store.repository.ShopImageRepository;
 import net.generica.store.service.dto.ShopImageCriteria;
+import net.generica.store.service.dto.ShopImageDTO;
+import net.generica.store.service.mapper.ShopImageMapper;
 
 /**
  * Service for executing complex queries for {@link ShopImage} entities in the database.
  * The main input is a {@link ShopImageCriteria} which gets converted to {@link Specification},
  * in a way that all the filters must apply.
- * It returns a {@link List} of {@link ShopImage} or a {@link Page} of {@link ShopImage} which fulfills the criteria.
+ * It returns a {@link List} of {@link ShopImageDTO} or a {@link Page} of {@link ShopImageDTO} which fulfills the criteria.
  */
 @Service
 @Transactional(readOnly = true)
@@ -33,33 +35,37 @@ public class ShopImageQueryService extends QueryService<ShopImage> {
 
     private final ShopImageRepository shopImageRepository;
 
-    public ShopImageQueryService(ShopImageRepository shopImageRepository) {
+    private final ShopImageMapper shopImageMapper;
+
+    public ShopImageQueryService(ShopImageRepository shopImageRepository, ShopImageMapper shopImageMapper) {
         this.shopImageRepository = shopImageRepository;
+        this.shopImageMapper = shopImageMapper;
     }
 
     /**
-     * Return a {@link List} of {@link ShopImage} which matches the criteria from the database.
+     * Return a {@link List} of {@link ShopImageDTO} which matches the criteria from the database.
      * @param criteria The object which holds all the filters, which the entities should match.
      * @return the matching entities.
      */
     @Transactional(readOnly = true)
-    public List<ShopImage> findByCriteria(ShopImageCriteria criteria) {
+    public List<ShopImageDTO> findByCriteria(ShopImageCriteria criteria) {
         log.debug("find by criteria : {}", criteria);
         final Specification<ShopImage> specification = createSpecification(criteria);
-        return shopImageRepository.findAll(specification);
+        return shopImageMapper.toDto(shopImageRepository.findAll(specification));
     }
 
     /**
-     * Return a {@link Page} of {@link ShopImage} which matches the criteria from the database.
+     * Return a {@link Page} of {@link ShopImageDTO} which matches the criteria from the database.
      * @param criteria The object which holds all the filters, which the entities should match.
      * @param page The page, which should be returned.
      * @return the matching entities.
      */
     @Transactional(readOnly = true)
-    public Page<ShopImage> findByCriteria(ShopImageCriteria criteria, Pageable page) {
+    public Page<ShopImageDTO> findByCriteria(ShopImageCriteria criteria, Pageable page) {
         log.debug("find by criteria : {}, page: {}", criteria, page);
         final Specification<ShopImage> specification = createSpecification(criteria);
-        return shopImageRepository.findAll(specification, page);
+        return shopImageRepository.findAll(specification, page)
+            .map(shopImageMapper::toDto);
     }
 
     /**

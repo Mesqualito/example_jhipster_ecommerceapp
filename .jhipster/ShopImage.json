@@ -46,11 +46,11 @@
             "otherEntityField": "name"
         }
     ],
-    "changelogDate": "20190630184947",
+    "changelogDate": "20190630192533",
     "entityTableName": "shop_image",
-    "dto": "no",
+    "dto": "mapstruct",
     "pagination": "no",
-    "service": "serviceClass",
+    "service": "serviceImpl",
     "jpaMetamodelFiltering": true,
     "fluentMethods": true,
     "clientRootFolder": "",

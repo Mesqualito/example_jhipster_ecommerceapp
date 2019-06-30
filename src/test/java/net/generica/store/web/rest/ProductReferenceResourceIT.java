@@ -5,6 +5,8 @@ import net.generica.store.domain.ProductReference;
 import net.generica.store.domain.Product;
 import net.generica.store.repository.ProductReferenceRepository;
 import net.generica.store.service.ProductReferenceService;
+import net.generica.store.service.dto.ProductReferenceDTO;
+import net.generica.store.service.mapper.ProductReferenceMapper;
 import net.generica.store.web.rest.errors.ExceptionTranslator;
 import net.generica.store.service.dto.ProductReferenceCriteria;
 import net.generica.store.service.ProductReferenceQueryService;
@@ -51,6 +53,9 @@ public class ProductReferenceResourceIT {
 
     @Autowired
     private ProductReferenceRepository productReferenceRepository;
+
+    @Autowired
+    private ProductReferenceMapper productReferenceMapper;
 
     @Autowired
     private ProductReferenceService productReferenceService;
@@ -129,9 +134,10 @@ public class ProductReferenceResourceIT {
         int databaseSizeBeforeCreate = productReferenceRepository.findAll().size();
 
         // Create the ProductReference
+        ProductReferenceDTO productReferenceDTO = productReferenceMapper.toDto(productReference);
         restProductReferenceMockMvc.perform(post("/api/product-references")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(productReference)))
+            .content(TestUtil.convertObjectToJsonBytes(productReferenceDTO)))
             .andExpect(status().isCreated());
 
         // Validate the ProductReference in the database
@@ -151,11 +157,12 @@ public class ProductReferenceResourceIT {
 
         // Create the ProductReference with an existing ID
         productReference.setId(1L);
+        ProductReferenceDTO productReferenceDTO = productReferenceMapper.toDto(productReference);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restProductReferenceMockMvc.perform(post("/api/product-references")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(productReference)))
+            .content(TestUtil.convertObjectToJsonBytes(productReferenceDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the ProductReference in the database
@@ -172,10 +179,11 @@ public class ProductReferenceResourceIT {
         productReference.setRefName(null);
 
         // Create the ProductReference, which fails.
+        ProductReferenceDTO productReferenceDTO = productReferenceMapper.toDto(productReference);
 
         restProductReferenceMockMvc.perform(post("/api/product-references")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(productReference)))
+            .content(TestUtil.convertObjectToJsonBytes(productReferenceDTO)))
             .andExpect(status().isBadRequest());
 
         List<ProductReference> productReferenceList = productReferenceRepository.findAll();
@@ -440,7 +448,7 @@ public class ProductReferenceResourceIT {
     @Transactional
     public void updateProductReference() throws Exception {
         // Initialize the database
-        productReferenceService.save(productReference);
+        productReferenceRepository.saveAndFlush(productReference);
 
         int databaseSizeBeforeUpdate = productReferenceRepository.findAll().size();
 
@@ -453,10 +461,11 @@ public class ProductReferenceResourceIT {
             .refName(UPDATED_REF_NAME)
             .reference(UPDATED_REFERENCE)
             .type(UPDATED_TYPE);
+        ProductReferenceDTO productReferenceDTO = productReferenceMapper.toDto(updatedProductReference);
 
         restProductReferenceMockMvc.perform(put("/api/product-references")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedProductReference)))
+            .content(TestUtil.convertObjectToJsonBytes(productReferenceDTO)))
             .andExpect(status().isOk());
 
         // Validate the ProductReference in the database
@@ -475,11 +484,12 @@ public class ProductReferenceResourceIT {
         int databaseSizeBeforeUpdate = productReferenceRepository.findAll().size();
 
         // Create the ProductReference
+        ProductReferenceDTO productReferenceDTO = productReferenceMapper.toDto(productReference);
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restProductReferenceMockMvc.perform(put("/api/product-references")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(productReference)))
+            .content(TestUtil.convertObjectToJsonBytes(productReferenceDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the ProductReference in the database
@@ -491,7 +501,7 @@ public class ProductReferenceResourceIT {
     @Transactional
     public void deleteProductReference() throws Exception {
         // Initialize the database
-        productReferenceService.save(productReference);
+        productReferenceRepository.saveAndFlush(productReference);
 
         int databaseSizeBeforeDelete = productReferenceRepository.findAll().size();
 
@@ -518,5 +528,28 @@ public class ProductReferenceResourceIT {
         assertThat(productReference1).isNotEqualTo(productReference2);
         productReference1.setId(null);
         assertThat(productReference1).isNotEqualTo(productReference2);
+    }
+
+    @Test
+    @Transactional
+    public void dtoEqualsVerifier() throws Exception {
+        TestUtil.equalsVerifier(ProductReferenceDTO.class);
+        ProductReferenceDTO productReferenceDTO1 = new ProductReferenceDTO();
+        productReferenceDTO1.setId(1L);
+        ProductReferenceDTO productReferenceDTO2 = new ProductReferenceDTO();
+        assertThat(productReferenceDTO1).isNotEqualTo(productReferenceDTO2);
+        productReferenceDTO2.setId(productReferenceDTO1.getId());
+        assertThat(productReferenceDTO1).isEqualTo(productReferenceDTO2);
+        productReferenceDTO2.setId(2L);
+        assertThat(productReferenceDTO1).isNotEqualTo(productReferenceDTO2);
+        productReferenceDTO1.setId(null);
+        assertThat(productReferenceDTO1).isNotEqualTo(productReferenceDTO2);
+    }
+
+    @Test
+    @Transactional
+    public void testEntityFromId() {
+        assertThat(productReferenceMapper.fromId(42L).getId()).isEqualTo(42);
+        assertThat(productReferenceMapper.fromId(null)).isNull();
     }
 }

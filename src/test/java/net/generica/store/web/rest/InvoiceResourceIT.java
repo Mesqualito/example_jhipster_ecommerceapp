@@ -6,6 +6,8 @@ import net.generica.store.domain.Shipment;
 import net.generica.store.domain.ProductOrder;
 import net.generica.store.repository.InvoiceRepository;
 import net.generica.store.service.InvoiceService;
+import net.generica.store.service.dto.InvoiceDTO;
+import net.generica.store.service.mapper.InvoiceMapper;
 import net.generica.store.web.rest.errors.ExceptionTranslator;
 import net.generica.store.service.dto.InvoiceCriteria;
 import net.generica.store.service.InvoiceQueryService;
@@ -66,6 +68,9 @@ public class InvoiceResourceIT {
 
     @Autowired
     private InvoiceRepository invoiceRepository;
+
+    @Autowired
+    private InvoiceMapper invoiceMapper;
 
     @Autowired
     private InvoiceService invoiceService;
@@ -170,9 +175,10 @@ public class InvoiceResourceIT {
         int databaseSizeBeforeCreate = invoiceRepository.findAll().size();
 
         // Create the Invoice
+        InvoiceDTO invoiceDTO = invoiceMapper.toDto(invoice);
         restInvoiceMockMvc.perform(post("/api/invoices")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(invoice)))
+            .content(TestUtil.convertObjectToJsonBytes(invoiceDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Invoice in the database
@@ -195,11 +201,12 @@ public class InvoiceResourceIT {
 
         // Create the Invoice with an existing ID
         invoice.setId(1L);
+        InvoiceDTO invoiceDTO = invoiceMapper.toDto(invoice);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restInvoiceMockMvc.perform(post("/api/invoices")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(invoice)))
+            .content(TestUtil.convertObjectToJsonBytes(invoiceDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Invoice in the database
@@ -216,10 +223,11 @@ public class InvoiceResourceIT {
         invoice.setDate(null);
 
         // Create the Invoice, which fails.
+        InvoiceDTO invoiceDTO = invoiceMapper.toDto(invoice);
 
         restInvoiceMockMvc.perform(post("/api/invoices")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(invoice)))
+            .content(TestUtil.convertObjectToJsonBytes(invoiceDTO)))
             .andExpect(status().isBadRequest());
 
         List<Invoice> invoiceList = invoiceRepository.findAll();
@@ -234,10 +242,11 @@ public class InvoiceResourceIT {
         invoice.setStatus(null);
 
         // Create the Invoice, which fails.
+        InvoiceDTO invoiceDTO = invoiceMapper.toDto(invoice);
 
         restInvoiceMockMvc.perform(post("/api/invoices")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(invoice)))
+            .content(TestUtil.convertObjectToJsonBytes(invoiceDTO)))
             .andExpect(status().isBadRequest());
 
         List<Invoice> invoiceList = invoiceRepository.findAll();
@@ -252,10 +261,11 @@ public class InvoiceResourceIT {
         invoice.setPaymentMethod(null);
 
         // Create the Invoice, which fails.
+        InvoiceDTO invoiceDTO = invoiceMapper.toDto(invoice);
 
         restInvoiceMockMvc.perform(post("/api/invoices")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(invoice)))
+            .content(TestUtil.convertObjectToJsonBytes(invoiceDTO)))
             .andExpect(status().isBadRequest());
 
         List<Invoice> invoiceList = invoiceRepository.findAll();
@@ -270,10 +280,11 @@ public class InvoiceResourceIT {
         invoice.setPaymentDate(null);
 
         // Create the Invoice, which fails.
+        InvoiceDTO invoiceDTO = invoiceMapper.toDto(invoice);
 
         restInvoiceMockMvc.perform(post("/api/invoices")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(invoice)))
+            .content(TestUtil.convertObjectToJsonBytes(invoiceDTO)))
             .andExpect(status().isBadRequest());
 
         List<Invoice> invoiceList = invoiceRepository.findAll();
@@ -288,10 +299,11 @@ public class InvoiceResourceIT {
         invoice.setPaymentAmount(null);
 
         // Create the Invoice, which fails.
+        InvoiceDTO invoiceDTO = invoiceMapper.toDto(invoice);
 
         restInvoiceMockMvc.perform(post("/api/invoices")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(invoice)))
+            .content(TestUtil.convertObjectToJsonBytes(invoiceDTO)))
             .andExpect(status().isBadRequest());
 
         List<Invoice> invoiceList = invoiceRepository.findAll();
@@ -306,10 +318,11 @@ public class InvoiceResourceIT {
         invoice.setCode(null);
 
         // Create the Invoice, which fails.
+        InvoiceDTO invoiceDTO = invoiceMapper.toDto(invoice);
 
         restInvoiceMockMvc.perform(post("/api/invoices")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(invoice)))
+            .content(TestUtil.convertObjectToJsonBytes(invoiceDTO)))
             .andExpect(status().isBadRequest());
 
         List<Invoice> invoiceList = invoiceRepository.findAll();
@@ -716,7 +729,7 @@ public class InvoiceResourceIT {
     @Transactional
     public void updateInvoice() throws Exception {
         // Initialize the database
-        invoiceService.save(invoice);
+        invoiceRepository.saveAndFlush(invoice);
 
         int databaseSizeBeforeUpdate = invoiceRepository.findAll().size();
 
@@ -732,10 +745,11 @@ public class InvoiceResourceIT {
             .paymentDate(UPDATED_PAYMENT_DATE)
             .paymentAmount(UPDATED_PAYMENT_AMOUNT)
             .code(UPDATED_CODE);
+        InvoiceDTO invoiceDTO = invoiceMapper.toDto(updatedInvoice);
 
         restInvoiceMockMvc.perform(put("/api/invoices")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedInvoice)))
+            .content(TestUtil.convertObjectToJsonBytes(invoiceDTO)))
             .andExpect(status().isOk());
 
         // Validate the Invoice in the database
@@ -757,11 +771,12 @@ public class InvoiceResourceIT {
         int databaseSizeBeforeUpdate = invoiceRepository.findAll().size();
 
         // Create the Invoice
+        InvoiceDTO invoiceDTO = invoiceMapper.toDto(invoice);
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restInvoiceMockMvc.perform(put("/api/invoices")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(invoice)))
+            .content(TestUtil.convertObjectToJsonBytes(invoiceDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Invoice in the database
@@ -773,7 +788,7 @@ public class InvoiceResourceIT {
     @Transactional
     public void deleteInvoice() throws Exception {
         // Initialize the database
-        invoiceService.save(invoice);
+        invoiceRepository.saveAndFlush(invoice);
 
         int databaseSizeBeforeDelete = invoiceRepository.findAll().size();
 
@@ -800,5 +815,28 @@ public class InvoiceResourceIT {
         assertThat(invoice1).isNotEqualTo(invoice2);
         invoice1.setId(null);
         assertThat(invoice1).isNotEqualTo(invoice2);
+    }
+
+    @Test
+    @Transactional
+    public void dtoEqualsVerifier() throws Exception {
+        TestUtil.equalsVerifier(InvoiceDTO.class);
+        InvoiceDTO invoiceDTO1 = new InvoiceDTO();
+        invoiceDTO1.setId(1L);
+        InvoiceDTO invoiceDTO2 = new InvoiceDTO();
+        assertThat(invoiceDTO1).isNotEqualTo(invoiceDTO2);
+        invoiceDTO2.setId(invoiceDTO1.getId());
+        assertThat(invoiceDTO1).isEqualTo(invoiceDTO2);
+        invoiceDTO2.setId(2L);
+        assertThat(invoiceDTO1).isNotEqualTo(invoiceDTO2);
+        invoiceDTO1.setId(null);
+        assertThat(invoiceDTO1).isNotEqualTo(invoiceDTO2);
+    }
+
+    @Test
+    @Transactional
+    public void testEntityFromId() {
+        assertThat(invoiceMapper.fromId(42L).getId()).isEqualTo(42);
+        assertThat(invoiceMapper.fromId(null)).isNull();
     }
 }

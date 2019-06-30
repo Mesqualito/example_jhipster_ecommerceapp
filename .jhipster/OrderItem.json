@@ -46,11 +46,11 @@
             "otherEntityField": "code"
         }
     ],
-    "changelogDate": "20190630184953",
+    "changelogDate": "20190630192539",
     "entityTableName": "order_item",
-    "dto": "no",
+    "dto": "mapstruct",
     "pagination": "pagination",
-    "service": "serviceClass",
+    "service": "serviceImpl",
     "jpaMetamodelFiltering": true,
     "fluentMethods": true,
     "clientRootFolder": "",

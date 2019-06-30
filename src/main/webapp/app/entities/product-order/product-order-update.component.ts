@@ -26,7 +26,7 @@ export class ProductOrderUpdateComponent implements OnInit {
     placedDate: [null, [Validators.required]],
     status: [null, [Validators.required]],
     code: [null, [Validators.required]],
-    customer: [null, Validators.required]
+    customerId: [null, Validators.required]
   });
 
   constructor(
@@ -57,7 +57,7 @@ export class ProductOrderUpdateComponent implements OnInit {
       placedDate: productOrder.placedDate != null ? productOrder.placedDate.format(DATE_TIME_FORMAT) : null,
       status: productOrder.status,
       code: productOrder.code,
-      customer: productOrder.customer
+      customerId: productOrder.customerId
     });
   }
 
@@ -83,7 +83,7 @@ export class ProductOrderUpdateComponent implements OnInit {
         this.editForm.get(['placedDate']).value != null ? moment(this.editForm.get(['placedDate']).value, DATE_TIME_FORMAT) : undefined,
       status: this.editForm.get(['status']).value,
       code: this.editForm.get(['code']).value,
-      customer: this.editForm.get(['customer']).value
+      customerId: this.editForm.get(['customerId']).value
     };
   }
 

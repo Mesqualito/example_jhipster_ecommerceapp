@@ -26,7 +26,7 @@ export class ProductSubstitutionUpdatePage {
   pageTitle = element(by.id('jhi-product-substitution-heading'));
   saveButton = element(by.id('save-entity'));
   cancelButton = element(by.id('cancel-save'));
-  nameInput = element(by.id('field_name'));
+  productNameInput = element(by.id('field_productName'));
   exchangeableInput = element(by.id('field_exchangeable'));
   checkedInput = element(by.id('field_checked'));
 
@@ -34,12 +34,12 @@ export class ProductSubstitutionUpdatePage {
     return this.pageTitle.getAttribute('jhiTranslate');
   }
 
-  async setNameInput(name) {
-    await this.nameInput.sendKeys(name);
+  async setProductNameInput(productName) {
+    await this.productNameInput.sendKeys(productName);
   }
 
-  async getNameInput() {
-    return await this.nameInput.getAttribute('value');
+  async getProductNameInput() {
+    return await this.productNameInput.getAttribute('value');
   }
 
   getExchangeableInput(timeout?: number) {
@@ -48,6 +48,7 @@ export class ProductSubstitutionUpdatePage {
   getCheckedInput(timeout?: number) {
     return this.checkedInput;
   }
+
   async save(timeout?: number) {
     await this.saveButton.click();
   }

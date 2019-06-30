@@ -21,11 +21,11 @@
             "relationshipName": "product"
         }
     ],
-    "changelogDate": "20190630184950",
+    "changelogDate": "20190630192536",
     "entityTableName": "product_category",
-    "dto": "no",
+    "dto": "mapstruct",
     "pagination": "no",
-    "service": "serviceClass",
+    "service": "serviceImpl",
     "jpaMetamodelFiltering": true,
     "fluentMethods": true,
     "clientRootFolder": "",

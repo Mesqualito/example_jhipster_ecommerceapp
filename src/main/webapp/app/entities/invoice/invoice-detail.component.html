@@ -35,8 +35,8 @@
                 </dd>
                 <dt><span jhiTranslate="storeApp.invoice.order">Order</span></dt>
                 <dd>
-                    <div *ngIf="invoice.order">
-                        <a [routerLink]="['/product-order', invoice.order?.id, 'view']">{{invoice.order?.code}}</a>
+                    <div *ngIf="invoice.orderId">
+                        <a [routerLink]="['/product-order', invoice.orderId, 'view']">{{invoice.orderCode}}</a>
                     </div>
                 </dd>
             </dl>

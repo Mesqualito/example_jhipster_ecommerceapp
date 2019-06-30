@@ -1,8 +1,8 @@
 package net.generica.store.web.rest;
 
-import net.generica.store.domain.OrderItem;
 import net.generica.store.service.OrderItemService;
 import net.generica.store.web.rest.errors.BadRequestAlertException;
+import net.generica.store.service.dto.OrderItemDTO;
 import net.generica.store.service.dto.OrderItemCriteria;
 import net.generica.store.service.OrderItemQueryService;
 
@@ -54,17 +54,17 @@ public class OrderItemResource {
     /**
      * {@code POST  /order-items} : Create a new orderItem.
      *
-     * @param orderItem the orderItem to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new orderItem, or with status {@code 400 (Bad Request)} if the orderItem has already an ID.
+     * @param orderItemDTO the orderItemDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new orderItemDTO, or with status {@code 400 (Bad Request)} if the orderItem has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/order-items")
-    public ResponseEntity<OrderItem> createOrderItem(@Valid @RequestBody OrderItem orderItem) throws URISyntaxException {
-        log.debug("REST request to save OrderItem : {}", orderItem);
-        if (orderItem.getId() != null) {
+    public ResponseEntity<OrderItemDTO> createOrderItem(@Valid @RequestBody OrderItemDTO orderItemDTO) throws URISyntaxException {
+        log.debug("REST request to save OrderItem : {}", orderItemDTO);
+        if (orderItemDTO.getId() != null) {
             throw new BadRequestAlertException("A new orderItem cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        OrderItem result = orderItemService.save(orderItem);
+        OrderItemDTO result = orderItemService.save(orderItemDTO);
         return ResponseEntity.created(new URI("/api/order-items/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -73,21 +73,21 @@ public class OrderItemResource {
     /**
      * {@code PUT  /order-items} : Updates an existing orderItem.
      *
-     * @param orderItem the orderItem to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated orderItem,
-     * or with status {@code 400 (Bad Request)} if the orderItem is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the orderItem couldn't be updated.
+     * @param orderItemDTO the orderItemDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated orderItemDTO,
+     * or with status {@code 400 (Bad Request)} if the orderItemDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the orderItemDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/order-items")
-    public ResponseEntity<OrderItem> updateOrderItem(@Valid @RequestBody OrderItem orderItem) throws URISyntaxException {
-        log.debug("REST request to update OrderItem : {}", orderItem);
-        if (orderItem.getId() == null) {
+    public ResponseEntity<OrderItemDTO> updateOrderItem(@Valid @RequestBody OrderItemDTO orderItemDTO) throws URISyntaxException {
+        log.debug("REST request to update OrderItem : {}", orderItemDTO);
+        if (orderItemDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        OrderItem result = orderItemService.save(orderItem);
+        OrderItemDTO result = orderItemService.save(orderItemDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, orderItem.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, orderItemDTO.getId().toString()))
             .body(result);
     }
 
@@ -101,9 +101,9 @@ public class OrderItemResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of orderItems in body.
      */
     @GetMapping("/order-items")
-    public ResponseEntity<List<OrderItem>> getAllOrderItems(OrderItemCriteria criteria, Pageable pageable, @RequestParam MultiValueMap<String, String> queryParams, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<List<OrderItemDTO>> getAllOrderItems(OrderItemCriteria criteria, Pageable pageable, @RequestParam MultiValueMap<String, String> queryParams, UriComponentsBuilder uriBuilder) {
         log.debug("REST request to get OrderItems by criteria: {}", criteria);
-        Page<OrderItem> page = orderItemQueryService.findByCriteria(criteria, pageable);
+        Page<OrderItemDTO> page = orderItemQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(uriBuilder.queryParams(queryParams), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
@@ -123,20 +123,20 @@ public class OrderItemResource {
     /**
      * {@code GET  /order-items/:id} : get the "id" orderItem.
      *
-     * @param id the id of the orderItem to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the orderItem, or with status {@code 404 (Not Found)}.
+     * @param id the id of the orderItemDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the orderItemDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/order-items/{id}")
-    public ResponseEntity<OrderItem> getOrderItem(@PathVariable Long id) {
+    public ResponseEntity<OrderItemDTO> getOrderItem(@PathVariable Long id) {
         log.debug("REST request to get OrderItem : {}", id);
-        Optional<OrderItem> orderItem = orderItemService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(orderItem);
+        Optional<OrderItemDTO> orderItemDTO = orderItemService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(orderItemDTO);
     }
 
     /**
      * {@code DELETE  /order-items/:id} : delete the "id" orderItem.
      *
-     * @param id the id of the orderItem to delete.
+     * @param id the id of the orderItemDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/order-items/{id}")

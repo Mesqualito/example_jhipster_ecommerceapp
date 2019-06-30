@@ -1,4 +1,3 @@
-import { IUser } from 'app/core/user/user.model';
 import { IProductOrder } from 'app/shared/model/product-order.model';
 
 export interface ICustomer {
@@ -15,7 +14,8 @@ export interface ICustomer {
   plz?: string;
   city?: string;
   country?: string;
-  user?: IUser;
+  userLogin?: string;
+  userId?: number;
   orders?: IProductOrder[];
 }
 
@@ -34,7 +34,8 @@ export class Customer implements ICustomer {
     public plz?: string,
     public city?: string,
     public country?: string,
-    public user?: IUser,
+    public userLogin?: string,
+    public userId?: number,
     public orders?: IProductOrder[]
   ) {}
 }

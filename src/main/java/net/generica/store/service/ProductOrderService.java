@@ -1,42 +1,24 @@
 package net.generica.store.service;
 
-import net.generica.store.domain.ProductOrder;
-import net.generica.store.repository.ProductOrderRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import net.generica.store.service.dto.ProductOrderDTO;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 /**
- * Service Implementation for managing {@link ProductOrder}.
+ * Service Interface for managing {@link net.generica.store.domain.ProductOrder}.
  */
-@Service
-@Transactional
-public class ProductOrderService {
-
-    private final Logger log = LoggerFactory.getLogger(ProductOrderService.class);
-
-    private final ProductOrderRepository productOrderRepository;
-
-    public ProductOrderService(ProductOrderRepository productOrderRepository) {
-        this.productOrderRepository = productOrderRepository;
-    }
+public interface ProductOrderService {
 
     /**
      * Save a productOrder.
      *
-     * @param productOrder the entity to save.
+     * @param productOrderDTO the entity to save.
      * @return the persisted entity.
      */
-    public ProductOrder save(ProductOrder productOrder) {
-        log.debug("Request to save ProductOrder : {}", productOrder);
-        return productOrderRepository.save(productOrder);
-    }
+    ProductOrderDTO save(ProductOrderDTO productOrderDTO);
 
     /**
      * Get all the productOrders.
@@ -44,32 +26,21 @@ public class ProductOrderService {
      * @param pageable the pagination information.
      * @return the list of entities.
      */
-    @Transactional(readOnly = true)
-    public Page<ProductOrder> findAll(Pageable pageable) {
-        log.debug("Request to get all ProductOrders");
-        return productOrderRepository.findAll(pageable);
-    }
+    Page<ProductOrderDTO> findAll(Pageable pageable);
 
 
     /**
-     * Get one productOrder by id.
+     * Get the "id" productOrder.
      *
      * @param id the id of the entity.
      * @return the entity.
      */
-    @Transactional(readOnly = true)
-    public Optional<ProductOrder> findOne(Long id) {
-        log.debug("Request to get ProductOrder : {}", id);
-        return productOrderRepository.findById(id);
-    }
+    Optional<ProductOrderDTO> findOne(Long id);
 
     /**
-     * Delete the productOrder by id.
+     * Delete the "id" productOrder.
      *
      * @param id the id of the entity.
      */
-    public void delete(Long id) {
-        log.debug("Request to delete ProductOrder : {}", id);
-        productOrderRepository.deleteById(id);
-    }
+    void delete(Long id);
 }

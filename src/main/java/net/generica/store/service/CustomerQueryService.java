@@ -18,12 +18,14 @@ import net.generica.store.domain.Customer;
 import net.generica.store.domain.*; // for static metamodels
 import net.generica.store.repository.CustomerRepository;
 import net.generica.store.service.dto.CustomerCriteria;
+import net.generica.store.service.dto.CustomerDTO;
+import net.generica.store.service.mapper.CustomerMapper;
 
 /**
  * Service for executing complex queries for {@link Customer} entities in the database.
  * The main input is a {@link CustomerCriteria} which gets converted to {@link Specification},
  * in a way that all the filters must apply.
- * It returns a {@link List} of {@link Customer} or a {@link Page} of {@link Customer} which fulfills the criteria.
+ * It returns a {@link List} of {@link CustomerDTO} or a {@link Page} of {@link CustomerDTO} which fulfills the criteria.
  */
 @Service
 @Transactional(readOnly = true)
@@ -33,33 +35,37 @@ public class CustomerQueryService extends QueryService<Customer> {
 
     private final CustomerRepository customerRepository;
 
-    public CustomerQueryService(CustomerRepository customerRepository) {
+    private final CustomerMapper customerMapper;
+
+    public CustomerQueryService(CustomerRepository customerRepository, CustomerMapper customerMapper) {
         this.customerRepository = customerRepository;
+        this.customerMapper = customerMapper;
     }
 
     /**
-     * Return a {@link List} of {@link Customer} which matches the criteria from the database.
+     * Return a {@link List} of {@link CustomerDTO} which matches the criteria from the database.
      * @param criteria The object which holds all the filters, which the entities should match.
      * @return the matching entities.
      */
     @Transactional(readOnly = true)
-    public List<Customer> findByCriteria(CustomerCriteria criteria) {
+    public List<CustomerDTO> findByCriteria(CustomerCriteria criteria) {
         log.debug("find by criteria : {}", criteria);
         final Specification<Customer> specification = createSpecification(criteria);
-        return customerRepository.findAll(specification);
+        return customerMapper.toDto(customerRepository.findAll(specification));
     }
 
     /**
-     * Return a {@link Page} of {@link Customer} which matches the criteria from the database.
+     * Return a {@link Page} of {@link CustomerDTO} which matches the criteria from the database.
      * @param criteria The object which holds all the filters, which the entities should match.
      * @param page The page, which should be returned.
      * @return the matching entities.
      */
     @Transactional(readOnly = true)
-    public Page<Customer> findByCriteria(CustomerCriteria criteria, Pageable page) {
+    public Page<CustomerDTO> findByCriteria(CustomerCriteria criteria, Pageable page) {
         log.debug("find by criteria : {}, page: {}", criteria, page);
         final Specification<Customer> specification = createSpecification(criteria);
-        return customerRepository.findAll(specification, page);
+        return customerRepository.findAll(specification, page)
+            .map(customerMapper::toDto);
     }
 
     /**

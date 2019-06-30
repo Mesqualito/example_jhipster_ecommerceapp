@@ -18,12 +18,14 @@ import net.generica.store.domain.ProductCategory;
 import net.generica.store.domain.*; // for static metamodels
 import net.generica.store.repository.ProductCategoryRepository;
 import net.generica.store.service.dto.ProductCategoryCriteria;
+import net.generica.store.service.dto.ProductCategoryDTO;
+import net.generica.store.service.mapper.ProductCategoryMapper;
 
 /**
  * Service for executing complex queries for {@link ProductCategory} entities in the database.
  * The main input is a {@link ProductCategoryCriteria} which gets converted to {@link Specification},
  * in a way that all the filters must apply.
- * It returns a {@link List} of {@link ProductCategory} or a {@link Page} of {@link ProductCategory} which fulfills the criteria.
+ * It returns a {@link List} of {@link ProductCategoryDTO} or a {@link Page} of {@link ProductCategoryDTO} which fulfills the criteria.
  */
 @Service
 @Transactional(readOnly = true)
@@ -33,33 +35,37 @@ public class ProductCategoryQueryService extends QueryService<ProductCategory> {
 
     private final ProductCategoryRepository productCategoryRepository;
 
-    public ProductCategoryQueryService(ProductCategoryRepository productCategoryRepository) {
+    private final ProductCategoryMapper productCategoryMapper;
+
+    public ProductCategoryQueryService(ProductCategoryRepository productCategoryRepository, ProductCategoryMapper productCategoryMapper) {
         this.productCategoryRepository = productCategoryRepository;
+        this.productCategoryMapper = productCategoryMapper;
     }
 
     /**
-     * Return a {@link List} of {@link ProductCategory} which matches the criteria from the database.
+     * Return a {@link List} of {@link ProductCategoryDTO} which matches the criteria from the database.
      * @param criteria The object which holds all the filters, which the entities should match.
      * @return the matching entities.
      */
     @Transactional(readOnly = true)
-    public List<ProductCategory> findByCriteria(ProductCategoryCriteria criteria) {
+    public List<ProductCategoryDTO> findByCriteria(ProductCategoryCriteria criteria) {
         log.debug("find by criteria : {}", criteria);
         final Specification<ProductCategory> specification = createSpecification(criteria);
-        return productCategoryRepository.findAll(specification);
+        return productCategoryMapper.toDto(productCategoryRepository.findAll(specification));
     }
 
     /**
-     * Return a {@link Page} of {@link ProductCategory} which matches the criteria from the database.
+     * Return a {@link Page} of {@link ProductCategoryDTO} which matches the criteria from the database.
      * @param criteria The object which holds all the filters, which the entities should match.
      * @param page The page, which should be returned.
      * @return the matching entities.
      */
     @Transactional(readOnly = true)
-    public Page<ProductCategory> findByCriteria(ProductCategoryCriteria criteria, Pageable page) {
+    public Page<ProductCategoryDTO> findByCriteria(ProductCategoryCriteria criteria, Pageable page) {
         log.debug("find by criteria : {}, page: {}", criteria, page);
         final Specification<ProductCategory> specification = createSpecification(criteria);
-        return productCategoryRepository.findAll(specification, page);
+        return productCategoryRepository.findAll(specification, page)
+            .map(productCategoryMapper::toDto);
     }
 
     /**

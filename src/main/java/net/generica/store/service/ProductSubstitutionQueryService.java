@@ -18,12 +18,14 @@ import net.generica.store.domain.ProductSubstitution;
 import net.generica.store.domain.*; // for static metamodels
 import net.generica.store.repository.ProductSubstitutionRepository;
 import net.generica.store.service.dto.ProductSubstitutionCriteria;
+import net.generica.store.service.dto.ProductSubstitutionDTO;
+import net.generica.store.service.mapper.ProductSubstitutionMapper;
 
 /**
  * Service for executing complex queries for {@link ProductSubstitution} entities in the database.
  * The main input is a {@link ProductSubstitutionCriteria} which gets converted to {@link Specification},
  * in a way that all the filters must apply.
- * It returns a {@link List} of {@link ProductSubstitution} or a {@link Page} of {@link ProductSubstitution} which fulfills the criteria.
+ * It returns a {@link List} of {@link ProductSubstitutionDTO} or a {@link Page} of {@link ProductSubstitutionDTO} which fulfills the criteria.
  */
 @Service
 @Transactional(readOnly = true)
@@ -33,33 +35,37 @@ public class ProductSubstitutionQueryService extends QueryService<ProductSubstit
 
     private final ProductSubstitutionRepository productSubstitutionRepository;
 
-    public ProductSubstitutionQueryService(ProductSubstitutionRepository productSubstitutionRepository) {
+    private final ProductSubstitutionMapper productSubstitutionMapper;
+
+    public ProductSubstitutionQueryService(ProductSubstitutionRepository productSubstitutionRepository, ProductSubstitutionMapper productSubstitutionMapper) {
         this.productSubstitutionRepository = productSubstitutionRepository;
+        this.productSubstitutionMapper = productSubstitutionMapper;
     }
 
     /**
-     * Return a {@link List} of {@link ProductSubstitution} which matches the criteria from the database.
+     * Return a {@link List} of {@link ProductSubstitutionDTO} which matches the criteria from the database.
      * @param criteria The object which holds all the filters, which the entities should match.
      * @return the matching entities.
      */
     @Transactional(readOnly = true)
-    public List<ProductSubstitution> findByCriteria(ProductSubstitutionCriteria criteria) {
+    public List<ProductSubstitutionDTO> findByCriteria(ProductSubstitutionCriteria criteria) {
         log.debug("find by criteria : {}", criteria);
         final Specification<ProductSubstitution> specification = createSpecification(criteria);
-        return productSubstitutionRepository.findAll(specification);
+        return productSubstitutionMapper.toDto(productSubstitutionRepository.findAll(specification));
     }
 
     /**
-     * Return a {@link Page} of {@link ProductSubstitution} which matches the criteria from the database.
+     * Return a {@link Page} of {@link ProductSubstitutionDTO} which matches the criteria from the database.
      * @param criteria The object which holds all the filters, which the entities should match.
      * @param page The page, which should be returned.
      * @return the matching entities.
      */
     @Transactional(readOnly = true)
-    public Page<ProductSubstitution> findByCriteria(ProductSubstitutionCriteria criteria, Pageable page) {
+    public Page<ProductSubstitutionDTO> findByCriteria(ProductSubstitutionCriteria criteria, Pageable page) {
         log.debug("find by criteria : {}, page: {}", criteria, page);
         final Specification<ProductSubstitution> specification = createSpecification(criteria);
-        return productSubstitutionRepository.findAll(specification, page);
+        return productSubstitutionRepository.findAll(specification, page)
+            .map(productSubstitutionMapper::toDto);
     }
 
     /**
@@ -85,14 +91,18 @@ public class ProductSubstitutionQueryService extends QueryService<ProductSubstit
             if (criteria.getId() != null) {
                 specification = specification.and(buildSpecification(criteria.getId(), ProductSubstitution_.id));
             }
-            if (criteria.getName() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getName(), ProductSubstitution_.name));
+            if (criteria.getProductName() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getProductName(), ProductSubstitution_.productName));
             }
             if (criteria.getExchangeable() != null) {
                 specification = specification.and(buildSpecification(criteria.getExchangeable(), ProductSubstitution_.exchangeable));
             }
             if (criteria.getChecked() != null) {
                 specification = specification.and(buildSpecification(criteria.getChecked(), ProductSubstitution_.checked));
+            }
+            if (criteria.getProductId() != null) {
+                specification = specification.and(buildSpecification(criteria.getProductId(),
+                    root -> root.join(ProductSubstitution_.products, JoinType.LEFT).get(Product_.id)));
             }
         }
         return specification;

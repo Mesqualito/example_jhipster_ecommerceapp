@@ -32,7 +32,7 @@ export class CustomerUpdateComponent implements OnInit {
     plz: [null, [Validators.required]],
     city: [null, [Validators.required]],
     country: [],
-    user: [null, Validators.required]
+    userId: [null, Validators.required]
   });
 
   constructor(
@@ -72,7 +72,7 @@ export class CustomerUpdateComponent implements OnInit {
       plz: customer.plz,
       city: customer.city,
       country: customer.country,
-      user: customer.user
+      userId: customer.userId
     });
   }
 
@@ -106,7 +106,7 @@ export class CustomerUpdateComponent implements OnInit {
       plz: this.editForm.get(['plz']).value,
       city: this.editForm.get(['city']).value,
       country: this.editForm.get(['country']).value,
-      user: this.editForm.get(['user']).value
+      userId: this.editForm.get(['userId']).value
     };
   }
 

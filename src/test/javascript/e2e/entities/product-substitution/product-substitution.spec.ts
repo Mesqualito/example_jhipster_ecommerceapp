@@ -15,7 +15,7 @@ describe('ProductSubstitution e2e test', () => {
   let signInPage: SignInPage;
   let productSubstitutionUpdatePage: ProductSubstitutionUpdatePage;
   let productSubstitutionComponentsPage: ProductSubstitutionComponentsPage;
-  let productSubstitutionDeleteDialog: ProductSubstitutionDeleteDialog;
+  /*let productSubstitutionDeleteDialog: ProductSubstitutionDeleteDialog;*/
 
   before(async () => {
     await browser.get('/');
@@ -39,48 +39,47 @@ describe('ProductSubstitution e2e test', () => {
     await productSubstitutionUpdatePage.cancel();
   });
 
-  it('should create and save ProductSubstitutions', async () => {
-    const nbButtonsBeforeCreate = await productSubstitutionComponentsPage.countDeleteButtons();
+  /* it('should create and save ProductSubstitutions', async () => {
+        const nbButtonsBeforeCreate = await productSubstitutionComponentsPage.countDeleteButtons();
 
-    await productSubstitutionComponentsPage.clickOnCreateButton();
-    await promise.all([productSubstitutionUpdatePage.setNameInput('name')]);
-    expect(await productSubstitutionUpdatePage.getNameInput()).to.eq('name', 'Expected Name value to be equals to name');
-    const selectedExchangeable = productSubstitutionUpdatePage.getExchangeableInput();
-    if (await selectedExchangeable.isSelected()) {
-      await productSubstitutionUpdatePage.getExchangeableInput().click();
-      expect(await productSubstitutionUpdatePage.getExchangeableInput().isSelected(), 'Expected exchangeable not to be selected').to.be
-        .false;
-    } else {
-      await productSubstitutionUpdatePage.getExchangeableInput().click();
-      expect(await productSubstitutionUpdatePage.getExchangeableInput().isSelected(), 'Expected exchangeable to be selected').to.be.true;
-    }
-    const selectedChecked = productSubstitutionUpdatePage.getCheckedInput();
-    if (await selectedChecked.isSelected()) {
-      await productSubstitutionUpdatePage.getCheckedInput().click();
-      expect(await productSubstitutionUpdatePage.getCheckedInput().isSelected(), 'Expected checked not to be selected').to.be.false;
-    } else {
-      await productSubstitutionUpdatePage.getCheckedInput().click();
-      expect(await productSubstitutionUpdatePage.getCheckedInput().isSelected(), 'Expected checked to be selected').to.be.true;
-    }
-    await productSubstitutionUpdatePage.save();
-    expect(await productSubstitutionUpdatePage.getSaveButton().isPresent(), 'Expected save button disappear').to.be.false;
+        await productSubstitutionComponentsPage.clickOnCreateButton();
+        await promise.all([
+            productSubstitutionUpdatePage.setProductNameInput('productName'),
+        ]);
+        expect(await productSubstitutionUpdatePage.getProductNameInput()).to.eq('productName', 'Expected ProductName value to be equals to productName');
+        const selectedExchangeable = productSubstitutionUpdatePage.getExchangeableInput();
+        if (await selectedExchangeable.isSelected()) {
+            await productSubstitutionUpdatePage.getExchangeableInput().click();
+            expect(await productSubstitutionUpdatePage.getExchangeableInput().isSelected(), 'Expected exchangeable not to be selected').to.be.false;
+        } else {
+            await productSubstitutionUpdatePage.getExchangeableInput().click();
+            expect(await productSubstitutionUpdatePage.getExchangeableInput().isSelected(), 'Expected exchangeable to be selected').to.be.true;
+        }
+        const selectedChecked = productSubstitutionUpdatePage.getCheckedInput();
+        if (await selectedChecked.isSelected()) {
+            await productSubstitutionUpdatePage.getCheckedInput().click();
+            expect(await productSubstitutionUpdatePage.getCheckedInput().isSelected(), 'Expected checked not to be selected').to.be.false;
+        } else {
+            await productSubstitutionUpdatePage.getCheckedInput().click();
+            expect(await productSubstitutionUpdatePage.getCheckedInput().isSelected(), 'Expected checked to be selected').to.be.true;
+        }
+        await productSubstitutionUpdatePage.save();
+        expect(await productSubstitutionUpdatePage.getSaveButton().isPresent(), 'Expected save button disappear').to.be.false;
 
-    expect(await productSubstitutionComponentsPage.countDeleteButtons()).to.eq(
-      nbButtonsBeforeCreate + 1,
-      'Expected one more entry in the table'
-    );
-  });
+        expect(await productSubstitutionComponentsPage.countDeleteButtons()).to.eq(nbButtonsBeforeCreate + 1, 'Expected one more entry in the table');
+    });*/
 
-  it('should delete last ProductSubstitution', async () => {
-    const nbButtonsBeforeDelete = await productSubstitutionComponentsPage.countDeleteButtons();
-    await productSubstitutionComponentsPage.clickOnLastDeleteButton();
+  /* it('should delete last ProductSubstitution', async () => {
+        const nbButtonsBeforeDelete = await productSubstitutionComponentsPage.countDeleteButtons();
+        await productSubstitutionComponentsPage.clickOnLastDeleteButton();
 
-    productSubstitutionDeleteDialog = new ProductSubstitutionDeleteDialog();
-    expect(await productSubstitutionDeleteDialog.getDialogTitle()).to.eq('storeApp.productSubstitution.delete.question');
-    await productSubstitutionDeleteDialog.clickOnConfirmButton();
+        productSubstitutionDeleteDialog = new ProductSubstitutionDeleteDialog();
+        expect(await productSubstitutionDeleteDialog.getDialogTitle())
+            .to.eq('storeApp.productSubstitution.delete.question');
+        await productSubstitutionDeleteDialog.clickOnConfirmButton();
 
-    expect(await productSubstitutionComponentsPage.countDeleteButtons()).to.eq(nbButtonsBeforeDelete - 1);
-  });
+        expect(await productSubstitutionComponentsPage.countDeleteButtons()).to.eq(nbButtonsBeforeDelete - 1);
+    });*/
 
   after(async () => {
     await navBarPage.autoSignOut();

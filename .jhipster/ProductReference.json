@@ -30,11 +30,11 @@
             "otherEntityField": "name"
         }
     ],
-    "changelogDate": "20190630184948",
-    "entityTableName": "product_reference",
-    "dto": "no",
+    "changelogDate": "20190630192534",
+    "entityTableName": "prod_reference",
+    "dto": "mapstruct",
     "pagination": "no",
-    "service": "serviceClass",
+    "service": "serviceImpl",
     "jpaMetamodelFiltering": true,
     "fluentMethods": true,
     "clientRootFolder": "",

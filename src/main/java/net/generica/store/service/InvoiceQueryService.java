@@ -18,12 +18,14 @@ import net.generica.store.domain.Invoice;
 import net.generica.store.domain.*; // for static metamodels
 import net.generica.store.repository.InvoiceRepository;
 import net.generica.store.service.dto.InvoiceCriteria;
+import net.generica.store.service.dto.InvoiceDTO;
+import net.generica.store.service.mapper.InvoiceMapper;
 
 /**
  * Service for executing complex queries for {@link Invoice} entities in the database.
  * The main input is a {@link InvoiceCriteria} which gets converted to {@link Specification},
  * in a way that all the filters must apply.
- * It returns a {@link List} of {@link Invoice} or a {@link Page} of {@link Invoice} which fulfills the criteria.
+ * It returns a {@link List} of {@link InvoiceDTO} or a {@link Page} of {@link InvoiceDTO} which fulfills the criteria.
  */
 @Service
 @Transactional(readOnly = true)
@@ -33,33 +35,37 @@ public class InvoiceQueryService extends QueryService<Invoice> {
 
     private final InvoiceRepository invoiceRepository;
 
-    public InvoiceQueryService(InvoiceRepository invoiceRepository) {
+    private final InvoiceMapper invoiceMapper;
+
+    public InvoiceQueryService(InvoiceRepository invoiceRepository, InvoiceMapper invoiceMapper) {
         this.invoiceRepository = invoiceRepository;
+        this.invoiceMapper = invoiceMapper;
     }
 
     /**
-     * Return a {@link List} of {@link Invoice} which matches the criteria from the database.
+     * Return a {@link List} of {@link InvoiceDTO} which matches the criteria from the database.
      * @param criteria The object which holds all the filters, which the entities should match.
      * @return the matching entities.
      */
     @Transactional(readOnly = true)
-    public List<Invoice> findByCriteria(InvoiceCriteria criteria) {
+    public List<InvoiceDTO> findByCriteria(InvoiceCriteria criteria) {
         log.debug("find by criteria : {}", criteria);
         final Specification<Invoice> specification = createSpecification(criteria);
-        return invoiceRepository.findAll(specification);
+        return invoiceMapper.toDto(invoiceRepository.findAll(specification));
     }
 
     /**
-     * Return a {@link Page} of {@link Invoice} which matches the criteria from the database.
+     * Return a {@link Page} of {@link InvoiceDTO} which matches the criteria from the database.
      * @param criteria The object which holds all the filters, which the entities should match.
      * @param page The page, which should be returned.
      * @return the matching entities.
      */
     @Transactional(readOnly = true)
-    public Page<Invoice> findByCriteria(InvoiceCriteria criteria, Pageable page) {
+    public Page<InvoiceDTO> findByCriteria(InvoiceCriteria criteria, Pageable page) {
         log.debug("find by criteria : {}, page: {}", criteria, page);
         final Specification<Invoice> specification = createSpecification(criteria);
-        return invoiceRepository.findAll(specification, page);
+        return invoiceRepository.findAll(specification, page)
+            .map(invoiceMapper::toDto);
     }
 
     /**

@@ -1,6 +1,3 @@
-import { IProduct } from 'app/shared/model/product.model';
-import { IProductOrder } from 'app/shared/model/product-order.model';
-
 export const enum OrderItemStatus {
   AVAILABLE = 'AVAILABLE',
   OUT_OF_STOCK = 'OUT_OF_STOCK',
@@ -12,8 +9,10 @@ export interface IOrderItem {
   quantity?: number;
   totalPrice?: number;
   status?: OrderItemStatus;
-  product?: IProduct;
-  order?: IProductOrder;
+  productName?: string;
+  productId?: number;
+  orderCode?: string;
+  orderId?: number;
 }
 
 export class OrderItem implements IOrderItem {
@@ -22,7 +21,9 @@ export class OrderItem implements IOrderItem {
     public quantity?: number,
     public totalPrice?: number,
     public status?: OrderItemStatus,
-    public product?: IProduct,
-    public order?: IProductOrder
+    public productName?: string,
+    public productId?: number,
+    public orderCode?: string,
+    public orderId?: number
   ) {}
 }

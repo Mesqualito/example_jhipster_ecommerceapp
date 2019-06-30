@@ -25,7 +25,7 @@ export class ProductReferenceUpdateComponent implements OnInit {
     refName: [null, [Validators.required]],
     reference: [],
     type: [],
-    product: []
+    productId: []
   });
 
   constructor(
@@ -57,7 +57,7 @@ export class ProductReferenceUpdateComponent implements OnInit {
       refName: productReference.refName,
       reference: productReference.reference,
       type: productReference.type,
-      product: productReference.product
+      productId: productReference.productId
     });
   }
 
@@ -83,7 +83,7 @@ export class ProductReferenceUpdateComponent implements OnInit {
       refName: this.editForm.get(['refName']).value,
       reference: this.editForm.get(['reference']).value,
       type: this.editForm.get(['type']).value,
-      product: this.editForm.get(['product']).value
+      productId: this.editForm.get(['productId']).value
     };
   }
 

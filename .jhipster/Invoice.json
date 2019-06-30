@@ -66,11 +66,11 @@
             "otherEntityField": "code"
         }
     ],
-    "changelogDate": "20190630184954",
+    "changelogDate": "20190630192540",
     "entityTableName": "invoice",
-    "dto": "no",
+    "dto": "mapstruct",
     "pagination": "pagination",
-    "service": "serviceClass",
+    "service": "serviceImpl",
     "jpaMetamodelFiltering": true,
     "fluentMethods": true,
     "clientRootFolder": "",

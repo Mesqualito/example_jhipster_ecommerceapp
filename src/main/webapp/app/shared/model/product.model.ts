@@ -1,7 +1,6 @@
 import { IShopImage } from 'app/shared/model/shop-image.model';
 import { IProductReference } from 'app/shared/model/product-reference.model';
-import { IProduct } from 'app/shared/model/product.model';
-import { IProductCategory } from 'app/shared/model/product-category.model';
+import { IProductSubstitution } from 'app/shared/model/product-substitution.model';
 
 export interface IProduct {
   id?: number;
@@ -14,9 +13,9 @@ export interface IProduct {
   katalogOnly?: boolean;
   shopImages?: IShopImage[];
   references?: IProductReference[];
-  substitutions?: IProduct[];
-  productCategory?: IProductCategory;
-  products?: IProduct[];
+  substitutions?: IProductSubstitution[];
+  productCategoryName?: string;
+  productCategoryId?: number;
 }
 
 export class Product implements IProduct {
@@ -31,9 +30,9 @@ export class Product implements IProduct {
     public katalogOnly?: boolean,
     public shopImages?: IShopImage[],
     public references?: IProductReference[],
-    public substitutions?: IProduct[],
-    public productCategory?: IProductCategory,
-    public products?: IProduct[]
+    public substitutions?: IProductSubstitution[],
+    public productCategoryName?: string,
+    public productCategoryId?: number
   ) {
     this.refined = this.refined || false;
     this.katalogOnly = this.katalogOnly || false;

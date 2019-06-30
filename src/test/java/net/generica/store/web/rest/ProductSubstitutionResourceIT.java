@@ -2,8 +2,11 @@ package net.generica.store.web.rest;
 
 import net.generica.store.StoreApp;
 import net.generica.store.domain.ProductSubstitution;
+import net.generica.store.domain.Product;
 import net.generica.store.repository.ProductSubstitutionRepository;
 import net.generica.store.service.ProductSubstitutionService;
+import net.generica.store.service.dto.ProductSubstitutionDTO;
+import net.generica.store.service.mapper.ProductSubstitutionMapper;
 import net.generica.store.web.rest.errors.ExceptionTranslator;
 import net.generica.store.service.dto.ProductSubstitutionCriteria;
 import net.generica.store.service.ProductSubstitutionQueryService;
@@ -36,8 +39,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = StoreApp.class)
 public class ProductSubstitutionResourceIT {
 
-    private static final String DEFAULT_NAME = "AAAAAAAAAA";
-    private static final String UPDATED_NAME = "BBBBBBBBBB";
+    private static final String DEFAULT_PRODUCT_NAME = "AAAAAAAAAA";
+    private static final String UPDATED_PRODUCT_NAME = "BBBBBBBBBB";
 
     private static final Boolean DEFAULT_EXCHANGEABLE = false;
     private static final Boolean UPDATED_EXCHANGEABLE = true;
@@ -47,6 +50,9 @@ public class ProductSubstitutionResourceIT {
 
     @Autowired
     private ProductSubstitutionRepository productSubstitutionRepository;
+
+    @Autowired
+    private ProductSubstitutionMapper productSubstitutionMapper;
 
     @Autowired
     private ProductSubstitutionService productSubstitutionService;
@@ -93,9 +99,19 @@ public class ProductSubstitutionResourceIT {
      */
     public static ProductSubstitution createEntity(EntityManager em) {
         ProductSubstitution productSubstitution = new ProductSubstitution()
-            .name(DEFAULT_NAME)
+            .productName(DEFAULT_PRODUCT_NAME)
             .exchangeable(DEFAULT_EXCHANGEABLE)
             .checked(DEFAULT_CHECKED);
+        // Add required entity
+        Product product;
+        if (TestUtil.findAll(em, Product.class).isEmpty()) {
+            product = ProductResourceIT.createEntity(em);
+            em.persist(product);
+            em.flush();
+        } else {
+            product = TestUtil.findAll(em, Product.class).get(0);
+        }
+        productSubstitution.getProducts().add(product);
         return productSubstitution;
     }
     /**
@@ -106,9 +122,19 @@ public class ProductSubstitutionResourceIT {
      */
     public static ProductSubstitution createUpdatedEntity(EntityManager em) {
         ProductSubstitution productSubstitution = new ProductSubstitution()
-            .name(UPDATED_NAME)
+            .productName(UPDATED_PRODUCT_NAME)
             .exchangeable(UPDATED_EXCHANGEABLE)
             .checked(UPDATED_CHECKED);
+        // Add required entity
+        Product product;
+        if (TestUtil.findAll(em, Product.class).isEmpty()) {
+            product = ProductResourceIT.createUpdatedEntity(em);
+            em.persist(product);
+            em.flush();
+        } else {
+            product = TestUtil.findAll(em, Product.class).get(0);
+        }
+        productSubstitution.getProducts().add(product);
         return productSubstitution;
     }
 
@@ -123,16 +149,17 @@ public class ProductSubstitutionResourceIT {
         int databaseSizeBeforeCreate = productSubstitutionRepository.findAll().size();
 
         // Create the ProductSubstitution
+        ProductSubstitutionDTO productSubstitutionDTO = productSubstitutionMapper.toDto(productSubstitution);
         restProductSubstitutionMockMvc.perform(post("/api/product-substitutions")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(productSubstitution)))
+            .content(TestUtil.convertObjectToJsonBytes(productSubstitutionDTO)))
             .andExpect(status().isCreated());
 
         // Validate the ProductSubstitution in the database
         List<ProductSubstitution> productSubstitutionList = productSubstitutionRepository.findAll();
         assertThat(productSubstitutionList).hasSize(databaseSizeBeforeCreate + 1);
         ProductSubstitution testProductSubstitution = productSubstitutionList.get(productSubstitutionList.size() - 1);
-        assertThat(testProductSubstitution.getName()).isEqualTo(DEFAULT_NAME);
+        assertThat(testProductSubstitution.getProductName()).isEqualTo(DEFAULT_PRODUCT_NAME);
         assertThat(testProductSubstitution.isExchangeable()).isEqualTo(DEFAULT_EXCHANGEABLE);
         assertThat(testProductSubstitution.isChecked()).isEqualTo(DEFAULT_CHECKED);
     }
@@ -144,11 +171,12 @@ public class ProductSubstitutionResourceIT {
 
         // Create the ProductSubstitution with an existing ID
         productSubstitution.setId(1L);
+        ProductSubstitutionDTO productSubstitutionDTO = productSubstitutionMapper.toDto(productSubstitution);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restProductSubstitutionMockMvc.perform(post("/api/product-substitutions")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(productSubstitution)))
+            .content(TestUtil.convertObjectToJsonBytes(productSubstitutionDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the ProductSubstitution in the database
@@ -165,10 +193,11 @@ public class ProductSubstitutionResourceIT {
         productSubstitution.setExchangeable(null);
 
         // Create the ProductSubstitution, which fails.
+        ProductSubstitutionDTO productSubstitutionDTO = productSubstitutionMapper.toDto(productSubstitution);
 
         restProductSubstitutionMockMvc.perform(post("/api/product-substitutions")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(productSubstitution)))
+            .content(TestUtil.convertObjectToJsonBytes(productSubstitutionDTO)))
             .andExpect(status().isBadRequest());
 
         List<ProductSubstitution> productSubstitutionList = productSubstitutionRepository.findAll();
@@ -186,7 +215,7 @@ public class ProductSubstitutionResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(productSubstitution.getId().intValue())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
+            .andExpect(jsonPath("$.[*].productName").value(hasItem(DEFAULT_PRODUCT_NAME.toString())))
             .andExpect(jsonPath("$.[*].exchangeable").value(hasItem(DEFAULT_EXCHANGEABLE.booleanValue())))
             .andExpect(jsonPath("$.[*].checked").value(hasItem(DEFAULT_CHECKED.booleanValue())));
     }
@@ -202,48 +231,48 @@ public class ProductSubstitutionResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(productSubstitution.getId().intValue()))
-            .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
+            .andExpect(jsonPath("$.productName").value(DEFAULT_PRODUCT_NAME.toString()))
             .andExpect(jsonPath("$.exchangeable").value(DEFAULT_EXCHANGEABLE.booleanValue()))
             .andExpect(jsonPath("$.checked").value(DEFAULT_CHECKED.booleanValue()));
     }
 
     @Test
     @Transactional
-    public void getAllProductSubstitutionsByNameIsEqualToSomething() throws Exception {
+    public void getAllProductSubstitutionsByProductNameIsEqualToSomething() throws Exception {
         // Initialize the database
         productSubstitutionRepository.saveAndFlush(productSubstitution);
 
-        // Get all the productSubstitutionList where name equals to DEFAULT_NAME
-        defaultProductSubstitutionShouldBeFound("name.equals=" + DEFAULT_NAME);
+        // Get all the productSubstitutionList where productName equals to DEFAULT_PRODUCT_NAME
+        defaultProductSubstitutionShouldBeFound("productName.equals=" + DEFAULT_PRODUCT_NAME);
 
-        // Get all the productSubstitutionList where name equals to UPDATED_NAME
-        defaultProductSubstitutionShouldNotBeFound("name.equals=" + UPDATED_NAME);
+        // Get all the productSubstitutionList where productName equals to UPDATED_PRODUCT_NAME
+        defaultProductSubstitutionShouldNotBeFound("productName.equals=" + UPDATED_PRODUCT_NAME);
     }
 
     @Test
     @Transactional
-    public void getAllProductSubstitutionsByNameIsInShouldWork() throws Exception {
+    public void getAllProductSubstitutionsByProductNameIsInShouldWork() throws Exception {
         // Initialize the database
         productSubstitutionRepository.saveAndFlush(productSubstitution);
 
-        // Get all the productSubstitutionList where name in DEFAULT_NAME or UPDATED_NAME
-        defaultProductSubstitutionShouldBeFound("name.in=" + DEFAULT_NAME + "," + UPDATED_NAME);
+        // Get all the productSubstitutionList where productName in DEFAULT_PRODUCT_NAME or UPDATED_PRODUCT_NAME
+        defaultProductSubstitutionShouldBeFound("productName.in=" + DEFAULT_PRODUCT_NAME + "," + UPDATED_PRODUCT_NAME);
 
-        // Get all the productSubstitutionList where name equals to UPDATED_NAME
-        defaultProductSubstitutionShouldNotBeFound("name.in=" + UPDATED_NAME);
+        // Get all the productSubstitutionList where productName equals to UPDATED_PRODUCT_NAME
+        defaultProductSubstitutionShouldNotBeFound("productName.in=" + UPDATED_PRODUCT_NAME);
     }
 
     @Test
     @Transactional
-    public void getAllProductSubstitutionsByNameIsNullOrNotNull() throws Exception {
+    public void getAllProductSubstitutionsByProductNameIsNullOrNotNull() throws Exception {
         // Initialize the database
         productSubstitutionRepository.saveAndFlush(productSubstitution);
 
-        // Get all the productSubstitutionList where name is not null
-        defaultProductSubstitutionShouldBeFound("name.specified=true");
+        // Get all the productSubstitutionList where productName is not null
+        defaultProductSubstitutionShouldBeFound("productName.specified=true");
 
-        // Get all the productSubstitutionList where name is null
-        defaultProductSubstitutionShouldNotBeFound("name.specified=false");
+        // Get all the productSubstitutionList where productName is null
+        defaultProductSubstitutionShouldNotBeFound("productName.specified=false");
     }
 
     @Test
@@ -323,6 +352,22 @@ public class ProductSubstitutionResourceIT {
         // Get all the productSubstitutionList where checked is null
         defaultProductSubstitutionShouldNotBeFound("checked.specified=false");
     }
+
+    @Test
+    @Transactional
+    public void getAllProductSubstitutionsByProductIsEqualToSomething() throws Exception {
+        // Get already existing entity
+        Product product = productSubstitution.getProduct();
+        productSubstitutionRepository.saveAndFlush(productSubstitution);
+        Long productId = product.getId();
+
+        // Get all the productSubstitutionList where product equals to productId
+        defaultProductSubstitutionShouldBeFound("productId.equals=" + productId);
+
+        // Get all the productSubstitutionList where product equals to productId + 1
+        defaultProductSubstitutionShouldNotBeFound("productId.equals=" + (productId + 1));
+    }
+
     /**
      * Executes the search, and checks that the default entity is returned.
      */
@@ -331,7 +376,7 @@ public class ProductSubstitutionResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(productSubstitution.getId().intValue())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
+            .andExpect(jsonPath("$.[*].productName").value(hasItem(DEFAULT_PRODUCT_NAME)))
             .andExpect(jsonPath("$.[*].exchangeable").value(hasItem(DEFAULT_EXCHANGEABLE.booleanValue())))
             .andExpect(jsonPath("$.[*].checked").value(hasItem(DEFAULT_CHECKED.booleanValue())));
 
@@ -372,7 +417,7 @@ public class ProductSubstitutionResourceIT {
     @Transactional
     public void updateProductSubstitution() throws Exception {
         // Initialize the database
-        productSubstitutionService.save(productSubstitution);
+        productSubstitutionRepository.saveAndFlush(productSubstitution);
 
         int databaseSizeBeforeUpdate = productSubstitutionRepository.findAll().size();
 
@@ -381,20 +426,21 @@ public class ProductSubstitutionResourceIT {
         // Disconnect from session so that the updates on updatedProductSubstitution are not directly saved in db
         em.detach(updatedProductSubstitution);
         updatedProductSubstitution
-            .name(UPDATED_NAME)
+            .productName(UPDATED_PRODUCT_NAME)
             .exchangeable(UPDATED_EXCHANGEABLE)
             .checked(UPDATED_CHECKED);
+        ProductSubstitutionDTO productSubstitutionDTO = productSubstitutionMapper.toDto(updatedProductSubstitution);
 
         restProductSubstitutionMockMvc.perform(put("/api/product-substitutions")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedProductSubstitution)))
+            .content(TestUtil.convertObjectToJsonBytes(productSubstitutionDTO)))
             .andExpect(status().isOk());
 
         // Validate the ProductSubstitution in the database
         List<ProductSubstitution> productSubstitutionList = productSubstitutionRepository.findAll();
         assertThat(productSubstitutionList).hasSize(databaseSizeBeforeUpdate);
         ProductSubstitution testProductSubstitution = productSubstitutionList.get(productSubstitutionList.size() - 1);
-        assertThat(testProductSubstitution.getName()).isEqualTo(UPDATED_NAME);
+        assertThat(testProductSubstitution.getProductName()).isEqualTo(UPDATED_PRODUCT_NAME);
         assertThat(testProductSubstitution.isExchangeable()).isEqualTo(UPDATED_EXCHANGEABLE);
         assertThat(testProductSubstitution.isChecked()).isEqualTo(UPDATED_CHECKED);
     }
@@ -405,11 +451,12 @@ public class ProductSubstitutionResourceIT {
         int databaseSizeBeforeUpdate = productSubstitutionRepository.findAll().size();
 
         // Create the ProductSubstitution
+        ProductSubstitutionDTO productSubstitutionDTO = productSubstitutionMapper.toDto(productSubstitution);
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restProductSubstitutionMockMvc.perform(put("/api/product-substitutions")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(productSubstitution)))
+            .content(TestUtil.convertObjectToJsonBytes(productSubstitutionDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the ProductSubstitution in the database
@@ -421,7 +468,7 @@ public class ProductSubstitutionResourceIT {
     @Transactional
     public void deleteProductSubstitution() throws Exception {
         // Initialize the database
-        productSubstitutionService.save(productSubstitution);
+        productSubstitutionRepository.saveAndFlush(productSubstitution);
 
         int databaseSizeBeforeDelete = productSubstitutionRepository.findAll().size();
 
@@ -448,5 +495,28 @@ public class ProductSubstitutionResourceIT {
         assertThat(productSubstitution1).isNotEqualTo(productSubstitution2);
         productSubstitution1.setId(null);
         assertThat(productSubstitution1).isNotEqualTo(productSubstitution2);
+    }
+
+    @Test
+    @Transactional
+    public void dtoEqualsVerifier() throws Exception {
+        TestUtil.equalsVerifier(ProductSubstitutionDTO.class);
+        ProductSubstitutionDTO productSubstitutionDTO1 = new ProductSubstitutionDTO();
+        productSubstitutionDTO1.setId(1L);
+        ProductSubstitutionDTO productSubstitutionDTO2 = new ProductSubstitutionDTO();
+        assertThat(productSubstitutionDTO1).isNotEqualTo(productSubstitutionDTO2);
+        productSubstitutionDTO2.setId(productSubstitutionDTO1.getId());
+        assertThat(productSubstitutionDTO1).isEqualTo(productSubstitutionDTO2);
+        productSubstitutionDTO2.setId(2L);
+        assertThat(productSubstitutionDTO1).isNotEqualTo(productSubstitutionDTO2);
+        productSubstitutionDTO1.setId(null);
+        assertThat(productSubstitutionDTO1).isNotEqualTo(productSubstitutionDTO2);
+    }
+
+    @Test
+    @Transactional
+    public void testEntityFromId() {
+        assertThat(productSubstitutionMapper.fromId(42L).getId()).isEqualTo(42);
+        assertThat(productSubstitutionMapper.fromId(null)).isNull();
     }
 }

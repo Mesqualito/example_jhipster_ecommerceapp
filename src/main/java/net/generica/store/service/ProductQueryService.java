@@ -18,12 +18,14 @@ import net.generica.store.domain.Product;
 import net.generica.store.domain.*; // for static metamodels
 import net.generica.store.repository.ProductRepository;
 import net.generica.store.service.dto.ProductCriteria;
+import net.generica.store.service.dto.ProductDTO;
+import net.generica.store.service.mapper.ProductMapper;
 
 /**
  * Service for executing complex queries for {@link Product} entities in the database.
  * The main input is a {@link ProductCriteria} which gets converted to {@link Specification},
  * in a way that all the filters must apply.
- * It returns a {@link List} of {@link Product} or a {@link Page} of {@link Product} which fulfills the criteria.
+ * It returns a {@link List} of {@link ProductDTO} or a {@link Page} of {@link ProductDTO} which fulfills the criteria.
  */
 @Service
 @Transactional(readOnly = true)
@@ -33,33 +35,37 @@ public class ProductQueryService extends QueryService<Product> {
 
     private final ProductRepository productRepository;
 
-    public ProductQueryService(ProductRepository productRepository) {
+    private final ProductMapper productMapper;
+
+    public ProductQueryService(ProductRepository productRepository, ProductMapper productMapper) {
         this.productRepository = productRepository;
+        this.productMapper = productMapper;
     }
 
     /**
-     * Return a {@link List} of {@link Product} which matches the criteria from the database.
+     * Return a {@link List} of {@link ProductDTO} which matches the criteria from the database.
      * @param criteria The object which holds all the filters, which the entities should match.
      * @return the matching entities.
      */
     @Transactional(readOnly = true)
-    public List<Product> findByCriteria(ProductCriteria criteria) {
+    public List<ProductDTO> findByCriteria(ProductCriteria criteria) {
         log.debug("find by criteria : {}", criteria);
         final Specification<Product> specification = createSpecification(criteria);
-        return productRepository.findAll(specification);
+        return productMapper.toDto(productRepository.findAll(specification));
     }
 
     /**
-     * Return a {@link Page} of {@link Product} which matches the criteria from the database.
+     * Return a {@link Page} of {@link ProductDTO} which matches the criteria from the database.
      * @param criteria The object which holds all the filters, which the entities should match.
      * @param page The page, which should be returned.
      * @return the matching entities.
      */
     @Transactional(readOnly = true)
-    public Page<Product> findByCriteria(ProductCriteria criteria, Pageable page) {
+    public Page<ProductDTO> findByCriteria(ProductCriteria criteria, Pageable page) {
         log.debug("find by criteria : {}, page: {}", criteria, page);
         final Specification<Product> specification = createSpecification(criteria);
-        return productRepository.findAll(specification, page);
+        return productRepository.findAll(specification, page)
+            .map(productMapper::toDto);
     }
 
     /**
@@ -116,15 +122,11 @@ public class ProductQueryService extends QueryService<Product> {
             }
             if (criteria.getSubstitutionId() != null) {
                 specification = specification.and(buildSpecification(criteria.getSubstitutionId(),
-                    root -> root.join(Product_.substitutions, JoinType.LEFT).get(Product_.id)));
+                    root -> root.join(Product_.substitutions, JoinType.LEFT).get(ProductSubstitution_.id)));
             }
             if (criteria.getProductCategoryId() != null) {
                 specification = specification.and(buildSpecification(criteria.getProductCategoryId(),
                     root -> root.join(Product_.productCategory, JoinType.LEFT).get(ProductCategory_.id)));
-            }
-            if (criteria.getProductId() != null) {
-                specification = specification.and(buildSpecification(criteria.getProductId(),
-                    root -> root.join(Product_.products, JoinType.LEFT).get(Product_.id)));
             }
         }
         return specification;

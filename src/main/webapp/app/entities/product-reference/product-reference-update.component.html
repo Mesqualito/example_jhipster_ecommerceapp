@@ -38,9 +38,9 @@
 
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="storeApp.productReference.product" for="field_product">Product</label>
-                    <select class="form-control" id="field_product" name="product" formControlName="product">
+                    <select class="form-control" id="field_product" name="product" formControlName="productId">
                         <option [ngValue]="null"></option>
-                        <option [ngValue]="productOption.id === editForm.get('product').value?.id ? editForm.get('product').value : productOption" *ngFor="let productOption of products; trackBy: trackProductById">{{productOption.name}}</option>
+                        <option [ngValue]="productOption.id" *ngFor="let productOption of products; trackBy: trackProductById">{{productOption.name}}</option>
                     </select>
                 </div>
             </div>

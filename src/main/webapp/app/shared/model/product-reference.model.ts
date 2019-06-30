@@ -1,12 +1,11 @@
-import { IProduct } from 'app/shared/model/product.model';
-
 export interface IProductReference {
   id?: number;
   name?: string;
   refName?: string;
   reference?: string;
   type?: string;
-  product?: IProduct;
+  productName?: string;
+  productId?: number;
 }
 
 export class ProductReference implements IProductReference {
@@ -16,6 +15,7 @@ export class ProductReference implements IProductReference {
     public refName?: string,
     public reference?: string,
     public type?: string,
-    public product?: IProduct
+    public productName?: string,
+    public productId?: number
   ) {}
 }

@@ -19,8 +19,8 @@
                 </dd>
                 <dt><span jhiTranslate="storeApp.productOrder.customer">Customer</span></dt>
                 <dd>
-                    <div *ngIf="productOrder.customer">
-                        <a [routerLink]="['/customer', productOrder.customer?.id, 'view']">{{productOrder.customer?.email}}</a>
+                    <div *ngIf="productOrder.customerId">
+                        <a [routerLink]="['/customer', productOrder.customerId, 'view']">{{productOrder.customerEmail}}</a>
                     </div>
                 </dd>
             </dl>

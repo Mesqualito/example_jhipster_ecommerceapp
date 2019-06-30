@@ -26,7 +26,7 @@ export class ShipmentUpdateComponent implements OnInit {
     trackingCode: [],
     date: [null, [Validators.required]],
     details: [],
-    invoice: [null, Validators.required]
+    invoiceId: [null, Validators.required]
   });
 
   constructor(
@@ -57,7 +57,7 @@ export class ShipmentUpdateComponent implements OnInit {
       trackingCode: shipment.trackingCode,
       date: shipment.date != null ? shipment.date.format(DATE_TIME_FORMAT) : null,
       details: shipment.details,
-      invoice: shipment.invoice
+      invoiceId: shipment.invoiceId
     });
   }
 
@@ -82,7 +82,7 @@ export class ShipmentUpdateComponent implements OnInit {
       trackingCode: this.editForm.get(['trackingCode']).value,
       date: this.editForm.get(['date']).value != null ? moment(this.editForm.get(['date']).value, DATE_TIME_FORMAT) : undefined,
       details: this.editForm.get(['details']).value,
-      invoice: this.editForm.get(['invoice']).value
+      invoiceId: this.editForm.get(['invoiceId']).value
     };
   }
 

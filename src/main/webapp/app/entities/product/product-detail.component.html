@@ -36,13 +36,13 @@
                 <dt><span jhiTranslate="storeApp.product.substitution">Substitution</span></dt>
                 <dd>
                     <span *ngFor="let substitution of product.substitutions; let last = last">
-                        <a [routerLink]="['/product', substitution?.id, 'view' ]">{{substitution.id}}</a>{{last ? '' : ', '}}
+                        <a [routerLink]="['/product-substitution', substitution?.id, 'view' ]">{{substitution.id}}</a>{{last ? '' : ', '}}
                     </span>
                 </dd>
                 <dt><span jhiTranslate="storeApp.product.productCategory">Product Category</span></dt>
                 <dd>
-                    <div *ngIf="product.productCategory">
-                        <a [routerLink]="['/product-category', product.productCategory?.id, 'view']">{{product.productCategory?.name}}</a>
+                    <div *ngIf="product.productCategoryId">
+                        <a [routerLink]="['/product-category', product.productCategoryId, 'view']">{{product.productCategoryName}}</a>
                     </div>
                 </dd>
             </dl>

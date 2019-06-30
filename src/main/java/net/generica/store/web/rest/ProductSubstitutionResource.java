@@ -1,8 +1,8 @@
 package net.generica.store.web.rest;
 
-import net.generica.store.domain.ProductSubstitution;
 import net.generica.store.service.ProductSubstitutionService;
 import net.generica.store.web.rest.errors.BadRequestAlertException;
+import net.generica.store.service.dto.ProductSubstitutionDTO;
 import net.generica.store.service.dto.ProductSubstitutionCriteria;
 import net.generica.store.service.ProductSubstitutionQueryService;
 
@@ -47,17 +47,17 @@ public class ProductSubstitutionResource {
     /**
      * {@code POST  /product-substitutions} : Create a new productSubstitution.
      *
-     * @param productSubstitution the productSubstitution to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new productSubstitution, or with status {@code 400 (Bad Request)} if the productSubstitution has already an ID.
+     * @param productSubstitutionDTO the productSubstitutionDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new productSubstitutionDTO, or with status {@code 400 (Bad Request)} if the productSubstitution has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/product-substitutions")
-    public ResponseEntity<ProductSubstitution> createProductSubstitution(@Valid @RequestBody ProductSubstitution productSubstitution) throws URISyntaxException {
-        log.debug("REST request to save ProductSubstitution : {}", productSubstitution);
-        if (productSubstitution.getId() != null) {
+    public ResponseEntity<ProductSubstitutionDTO> createProductSubstitution(@Valid @RequestBody ProductSubstitutionDTO productSubstitutionDTO) throws URISyntaxException {
+        log.debug("REST request to save ProductSubstitution : {}", productSubstitutionDTO);
+        if (productSubstitutionDTO.getId() != null) {
             throw new BadRequestAlertException("A new productSubstitution cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        ProductSubstitution result = productSubstitutionService.save(productSubstitution);
+        ProductSubstitutionDTO result = productSubstitutionService.save(productSubstitutionDTO);
         return ResponseEntity.created(new URI("/api/product-substitutions/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -66,21 +66,21 @@ public class ProductSubstitutionResource {
     /**
      * {@code PUT  /product-substitutions} : Updates an existing productSubstitution.
      *
-     * @param productSubstitution the productSubstitution to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated productSubstitution,
-     * or with status {@code 400 (Bad Request)} if the productSubstitution is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the productSubstitution couldn't be updated.
+     * @param productSubstitutionDTO the productSubstitutionDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated productSubstitutionDTO,
+     * or with status {@code 400 (Bad Request)} if the productSubstitutionDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the productSubstitutionDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/product-substitutions")
-    public ResponseEntity<ProductSubstitution> updateProductSubstitution(@Valid @RequestBody ProductSubstitution productSubstitution) throws URISyntaxException {
-        log.debug("REST request to update ProductSubstitution : {}", productSubstitution);
-        if (productSubstitution.getId() == null) {
+    public ResponseEntity<ProductSubstitutionDTO> updateProductSubstitution(@Valid @RequestBody ProductSubstitutionDTO productSubstitutionDTO) throws URISyntaxException {
+        log.debug("REST request to update ProductSubstitution : {}", productSubstitutionDTO);
+        if (productSubstitutionDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        ProductSubstitution result = productSubstitutionService.save(productSubstitution);
+        ProductSubstitutionDTO result = productSubstitutionService.save(productSubstitutionDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, productSubstitution.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, productSubstitutionDTO.getId().toString()))
             .body(result);
     }
 
@@ -91,9 +91,9 @@ public class ProductSubstitutionResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of productSubstitutions in body.
      */
     @GetMapping("/product-substitutions")
-    public ResponseEntity<List<ProductSubstitution>> getAllProductSubstitutions(ProductSubstitutionCriteria criteria) {
+    public ResponseEntity<List<ProductSubstitutionDTO>> getAllProductSubstitutions(ProductSubstitutionCriteria criteria) {
         log.debug("REST request to get ProductSubstitutions by criteria: {}", criteria);
-        List<ProductSubstitution> entityList = productSubstitutionQueryService.findByCriteria(criteria);
+        List<ProductSubstitutionDTO> entityList = productSubstitutionQueryService.findByCriteria(criteria);
         return ResponseEntity.ok().body(entityList);
     }
 
@@ -112,20 +112,20 @@ public class ProductSubstitutionResource {
     /**
      * {@code GET  /product-substitutions/:id} : get the "id" productSubstitution.
      *
-     * @param id the id of the productSubstitution to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the productSubstitution, or with status {@code 404 (Not Found)}.
+     * @param id the id of the productSubstitutionDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the productSubstitutionDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/product-substitutions/{id}")
-    public ResponseEntity<ProductSubstitution> getProductSubstitution(@PathVariable Long id) {
+    public ResponseEntity<ProductSubstitutionDTO> getProductSubstitution(@PathVariable Long id) {
         log.debug("REST request to get ProductSubstitution : {}", id);
-        Optional<ProductSubstitution> productSubstitution = productSubstitutionService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(productSubstitution);
+        Optional<ProductSubstitutionDTO> productSubstitutionDTO = productSubstitutionService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(productSubstitutionDTO);
     }
 
     /**
      * {@code DELETE  /product-substitutions/:id} : delete the "id" productSubstitution.
      *
-     * @param id the id of the productSubstitution to delete.
+     * @param id the id of the productSubstitutionDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/product-substitutions/{id}")

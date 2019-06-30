@@ -3,8 +3,12 @@ import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
+import { JhiAlertService } from 'ng-jhipster';
 import { IProductSubstitution, ProductSubstitution } from 'app/shared/model/product-substitution.model';
 import { ProductSubstitutionService } from './product-substitution.service';
+import { IProduct } from 'app/shared/model/product.model';
+import { ProductService } from 'app/entities/product';
 
 @Component({
   selector: 'jhi-product-substitution-update',
@@ -13,15 +17,19 @@ import { ProductSubstitutionService } from './product-substitution.service';
 export class ProductSubstitutionUpdateComponent implements OnInit {
   isSaving: boolean;
 
+  products: IProduct[];
+
   editForm = this.fb.group({
     id: [],
-    name: [],
+    productName: [],
     exchangeable: [null, [Validators.required]],
     checked: []
   });
 
   constructor(
+    protected jhiAlertService: JhiAlertService,
     protected productSubstitutionService: ProductSubstitutionService,
+    protected productService: ProductService,
     protected activatedRoute: ActivatedRoute,
     private fb: FormBuilder
   ) {}
@@ -31,12 +39,19 @@ export class ProductSubstitutionUpdateComponent implements OnInit {
     this.activatedRoute.data.subscribe(({ productSubstitution }) => {
       this.updateForm(productSubstitution);
     });
+    this.productService
+      .query()
+      .pipe(
+        filter((mayBeOk: HttpResponse<IProduct[]>) => mayBeOk.ok),
+        map((response: HttpResponse<IProduct[]>) => response.body)
+      )
+      .subscribe((res: IProduct[]) => (this.products = res), (res: HttpErrorResponse) => this.onError(res.message));
   }
 
   updateForm(productSubstitution: IProductSubstitution) {
     this.editForm.patchValue({
       id: productSubstitution.id,
-      name: productSubstitution.name,
+      productName: productSubstitution.productName,
       exchangeable: productSubstitution.exchangeable,
       checked: productSubstitution.checked
     });
@@ -60,7 +75,7 @@ export class ProductSubstitutionUpdateComponent implements OnInit {
     return {
       ...new ProductSubstitution(),
       id: this.editForm.get(['id']).value,
-      name: this.editForm.get(['name']).value,
+      productName: this.editForm.get(['productName']).value,
       exchangeable: this.editForm.get(['exchangeable']).value,
       checked: this.editForm.get(['checked']).value
     };
@@ -77,5 +92,23 @@ export class ProductSubstitutionUpdateComponent implements OnInit {
 
   protected onSaveError() {
     this.isSaving = false;
+  }
+  protected onError(errorMessage: string) {
+    this.jhiAlertService.error(errorMessage, null, null);
+  }
+
+  trackProductById(index: number, item: IProduct) {
+    return item.id;
+  }
+
+  getSelected(selectedVals: Array<any>, option: any) {
+    if (selectedVals) {
+      for (let i = 0; i < selectedVals.length; i++) {
+        if (option.id === selectedVals[i].id) {
+          return selectedVals[i];
+        }
+      }
+    }
+    return option;
   }
 }

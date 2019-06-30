@@ -1,7 +1,6 @@
 import { Moment } from 'moment';
 import { IOrderItem } from 'app/shared/model/order-item.model';
 import { IInvoice } from 'app/shared/model/invoice.model';
-import { ICustomer } from 'app/shared/model/customer.model';
 
 export const enum OrderStatus {
   COMPLETED = 'COMPLETED',
@@ -16,7 +15,8 @@ export interface IProductOrder {
   code?: string;
   orderItems?: IOrderItem[];
   invoices?: IInvoice[];
-  customer?: ICustomer;
+  customerEmail?: string;
+  customerId?: number;
 }
 
 export class ProductOrder implements IProductOrder {
@@ -27,6 +27,7 @@ export class ProductOrder implements IProductOrder {
     public code?: string,
     public orderItems?: IOrderItem[],
     public invoices?: IInvoice[],
-    public customer?: ICustomer
+    public customerEmail?: string,
+    public customerId?: number
   ) {}
 }

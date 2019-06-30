@@ -1,42 +1,24 @@
 package net.generica.store.service;
 
-import net.generica.store.domain.OrderItem;
-import net.generica.store.repository.OrderItemRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import net.generica.store.service.dto.OrderItemDTO;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 /**
- * Service Implementation for managing {@link OrderItem}.
+ * Service Interface for managing {@link net.generica.store.domain.OrderItem}.
  */
-@Service
-@Transactional
-public class OrderItemService {
-
-    private final Logger log = LoggerFactory.getLogger(OrderItemService.class);
-
-    private final OrderItemRepository orderItemRepository;
-
-    public OrderItemService(OrderItemRepository orderItemRepository) {
-        this.orderItemRepository = orderItemRepository;
-    }
+public interface OrderItemService {
 
     /**
      * Save a orderItem.
      *
-     * @param orderItem the entity to save.
+     * @param orderItemDTO the entity to save.
      * @return the persisted entity.
      */
-    public OrderItem save(OrderItem orderItem) {
-        log.debug("Request to save OrderItem : {}", orderItem);
-        return orderItemRepository.save(orderItem);
-    }
+    OrderItemDTO save(OrderItemDTO orderItemDTO);
 
     /**
      * Get all the orderItems.
@@ -44,32 +26,21 @@ public class OrderItemService {
      * @param pageable the pagination information.
      * @return the list of entities.
      */
-    @Transactional(readOnly = true)
-    public Page<OrderItem> findAll(Pageable pageable) {
-        log.debug("Request to get all OrderItems");
-        return orderItemRepository.findAll(pageable);
-    }
+    Page<OrderItemDTO> findAll(Pageable pageable);
 
 
     /**
-     * Get one orderItem by id.
+     * Get the "id" orderItem.
      *
      * @param id the id of the entity.
      * @return the entity.
      */
-    @Transactional(readOnly = true)
-    public Optional<OrderItem> findOne(Long id) {
-        log.debug("Request to get OrderItem : {}", id);
-        return orderItemRepository.findById(id);
-    }
+    Optional<OrderItemDTO> findOne(Long id);
 
     /**
-     * Delete the orderItem by id.
+     * Delete the "id" orderItem.
      *
      * @param id the id of the entity.
      */
-    public void delete(Long id) {
-        log.debug("Request to delete OrderItem : {}", id);
-        orderItemRepository.deleteById(id);
-    }
+    void delete(Long id);
 }

@@ -28,8 +28,8 @@ export class OrderItemUpdateComponent implements OnInit {
     quantity: [null, [Validators.required, Validators.min(0)]],
     totalPrice: [null, [Validators.required, Validators.min(0)]],
     status: [null, [Validators.required]],
-    product: [null, Validators.required],
-    order: [null, Validators.required]
+    productId: [null, Validators.required],
+    orderId: [null, Validators.required]
   });
 
   constructor(
@@ -68,8 +68,8 @@ export class OrderItemUpdateComponent implements OnInit {
       quantity: orderItem.quantity,
       totalPrice: orderItem.totalPrice,
       status: orderItem.status,
-      product: orderItem.product,
-      order: orderItem.order
+      productId: orderItem.productId,
+      orderId: orderItem.orderId
     });
   }
 
@@ -94,8 +94,8 @@ export class OrderItemUpdateComponent implements OnInit {
       quantity: this.editForm.get(['quantity']).value,
       totalPrice: this.editForm.get(['totalPrice']).value,
       status: this.editForm.get(['status']).value,
-      product: this.editForm.get(['product']).value,
-      order: this.editForm.get(['order']).value
+      productId: this.editForm.get(['productId']).value,
+      orderId: this.editForm.get(['orderId']).value
     };
   }
 

@@ -1,8 +1,8 @@
 package net.generica.store.web.rest;
 
-import net.generica.store.domain.ProductOrder;
 import net.generica.store.service.ProductOrderService;
 import net.generica.store.web.rest.errors.BadRequestAlertException;
+import net.generica.store.service.dto.ProductOrderDTO;
 import net.generica.store.service.dto.ProductOrderCriteria;
 import net.generica.store.service.ProductOrderQueryService;
 
@@ -54,17 +54,17 @@ public class ProductOrderResource {
     /**
      * {@code POST  /product-orders} : Create a new productOrder.
      *
-     * @param productOrder the productOrder to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new productOrder, or with status {@code 400 (Bad Request)} if the productOrder has already an ID.
+     * @param productOrderDTO the productOrderDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new productOrderDTO, or with status {@code 400 (Bad Request)} if the productOrder has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/product-orders")
-    public ResponseEntity<ProductOrder> createProductOrder(@Valid @RequestBody ProductOrder productOrder) throws URISyntaxException {
-        log.debug("REST request to save ProductOrder : {}", productOrder);
-        if (productOrder.getId() != null) {
+    public ResponseEntity<ProductOrderDTO> createProductOrder(@Valid @RequestBody ProductOrderDTO productOrderDTO) throws URISyntaxException {
+        log.debug("REST request to save ProductOrder : {}", productOrderDTO);
+        if (productOrderDTO.getId() != null) {
             throw new BadRequestAlertException("A new productOrder cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        ProductOrder result = productOrderService.save(productOrder);
+        ProductOrderDTO result = productOrderService.save(productOrderDTO);
         return ResponseEntity.created(new URI("/api/product-orders/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -73,21 +73,21 @@ public class ProductOrderResource {
     /**
      * {@code PUT  /product-orders} : Updates an existing productOrder.
      *
-     * @param productOrder the productOrder to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated productOrder,
-     * or with status {@code 400 (Bad Request)} if the productOrder is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the productOrder couldn't be updated.
+     * @param productOrderDTO the productOrderDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated productOrderDTO,
+     * or with status {@code 400 (Bad Request)} if the productOrderDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the productOrderDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/product-orders")
-    public ResponseEntity<ProductOrder> updateProductOrder(@Valid @RequestBody ProductOrder productOrder) throws URISyntaxException {
-        log.debug("REST request to update ProductOrder : {}", productOrder);
-        if (productOrder.getId() == null) {
+    public ResponseEntity<ProductOrderDTO> updateProductOrder(@Valid @RequestBody ProductOrderDTO productOrderDTO) throws URISyntaxException {
+        log.debug("REST request to update ProductOrder : {}", productOrderDTO);
+        if (productOrderDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        ProductOrder result = productOrderService.save(productOrder);
+        ProductOrderDTO result = productOrderService.save(productOrderDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, productOrder.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, productOrderDTO.getId().toString()))
             .body(result);
     }
 
@@ -101,9 +101,9 @@ public class ProductOrderResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of productOrders in body.
      */
     @GetMapping("/product-orders")
-    public ResponseEntity<List<ProductOrder>> getAllProductOrders(ProductOrderCriteria criteria, Pageable pageable, @RequestParam MultiValueMap<String, String> queryParams, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<List<ProductOrderDTO>> getAllProductOrders(ProductOrderCriteria criteria, Pageable pageable, @RequestParam MultiValueMap<String, String> queryParams, UriComponentsBuilder uriBuilder) {
         log.debug("REST request to get ProductOrders by criteria: {}", criteria);
-        Page<ProductOrder> page = productOrderQueryService.findByCriteria(criteria, pageable);
+        Page<ProductOrderDTO> page = productOrderQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(uriBuilder.queryParams(queryParams), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
@@ -123,20 +123,20 @@ public class ProductOrderResource {
     /**
      * {@code GET  /product-orders/:id} : get the "id" productOrder.
      *
-     * @param id the id of the productOrder to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the productOrder, or with status {@code 404 (Not Found)}.
+     * @param id the id of the productOrderDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the productOrderDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/product-orders/{id}")
-    public ResponseEntity<ProductOrder> getProductOrder(@PathVariable Long id) {
+    public ResponseEntity<ProductOrderDTO> getProductOrder(@PathVariable Long id) {
         log.debug("REST request to get ProductOrder : {}", id);
-        Optional<ProductOrder> productOrder = productOrderService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(productOrder);
+        Optional<ProductOrderDTO> productOrderDTO = productOrderService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(productOrderDTO);
     }
 
     /**
      * {@code DELETE  /product-orders/:id} : delete the "id" productOrder.
      *
-     * @param id the id of the productOrder to delete.
+     * @param id the id of the productOrderDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/product-orders/{id}")

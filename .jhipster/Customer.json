@@ -90,11 +90,11 @@
             "relationshipName": "order"
         }
     ],
-    "changelogDate": "20190630184951",
+    "changelogDate": "20190630192537",
     "entityTableName": "customer",
-    "dto": "no",
+    "dto": "mapstruct",
     "pagination": "pagination",
-    "service": "serviceClass",
+    "service": "serviceImpl",
     "jpaMetamodelFiltering": true,
     "fluentMethods": true,
     "clientRootFolder": "",

@@ -18,7 +18,7 @@
             <thead>
             <tr>
             <th><span jhiTranslate="global.field.id">ID</span></th>
-            <th><span jhiTranslate="storeApp.productSubstitution.name">Name</span></th>
+            <th><span jhiTranslate="storeApp.productSubstitution.productName">Product Name</span></th>
             <th><span jhiTranslate="storeApp.productSubstitution.exchangeable">Exchangeable</span></th>
             <th><span jhiTranslate="storeApp.productSubstitution.checked">Checked</span></th>
             <th></th>
@@ -27,7 +27,7 @@
             <tbody>
             <tr *ngFor="let productSubstitution of productSubstitutions ;trackBy: trackId">
                 <td><a [routerLink]="['/product-substitution', productSubstitution.id, 'view' ]">{{productSubstitution.id}}</a></td>
-                <td>{{productSubstitution.name}}</td>
+                <td>{{productSubstitution.productName}}</td>
                 <td>{{productSubstitution.exchangeable}}</td>
                 <td>{{productSubstitution.checked}}</td>
                 <td class="text-right">

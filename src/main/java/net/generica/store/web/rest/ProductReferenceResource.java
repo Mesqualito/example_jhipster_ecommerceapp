@@ -1,8 +1,8 @@
 package net.generica.store.web.rest;
 
-import net.generica.store.domain.ProductReference;
 import net.generica.store.service.ProductReferenceService;
 import net.generica.store.web.rest.errors.BadRequestAlertException;
+import net.generica.store.service.dto.ProductReferenceDTO;
 import net.generica.store.service.dto.ProductReferenceCriteria;
 import net.generica.store.service.ProductReferenceQueryService;
 
@@ -47,17 +47,17 @@ public class ProductReferenceResource {
     /**
      * {@code POST  /product-references} : Create a new productReference.
      *
-     * @param productReference the productReference to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new productReference, or with status {@code 400 (Bad Request)} if the productReference has already an ID.
+     * @param productReferenceDTO the productReferenceDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new productReferenceDTO, or with status {@code 400 (Bad Request)} if the productReference has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/product-references")
-    public ResponseEntity<ProductReference> createProductReference(@Valid @RequestBody ProductReference productReference) throws URISyntaxException {
-        log.debug("REST request to save ProductReference : {}", productReference);
-        if (productReference.getId() != null) {
+    public ResponseEntity<ProductReferenceDTO> createProductReference(@Valid @RequestBody ProductReferenceDTO productReferenceDTO) throws URISyntaxException {
+        log.debug("REST request to save ProductReference : {}", productReferenceDTO);
+        if (productReferenceDTO.getId() != null) {
             throw new BadRequestAlertException("A new productReference cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        ProductReference result = productReferenceService.save(productReference);
+        ProductReferenceDTO result = productReferenceService.save(productReferenceDTO);
         return ResponseEntity.created(new URI("/api/product-references/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -66,21 +66,21 @@ public class ProductReferenceResource {
     /**
      * {@code PUT  /product-references} : Updates an existing productReference.
      *
-     * @param productReference the productReference to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated productReference,
-     * or with status {@code 400 (Bad Request)} if the productReference is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the productReference couldn't be updated.
+     * @param productReferenceDTO the productReferenceDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated productReferenceDTO,
+     * or with status {@code 400 (Bad Request)} if the productReferenceDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the productReferenceDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/product-references")
-    public ResponseEntity<ProductReference> updateProductReference(@Valid @RequestBody ProductReference productReference) throws URISyntaxException {
-        log.debug("REST request to update ProductReference : {}", productReference);
-        if (productReference.getId() == null) {
+    public ResponseEntity<ProductReferenceDTO> updateProductReference(@Valid @RequestBody ProductReferenceDTO productReferenceDTO) throws URISyntaxException {
+        log.debug("REST request to update ProductReference : {}", productReferenceDTO);
+        if (productReferenceDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        ProductReference result = productReferenceService.save(productReference);
+        ProductReferenceDTO result = productReferenceService.save(productReferenceDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, productReference.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, productReferenceDTO.getId().toString()))
             .body(result);
     }
 
@@ -91,9 +91,9 @@ public class ProductReferenceResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of productReferences in body.
      */
     @GetMapping("/product-references")
-    public ResponseEntity<List<ProductReference>> getAllProductReferences(ProductReferenceCriteria criteria) {
+    public ResponseEntity<List<ProductReferenceDTO>> getAllProductReferences(ProductReferenceCriteria criteria) {
         log.debug("REST request to get ProductReferences by criteria: {}", criteria);
-        List<ProductReference> entityList = productReferenceQueryService.findByCriteria(criteria);
+        List<ProductReferenceDTO> entityList = productReferenceQueryService.findByCriteria(criteria);
         return ResponseEntity.ok().body(entityList);
     }
 
@@ -112,20 +112,20 @@ public class ProductReferenceResource {
     /**
      * {@code GET  /product-references/:id} : get the "id" productReference.
      *
-     * @param id the id of the productReference to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the productReference, or with status {@code 404 (Not Found)}.
+     * @param id the id of the productReferenceDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the productReferenceDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/product-references/{id}")
-    public ResponseEntity<ProductReference> getProductReference(@PathVariable Long id) {
+    public ResponseEntity<ProductReferenceDTO> getProductReference(@PathVariable Long id) {
         log.debug("REST request to get ProductReference : {}", id);
-        Optional<ProductReference> productReference = productReferenceService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(productReference);
+        Optional<ProductReferenceDTO> productReferenceDTO = productReferenceService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(productReferenceDTO);
     }
 
     /**
      * {@code DELETE  /product-references/:id} : delete the "id" productReference.
      *
-     * @param id the id of the productReference to delete.
+     * @param id the id of the productReferenceDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/product-references/{id}")

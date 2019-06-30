@@ -43,8 +43,8 @@
                     <span *ngIf="shopImage.image">{{shopImage.imageContentType}}, {{byteSize(shopImage.image)}}</span>
                 </td>
                 <td>
-                    <div *ngIf="shopImage.product">
-                        <a [routerLink]="['../product', shopImage.product?.id, 'view' ]" >{{shopImage.product?.name}}</a>
+                    <div *ngIf="shopImage.productId">
+                        <a [routerLink]="['../product', shopImage.productId , 'view' ]" >{{shopImage.productName}}</a>
                     </div>
                 </td>
                 <td class="text-right">

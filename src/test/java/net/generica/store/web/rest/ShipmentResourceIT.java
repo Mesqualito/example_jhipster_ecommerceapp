@@ -5,6 +5,8 @@ import net.generica.store.domain.Shipment;
 import net.generica.store.domain.Invoice;
 import net.generica.store.repository.ShipmentRepository;
 import net.generica.store.service.ShipmentService;
+import net.generica.store.service.dto.ShipmentDTO;
+import net.generica.store.service.mapper.ShipmentMapper;
 import net.generica.store.web.rest.errors.ExceptionTranslator;
 import net.generica.store.service.dto.ShipmentCriteria;
 import net.generica.store.service.ShipmentQueryService;
@@ -50,6 +52,9 @@ public class ShipmentResourceIT {
 
     @Autowired
     private ShipmentRepository shipmentRepository;
+
+    @Autowired
+    private ShipmentMapper shipmentMapper;
 
     @Autowired
     private ShipmentService shipmentService;
@@ -146,9 +151,10 @@ public class ShipmentResourceIT {
         int databaseSizeBeforeCreate = shipmentRepository.findAll().size();
 
         // Create the Shipment
+        ShipmentDTO shipmentDTO = shipmentMapper.toDto(shipment);
         restShipmentMockMvc.perform(post("/api/shipments")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(shipment)))
+            .content(TestUtil.convertObjectToJsonBytes(shipmentDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Shipment in the database
@@ -167,11 +173,12 @@ public class ShipmentResourceIT {
 
         // Create the Shipment with an existing ID
         shipment.setId(1L);
+        ShipmentDTO shipmentDTO = shipmentMapper.toDto(shipment);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restShipmentMockMvc.perform(post("/api/shipments")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(shipment)))
+            .content(TestUtil.convertObjectToJsonBytes(shipmentDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Shipment in the database
@@ -188,10 +195,11 @@ public class ShipmentResourceIT {
         shipment.setDate(null);
 
         // Create the Shipment, which fails.
+        ShipmentDTO shipmentDTO = shipmentMapper.toDto(shipment);
 
         restShipmentMockMvc.perform(post("/api/shipments")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(shipment)))
+            .content(TestUtil.convertObjectToJsonBytes(shipmentDTO)))
             .andExpect(status().isBadRequest());
 
         List<Shipment> shipmentList = shipmentRepository.findAll();
@@ -411,7 +419,7 @@ public class ShipmentResourceIT {
     @Transactional
     public void updateShipment() throws Exception {
         // Initialize the database
-        shipmentService.save(shipment);
+        shipmentRepository.saveAndFlush(shipment);
 
         int databaseSizeBeforeUpdate = shipmentRepository.findAll().size();
 
@@ -423,10 +431,11 @@ public class ShipmentResourceIT {
             .trackingCode(UPDATED_TRACKING_CODE)
             .date(UPDATED_DATE)
             .details(UPDATED_DETAILS);
+        ShipmentDTO shipmentDTO = shipmentMapper.toDto(updatedShipment);
 
         restShipmentMockMvc.perform(put("/api/shipments")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedShipment)))
+            .content(TestUtil.convertObjectToJsonBytes(shipmentDTO)))
             .andExpect(status().isOk());
 
         // Validate the Shipment in the database
@@ -444,11 +453,12 @@ public class ShipmentResourceIT {
         int databaseSizeBeforeUpdate = shipmentRepository.findAll().size();
 
         // Create the Shipment
+        ShipmentDTO shipmentDTO = shipmentMapper.toDto(shipment);
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restShipmentMockMvc.perform(put("/api/shipments")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(shipment)))
+            .content(TestUtil.convertObjectToJsonBytes(shipmentDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Shipment in the database
@@ -460,7 +470,7 @@ public class ShipmentResourceIT {
     @Transactional
     public void deleteShipment() throws Exception {
         // Initialize the database
-        shipmentService.save(shipment);
+        shipmentRepository.saveAndFlush(shipment);
 
         int databaseSizeBeforeDelete = shipmentRepository.findAll().size();
 
@@ -487,5 +497,28 @@ public class ShipmentResourceIT {
         assertThat(shipment1).isNotEqualTo(shipment2);
         shipment1.setId(null);
         assertThat(shipment1).isNotEqualTo(shipment2);
+    }
+
+    @Test
+    @Transactional
+    public void dtoEqualsVerifier() throws Exception {
+        TestUtil.equalsVerifier(ShipmentDTO.class);
+        ShipmentDTO shipmentDTO1 = new ShipmentDTO();
+        shipmentDTO1.setId(1L);
+        ShipmentDTO shipmentDTO2 = new ShipmentDTO();
+        assertThat(shipmentDTO1).isNotEqualTo(shipmentDTO2);
+        shipmentDTO2.setId(shipmentDTO1.getId());
+        assertThat(shipmentDTO1).isEqualTo(shipmentDTO2);
+        shipmentDTO2.setId(2L);
+        assertThat(shipmentDTO1).isNotEqualTo(shipmentDTO2);
+        shipmentDTO1.setId(null);
+        assertThat(shipmentDTO1).isNotEqualTo(shipmentDTO2);
+    }
+
+    @Test
+    @Transactional
+    public void testEntityFromId() {
+        assertThat(shipmentMapper.fromId(42L).getId()).isEqualTo(42);
+        assertThat(shipmentMapper.fromId(null)).isNull();
     }
 }

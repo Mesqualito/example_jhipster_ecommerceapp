@@ -1,73 +1,43 @@
 package net.generica.store.service;
 
-import net.generica.store.domain.ProductCategory;
-import net.generica.store.repository.ProductCategoryRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import net.generica.store.service.dto.ProductCategoryDTO;
 
 import java.util.List;
 import java.util.Optional;
 
 /**
- * Service Implementation for managing {@link ProductCategory}.
+ * Service Interface for managing {@link net.generica.store.domain.ProductCategory}.
  */
-@Service
-@Transactional
-public class ProductCategoryService {
-
-    private final Logger log = LoggerFactory.getLogger(ProductCategoryService.class);
-
-    private final ProductCategoryRepository productCategoryRepository;
-
-    public ProductCategoryService(ProductCategoryRepository productCategoryRepository) {
-        this.productCategoryRepository = productCategoryRepository;
-    }
+public interface ProductCategoryService {
 
     /**
      * Save a productCategory.
      *
-     * @param productCategory the entity to save.
+     * @param productCategoryDTO the entity to save.
      * @return the persisted entity.
      */
-    public ProductCategory save(ProductCategory productCategory) {
-        log.debug("Request to save ProductCategory : {}", productCategory);
-        return productCategoryRepository.save(productCategory);
-    }
+    ProductCategoryDTO save(ProductCategoryDTO productCategoryDTO);
 
     /**
      * Get all the productCategories.
      *
      * @return the list of entities.
      */
-    @Transactional(readOnly = true)
-    public List<ProductCategory> findAll() {
-        log.debug("Request to get all ProductCategories");
-        return productCategoryRepository.findAll();
-    }
+    List<ProductCategoryDTO> findAll();
 
 
     /**
-     * Get one productCategory by id.
+     * Get the "id" productCategory.
      *
      * @param id the id of the entity.
      * @return the entity.
      */
-    @Transactional(readOnly = true)
-    public Optional<ProductCategory> findOne(Long id) {
-        log.debug("Request to get ProductCategory : {}", id);
-        return productCategoryRepository.findById(id);
-    }
+    Optional<ProductCategoryDTO> findOne(Long id);
 
     /**
-     * Delete the productCategory by id.
+     * Delete the "id" productCategory.
      *
      * @param id the id of the entity.
      */
-    public void delete(Long id) {
-        log.debug("Request to delete ProductCategory : {}", id);
-        productCategoryRepository.deleteById(id);
-    }
+    void delete(Long id);
 }
