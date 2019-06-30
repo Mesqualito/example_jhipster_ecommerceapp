@@ -1,0 +1,58 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="shopImage">
+            <h2><span jhiTranslate="storeApp.shopImage.detail.title">Shop Image</span> {{shopImage.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span jhiTranslate="storeApp.shopImage.name">Name</span></dt>
+                <dd>
+                    <span>{{shopImage.name}}</span>
+                </dd>
+                <dt><span jhiTranslate="storeApp.shopImage.herstArtNr">Herst Art Nr</span></dt>
+                <dd>
+                    <span>{{shopImage.herstArtNr}}</span>
+                </dd>
+                <dt><span jhiTranslate="storeApp.shopImage.order">Order</span></dt>
+                <dd>
+                    <span>{{shopImage.order}}</span>
+                </dd>
+                <dt><span jhiTranslate="storeApp.shopImage.size">Size</span></dt>
+                <dd>
+                    <span jhiTranslate="{{'storeApp.Size.' + shopImage.size}}">{{shopImage.size}}</span>
+                </dd>
+                <dt><span jhiTranslate="storeApp.shopImage.description">Description</span></dt>
+                <dd>
+                    <span>{{shopImage.description}}</span>
+                </dd>
+                <dt><span jhiTranslate="storeApp.shopImage.image">Image</span></dt>
+                <dd>
+                    <div *ngIf="shopImage.image">
+                        <a (click)="openFile(shopImage.imageContentType, shopImage.image)">
+                            <img [src]="'data:' + shopImage.imageContentType + ';base64,' + shopImage.image" style="max-width: 100%;" alt="shopImage image"/>
+                        </a>
+                        {{shopImage.imageContentType}}, {{byteSize(shopImage.image)}}
+                    </div>
+                </dd>
+                <dt><span jhiTranslate="storeApp.shopImage.product">Product</span></dt>
+                <dd>
+                    <div *ngIf="shopImage.product">
+                        <a [routerLink]="['/product', shopImage.product?.id, 'view']">{{shopImage.product?.name}}</a>
+                    </div>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/shop-image', shopImage.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

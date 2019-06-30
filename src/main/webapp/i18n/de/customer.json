@@ -1,0 +1,35 @@
+{
+  "storeApp": {
+    "customer": {
+      "home": {
+        "title": "Customers",
+        "createLabel": "Customer erstellen",
+        "createOrEditLabel": "Customer erstellen oder bearbeiten",
+        "notFound": "No Customer found"
+      },
+      "created": "Customer erstellt mit ID {{ param }}",
+      "updated": "Customer aktualisiert mit ID {{ param }}",
+      "deleted": "Customer gelöscht mit ID {{ param }}",
+      "delete": {
+        "question": "Soll Customer {{ id }} wirklich dauerhaft gelöscht werden?"
+      },
+      "detail": {
+        "title": "Customer"
+      },
+      "erpId": "Erp Id",
+      "name1": "Name 1",
+      "name2": "Name 2",
+      "name3": "Name 3",
+      "email": "Email",
+      "phone": "Phone",
+      "addressLine1": "Address Line 1",
+      "addressLine2": "Address Line 2",
+      "addressLine3": "Address Line 3",
+      "plz": "Plz",
+      "city": "City",
+      "country": "Country",
+      "user": "User",
+      "order": "Order"
+    }
+  }
+}

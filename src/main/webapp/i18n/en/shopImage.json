@@ -1,0 +1,28 @@
+{
+  "storeApp": {
+    "shopImage": {
+      "home": {
+        "title": "Shop Images",
+        "createLabel": "Create a new Shop Image",
+        "createOrEditLabel": "Create or edit a Shop Image",
+        "notFound": "No Shop Image found"
+      },
+      "created": "A new Shop Image is created with identifier {{ param }}",
+      "updated": "A Shop Image is updated with identifier {{ param }}",
+      "deleted": "A Shop Image is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Shop Image {{ id }}?"
+      },
+      "detail": {
+        "title": "Shop Image"
+      },
+      "name": "Name",
+      "herstArtNr": "Herst Art Nr",
+      "order": "Order",
+      "size": "Size",
+      "description": "Description",
+      "image": "Image",
+      "product": "Product"
+    }
+  }
+}

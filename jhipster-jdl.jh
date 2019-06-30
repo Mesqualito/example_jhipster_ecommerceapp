@@ -5,10 +5,18 @@
  * Product sold by the online-store
  */
 entity Product (product) {
+  erpId String required,
   name String required,
   description String,
-  price BigDecimal required min(0),
+  herstArtNr String required,
+  price BigDecimal required min(0)
+}
+entity ShopImage (shop_image) {
+  name String required,
+  herstArtNr String required,
+  order Integer,
   size Size required,
+  description String,
   image ImageBlob
 }
 entity ProductCategory (product_category) {
@@ -16,15 +24,18 @@ entity ProductCategory (product_category) {
   description String
 }
 entity Customer (customer) {
-  firstName String,
-  lastName String required,
-  gender Gender required,
+  erpId String required,
+  name1 String required,
+  name2 String,
+  name3 String,
   email String required pattern(/^[^@\s]+@[^@\s]+\.[^@\s]+$/),
   phone String required,
   addressLine1 String required,
   addressLine2 String,
+  addressLine3 String,
+  plz String required,
   city String required,
-  country String required
+  country String
 }
 entity ProductOrder (product_order) {
   placedDate Instant required,
@@ -54,15 +65,7 @@ entity Shipment (shipment) {
 enum Size {
   S,
   M,
-  L,
-  XL,
-  XXL
-}
-
-enum Gender {
-  MALE,
-  FEMALE,
-  OTHER
+  L
 }
 
 enum OrderStatus {
@@ -136,6 +139,7 @@ relationship ManyToOne {
 *	as ManyToOne.
 */
 relationship OneToMany {
+  Product{shopImage} to ShopImage{product(name)},
   ProductCategory{product} to Product{productCategory(name)},
   Customer{order} to ProductOrder{customer(email) required},
   ProductOrder{orderItem} to OrderItem{order(code) required},
@@ -145,7 +149,6 @@ relationship OneToMany {
 
 // options for entities
 
-dto * with mapstruct
-service * with serviceImpl
+service * with serviceClass
 paginate Product, Customer, ProductOrder, OrderItem, Invoice, Shipment with pagination
 filter *

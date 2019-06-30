@@ -1,0 +1,28 @@
+{
+  "storeApp": {
+    "product": {
+      "home": {
+        "title": "Products",
+        "createLabel": "Product erstellen",
+        "createOrEditLabel": "Product erstellen oder bearbeiten",
+        "notFound": "No Product found"
+      },
+      "created": "Product erstellt mit ID {{ param }}",
+      "updated": "Product aktualisiert mit ID {{ param }}",
+      "deleted": "Product gelöscht mit ID {{ param }}",
+      "delete": {
+        "question": "Soll Product {{ id }} wirklich dauerhaft gelöscht werden?"
+      },
+      "detail": {
+        "title": "Product"
+      },
+      "erpId": "Erp Id",
+      "name": "Name",
+      "description": "Description",
+      "herstArtNr": "Herst Art Nr",
+      "price": "Price",
+      "shopImage": "Shop Image",
+      "productCategory": "Product Category"
+    }
+  }
+}
