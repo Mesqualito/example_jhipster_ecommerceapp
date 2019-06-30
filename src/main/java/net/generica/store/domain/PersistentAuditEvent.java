@@ -5,7 +5,6 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashMap;
-import java.util.Objects;
 import java.util.Map;
 
 /**
@@ -20,8 +19,7 @@ public class PersistentAuditEvent implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-    @SequenceGenerator(name = "sequenceGenerator")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "event_id")
     private Long id;
 
@@ -86,17 +84,15 @@ public class PersistentAuditEvent implements Serializable {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof PersistentAuditEvent)) {
             return false;
         }
-
-        PersistentAuditEvent persistentAuditEvent = (PersistentAuditEvent) o;
-        return !(persistentAuditEvent.getId() == null || getId() == null) && Objects.equals(getId(), persistentAuditEvent.getId());
+        return id != null && id.equals(((PersistentAuditEvent) o).id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getId());
+        return 31;
     }
 
     @Override

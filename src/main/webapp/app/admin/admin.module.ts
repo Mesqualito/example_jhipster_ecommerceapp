@@ -6,51 +6,51 @@ import { StoreSharedModule } from 'app/shared';
 /* jhipster-needle-add-admin-module-import - JHipster will add admin modules imports here */
 
 import {
-    adminState,
+  adminState,
+  AuditsComponent,
+  UserMgmtComponent,
+  UserMgmtDetailComponent,
+  UserMgmtUpdateComponent,
+  UserMgmtDeleteDialogComponent,
+  LogsComponent,
+  JhiMetricsMonitoringComponent,
+  JhiHealthModalComponent,
+  JhiHealthCheckComponent,
+  JhiConfigurationComponent,
+  JhiDocsComponent,
+  JhiTrackerComponent
+} from './';
+
+@NgModule({
+  imports: [
+    StoreSharedModule,
+    /* jhipster-needle-add-admin-module - JHipster will add admin modules here */
+    RouterModule.forChild(adminState)
+  ],
+  declarations: [
     AuditsComponent,
     UserMgmtComponent,
     UserMgmtDetailComponent,
     UserMgmtUpdateComponent,
     UserMgmtDeleteDialogComponent,
     LogsComponent,
-    JhiMetricsMonitoringComponent,
-    JhiHealthModalComponent,
-    JhiHealthCheckComponent,
     JhiConfigurationComponent,
+    JhiHealthCheckComponent,
+    JhiHealthModalComponent,
     JhiDocsComponent,
-    JhiTrackerComponent
-} from './';
-
-@NgModule({
-    imports: [
-        StoreSharedModule,
-        RouterModule.forChild(adminState)
-        /* jhipster-needle-add-admin-module - JHipster will add admin modules here */
-    ],
-    declarations: [
-        AuditsComponent,
-        UserMgmtComponent,
-        UserMgmtDetailComponent,
-        UserMgmtUpdateComponent,
-        UserMgmtDeleteDialogComponent,
-        LogsComponent,
-        JhiConfigurationComponent,
-        JhiHealthCheckComponent,
-        JhiHealthModalComponent,
-        JhiDocsComponent,
-        JhiTrackerComponent,
-        JhiMetricsMonitoringComponent
-    ],
-    providers: [{ provide: JhiLanguageService, useClass: JhiLanguageService }],
-    entryComponents: [UserMgmtDeleteDialogComponent, JhiHealthModalComponent],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    JhiTrackerComponent,
+    JhiMetricsMonitoringComponent
+  ],
+  providers: [{ provide: JhiLanguageService, useClass: JhiLanguageService }],
+  entryComponents: [UserMgmtDeleteDialogComponent, JhiHealthModalComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class StoreAdminModule {
-    constructor(private languageService: JhiLanguageService, private languageHelper: JhiLanguageHelper) {
-        this.languageHelper.language.subscribe((languageKey: string) => {
-            if (languageKey !== undefined) {
-                this.languageService.changeLanguage(languageKey);
-            }
-        });
-    }
+  constructor(private languageService: JhiLanguageService, private languageHelper: JhiLanguageHelper) {
+    this.languageHelper.language.subscribe((languageKey: string) => {
+      if (languageKey !== undefined) {
+        this.languageService.changeLanguage(languageKey);
+      }
+    });
+  }
 }

@@ -2,7 +2,7 @@
 # Project Specific
 ######################
 /src/main/webapp/content/css/main.css
-/build/www/**
+/build/resources/main/static/**
 /src/test/javascript/coverage/
 
 ######################
