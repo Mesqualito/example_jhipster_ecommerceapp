@@ -46,7 +46,7 @@
             "otherEntityField": "name"
         }
     ],
-    "changelogDate": "20190630193952",
+    "changelogDate": "20190630194205",
     "entityTableName": "shop_image",
     "dto": "mapstruct",
     "pagination": "no",

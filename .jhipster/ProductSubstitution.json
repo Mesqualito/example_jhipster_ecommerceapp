@@ -28,7 +28,7 @@
             "ownerSide": false
         }
     ],
-    "changelogDate": "20190630193954",
+    "changelogDate": "20190630194207",
     "entityTableName": "prod_substitution",
     "dto": "mapstruct",
     "pagination": "no",
