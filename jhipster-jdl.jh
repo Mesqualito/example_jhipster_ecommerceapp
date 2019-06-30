@@ -21,13 +21,13 @@ entity ShopImage (shop_image) {
   description String,
   image ImageBlob
 }
-entity ProductReference (product_reference){
+entity ProductReference (prod_reference){
   name String,
   refName String required,
   reference String,
   type String
 }
-entity ProductSubstitution (product_substitution){
+entity ProductSubstitution (prod_substitution){
   productName String,
   exchangeable Boolean required,
   checked Boolean
