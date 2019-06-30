@@ -5,8 +5,8 @@ import { StoreSharedModule } from 'app/shared';
 import { HOME_ROUTE, HomeComponent } from './';
 
 @NgModule({
-    imports: [StoreSharedModule, RouterModule.forChild([HOME_ROUTE])],
-    declarations: [HomeComponent],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  imports: [StoreSharedModule, RouterModule.forChild([HOME_ROUTE])],
+  declarations: [HomeComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class StoreHomeModule {}

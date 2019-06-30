@@ -4,21 +4,25 @@ import { HttpClientModule } from '@angular/common/http';
 import { Title } from '@angular/platform-browser';
 import locale from '@angular/common/locales/de';
 
+import { NgbDateAdapter } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDateMomentAdapter } from 'app/shared/util/datepicker-adapter';
+
 @NgModule({
-    imports: [HttpClientModule],
-    exports: [],
-    declarations: [],
-    providers: [
-        Title,
-        {
-            provide: LOCALE_ID,
-            useValue: 'de'
-        },
-        DatePipe
-    ]
+  imports: [HttpClientModule],
+  exports: [],
+  declarations: [],
+  providers: [
+    Title,
+    {
+      provide: LOCALE_ID,
+      useValue: 'de'
+    },
+    { provide: NgbDateAdapter, useClass: NgbDateMomentAdapter },
+    DatePipe
+  ]
 })
 export class StoreCoreModule {
-    constructor() {
-        registerLocaleData(locale);
-    }
+  constructor() {
+    registerLocaleData(locale);
+  }
 }
