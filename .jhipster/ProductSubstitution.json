@@ -18,7 +18,7 @@
         }
     ],
     "relationships": [],
-    "changelogDate": "20190630184641",
+    "changelogDate": "20190630184949",
     "entityTableName": "product_substitution",
     "dto": "no",
     "pagination": "no",
