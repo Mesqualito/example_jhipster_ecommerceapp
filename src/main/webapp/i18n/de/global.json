@@ -15,6 +15,8 @@
         "orderItem": "Order Item",
         "invoice": "Invoice",
         "shipment": "Shipment",
+        "productReference": "Product Reference",
+        "productSubstitution": "Product Substitution",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
       "account": {

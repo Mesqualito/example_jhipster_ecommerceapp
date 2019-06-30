@@ -21,7 +21,7 @@ describe('Service Tests', () => {
       service = injector.get(ProductService);
       httpMock = injector.get(HttpTestingController);
 
-      elemDefault = new Product(0, 'AAAAAAA', 'AAAAAAA', 'AAAAAAA', 'AAAAAAA', 0);
+      elemDefault = new Product(0, 'AAAAAAA', false, 'AAAAAAA', 'AAAAAAA', 'AAAAAAA', 0, false);
     });
 
     describe('Service methods', () => {
@@ -58,10 +58,12 @@ describe('Service Tests', () => {
         const returnedFromService = Object.assign(
           {
             erpId: 'BBBBBB',
+            refined: true,
             name: 'BBBBBB',
             description: 'BBBBBB',
             herstArtNr: 'BBBBBB',
-            price: 1
+            price: 1,
+            katalogOnly: true
           },
           elemDefault
         );
@@ -80,10 +82,12 @@ describe('Service Tests', () => {
         const returnedFromService = Object.assign(
           {
             erpId: 'BBBBBB',
+            refined: true,
             name: 'BBBBBB',
             description: 'BBBBBB',
             herstArtNr: 'BBBBBB',
-            price: 1
+            price: 1,
+            katalogOnly: true
           },
           elemDefault
         );

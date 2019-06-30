@@ -66,7 +66,7 @@
             "otherEntityField": "code"
         }
     ],
-    "changelogDate": "20190630180140",
+    "changelogDate": "20190630183319",
     "entityTableName": "invoice",
     "dto": "no",
     "pagination": "pagination",

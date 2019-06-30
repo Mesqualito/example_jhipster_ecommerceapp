@@ -1,0 +1,24 @@
+{
+  "storeApp": {
+    "productSubstitution": {
+      "home": {
+        "title": "Product Substitutions",
+        "createLabel": "Product Substitution erstellen",
+        "createOrEditLabel": "Product Substitution erstellen oder bearbeiten",
+        "notFound": "No Product Substitution found"
+      },
+      "created": "Product Substitution erstellt mit ID {{ param }}",
+      "updated": "Product Substitution aktualisiert mit ID {{ param }}",
+      "deleted": "Product Substitution gelöscht mit ID {{ param }}",
+      "delete": {
+        "question": "Soll Product Substitution {{ id }} wirklich dauerhaft gelöscht werden?"
+      },
+      "detail": {
+        "title": "Product Substitution"
+      },
+      "name": "Name",
+      "exchangeable": "Exchangeable",
+      "checked": "Checked"
+    }
+  }
+}

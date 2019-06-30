@@ -1,10 +1,7 @@
 package net.generica.store.service.dto;
 
 import io.github.jhipster.service.Criteria;
-import io.github.jhipster.service.filter.BigDecimalFilter;
-import io.github.jhipster.service.filter.Filter;
-import io.github.jhipster.service.filter.LongFilter;
-import io.github.jhipster.service.filter.StringFilter;
+import io.github.jhipster.service.filter.*;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -26,6 +23,8 @@ public class ProductCriteria implements Serializable, Criteria {
 
     private StringFilter erpId;
 
+    private BooleanFilter refined;
+
     private StringFilter name;
 
     private StringFilter description;
@@ -34,9 +33,17 @@ public class ProductCriteria implements Serializable, Criteria {
 
     private BigDecimalFilter price;
 
+    private BooleanFilter katalogOnly;
+
     private LongFilter shopImageId;
 
+    private LongFilter referenceId;
+
+    private LongFilter substitutionId;
+
     private LongFilter productCategoryId;
+
+    private LongFilter productId;
 
     public ProductCriteria(){
     }
@@ -44,12 +51,17 @@ public class ProductCriteria implements Serializable, Criteria {
     public ProductCriteria(ProductCriteria other){
         this.id = other.id == null ? null : other.id.copy();
         this.erpId = other.erpId == null ? null : other.erpId.copy();
+        this.refined = other.refined == null ? null : other.refined.copy();
         this.name = other.name == null ? null : other.name.copy();
         this.description = other.description == null ? null : other.description.copy();
         this.herstArtNr = other.herstArtNr == null ? null : other.herstArtNr.copy();
         this.price = other.price == null ? null : other.price.copy();
+        this.katalogOnly = other.katalogOnly == null ? null : other.katalogOnly.copy();
         this.shopImageId = other.shopImageId == null ? null : other.shopImageId.copy();
+        this.referenceId = other.referenceId == null ? null : other.referenceId.copy();
+        this.substitutionId = other.substitutionId == null ? null : other.substitutionId.copy();
         this.productCategoryId = other.productCategoryId == null ? null : other.productCategoryId.copy();
+        this.productId = other.productId == null ? null : other.productId.copy();
     }
 
     @Override
@@ -71,6 +83,14 @@ public class ProductCriteria implements Serializable, Criteria {
 
     public void setErpId(StringFilter erpId) {
         this.erpId = erpId;
+    }
+
+    public BooleanFilter getRefined() {
+        return refined;
+    }
+
+    public void setRefined(BooleanFilter refined) {
+        this.refined = refined;
     }
 
     public StringFilter getName() {
@@ -105,6 +125,14 @@ public class ProductCriteria implements Serializable, Criteria {
         this.price = price;
     }
 
+    public BooleanFilter getKatalogOnly() {
+        return katalogOnly;
+    }
+
+    public void setKatalogOnly(BooleanFilter katalogOnly) {
+        this.katalogOnly = katalogOnly;
+    }
+
     public LongFilter getShopImageId() {
         return shopImageId;
     }
@@ -113,12 +141,36 @@ public class ProductCriteria implements Serializable, Criteria {
         this.shopImageId = shopImageId;
     }
 
+    public LongFilter getReferenceId() {
+        return referenceId;
+    }
+
+    public void setReferenceId(LongFilter referenceId) {
+        this.referenceId = referenceId;
+    }
+
+    public LongFilter getSubstitutionId() {
+        return substitutionId;
+    }
+
+    public void setSubstitutionId(LongFilter substitutionId) {
+        this.substitutionId = substitutionId;
+    }
+
     public LongFilter getProductCategoryId() {
         return productCategoryId;
     }
 
     public void setProductCategoryId(LongFilter productCategoryId) {
         this.productCategoryId = productCategoryId;
+    }
+
+    public LongFilter getProductId() {
+        return productId;
+    }
+
+    public void setProductId(LongFilter productId) {
+        this.productId = productId;
     }
 
 
@@ -134,12 +186,17 @@ public class ProductCriteria implements Serializable, Criteria {
         return
             Objects.equals(id, that.id) &&
             Objects.equals(erpId, that.erpId) &&
+            Objects.equals(refined, that.refined) &&
             Objects.equals(name, that.name) &&
             Objects.equals(description, that.description) &&
             Objects.equals(herstArtNr, that.herstArtNr) &&
             Objects.equals(price, that.price) &&
+            Objects.equals(katalogOnly, that.katalogOnly) &&
             Objects.equals(shopImageId, that.shopImageId) &&
-            Objects.equals(productCategoryId, that.productCategoryId);
+            Objects.equals(referenceId, that.referenceId) &&
+            Objects.equals(substitutionId, that.substitutionId) &&
+            Objects.equals(productCategoryId, that.productCategoryId) &&
+            Objects.equals(productId, that.productId);
     }
 
     @Override
@@ -147,12 +204,17 @@ public class ProductCriteria implements Serializable, Criteria {
         return Objects.hash(
         id,
         erpId,
+        refined,
         name,
         description,
         herstArtNr,
         price,
+        katalogOnly,
         shopImageId,
-        productCategoryId
+        referenceId,
+        substitutionId,
+        productCategoryId,
+        productId
         );
     }
 
@@ -161,12 +223,17 @@ public class ProductCriteria implements Serializable, Criteria {
         return "ProductCriteria{" +
                 (id != null ? "id=" + id + ", " : "") +
                 (erpId != null ? "erpId=" + erpId + ", " : "") +
+                (refined != null ? "refined=" + refined + ", " : "") +
                 (name != null ? "name=" + name + ", " : "") +
                 (description != null ? "description=" + description + ", " : "") +
                 (herstArtNr != null ? "herstArtNr=" + herstArtNr + ", " : "") +
                 (price != null ? "price=" + price + ", " : "") +
+                (katalogOnly != null ? "katalogOnly=" + katalogOnly + ", " : "") +
                 (shopImageId != null ? "shopImageId=" + shopImageId + ", " : "") +
+                (referenceId != null ? "referenceId=" + referenceId + ", " : "") +
+                (substitutionId != null ? "substitutionId=" + substitutionId + ", " : "") +
                 (productCategoryId != null ? "productCategoryId=" + productCategoryId + ", " : "") +
+                (productId != null ? "productId=" + productId + ", " : "") +
             "}";
     }
 

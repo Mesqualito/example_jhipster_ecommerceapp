@@ -9,6 +9,10 @@
                 <dd>
                     <span>{{product.erpId}}</span>
                 </dd>
+                <dt><span jhiTranslate="storeApp.product.refined">Refined</span></dt>
+                <dd>
+                    <span>{{product.refined}}</span>
+                </dd>
                 <dt><span jhiTranslate="storeApp.product.name">Name</span></dt>
                 <dd>
                     <span>{{product.name}}</span>
@@ -24,6 +28,16 @@
                 <dt><span jhiTranslate="storeApp.product.price">Price</span></dt>
                 <dd>
                     <span>{{product.price}}</span>
+                </dd>
+                <dt><span jhiTranslate="storeApp.product.katalogOnly">Katalog Only</span></dt>
+                <dd>
+                    <span>{{product.katalogOnly}}</span>
+                </dd>
+                <dt><span jhiTranslate="storeApp.product.substitution">Substitution</span></dt>
+                <dd>
+                    <span *ngFor="let substitution of product.substitutions; let last = last">
+                        <a [routerLink]="['/product', substitution?.id, 'view' ]">{{substitution.id}}</a>{{last ? '' : ', '}}
+                    </span>
                 </dd>
                 <dt><span jhiTranslate="storeApp.product.productCategory">Product Category</span></dt>
                 <dd>

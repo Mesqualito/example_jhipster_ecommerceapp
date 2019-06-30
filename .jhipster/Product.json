@@ -9,6 +9,13 @@
             ]
         },
         {
+            "fieldName": "refined",
+            "fieldType": "Boolean",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
             "fieldName": "name",
             "fieldType": "String",
             "fieldValidateRules": [
@@ -34,6 +41,10 @@
                 "min"
             ],
             "fieldValidateRulesMin": 0
+        },
+        {
+            "fieldName": "katalogOnly",
+            "fieldType": "Boolean"
         }
     ],
     "relationships": [
@@ -44,14 +55,36 @@
             "relationshipName": "shopImage"
         },
         {
+            "relationshipType": "one-to-many",
+            "otherEntityName": "productReference",
+            "otherEntityRelationshipName": "product",
+            "relationshipName": "reference"
+        },
+        {
+            "relationshipType": "many-to-many",
+            "otherEntityName": "product",
+            "otherEntityRelationshipName": "product",
+            "relationshipName": "substitution",
+            "otherEntityField": "id",
+            "ownerSide": true
+        },
+        {
             "relationshipType": "many-to-one",
             "otherEntityName": "productCategory",
             "otherEntityRelationshipName": "product",
             "relationshipName": "productCategory",
             "otherEntityField": "name"
+        },
+        {
+            "relationshipType": "many-to-many",
+            "otherEntityName": "product",
+            "otherEntityRelationshipName": "substitution",
+            "relationshipName": "product",
+            "otherEntityField": "name",
+            "ownerSide": false
         }
     ],
-    "changelogDate": "20190630180134",
+    "changelogDate": "20190630183311",
     "javadoc": "Product sold by the online-store",
     "entityTableName": "product",
     "dto": "no",

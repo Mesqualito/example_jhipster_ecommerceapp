@@ -21,6 +21,17 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="storeApp.product.refined" for="field_refined">Refined</label>
+                    <input type="checkbox" class="form-control" name="refined" id="field_refined"
+                           formControlName="refined"/>
+                    <div *ngIf="editForm.get('refined').invalid && (editForm.get('refined').dirty || editForm.get('refined').touched)">
+                        <small class="form-text text-danger"
+                               *ngIf="editForm.get('refined').errors.required" jhiTranslate="entity.validation.required">
+                        This field is required.
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
                     <label class="form-control-label" jhiTranslate="storeApp.product.name" for="field_name">Name</label>
                     <input type="text" class="form-control" name="name" id="field_name"
                            formControlName="name"/>
@@ -66,7 +77,18 @@
                         </small>
                     </div>
                 </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="storeApp.product.katalogOnly" for="field_katalogOnly">Katalog Only</label>
+                    <input type="checkbox" class="form-control" name="katalogOnly" id="field_katalogOnly"
+                           formControlName="katalogOnly"/>
+                </div>
 
+                <div class="form-group">
+                    <label jhiTranslate="storeApp.product.substitution" for="field_substitutions">Substitution</label>
+                    <select class="form-control" id="field_substitutions" multiple name="substitutions" formControlName="substitutions">
+                        <option [ngValue]="getSelected(editForm.get('substitutions').value, productOption)" *ngFor="let productOption of products; trackBy: trackProductById">{{productOption.id}}</option>
+                    </select>
+                </div>
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="storeApp.product.productCategory" for="field_productCategory">Product Category</label>
                     <select class="form-control" id="field_productCategory" name="productCategory" formControlName="productCategory">

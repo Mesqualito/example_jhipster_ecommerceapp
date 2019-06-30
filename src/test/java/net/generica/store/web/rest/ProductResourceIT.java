@@ -3,6 +3,7 @@ package net.generica.store.web.rest;
 import net.generica.store.StoreApp;
 import net.generica.store.domain.Product;
 import net.generica.store.domain.ProductCategory;
+import net.generica.store.domain.ProductReference;
 import net.generica.store.domain.ShopImage;
 import net.generica.store.repository.ProductRepository;
 import net.generica.store.service.ProductQueryService;
@@ -10,9 +11,11 @@ import net.generica.store.service.ProductService;
 import net.generica.store.web.rest.errors.ExceptionTranslator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -23,11 +26,13 @@ import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import static net.generica.store.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -39,6 +44,9 @@ public class ProductResourceIT {
 
     private static final String DEFAULT_ERP_ID = "AAAAAAAAAA";
     private static final String UPDATED_ERP_ID = "BBBBBBBBBB";
+
+    private static final Boolean DEFAULT_REFINED = false;
+    private static final Boolean UPDATED_REFINED = true;
 
     private static final String DEFAULT_NAME = "AAAAAAAAAA";
     private static final String UPDATED_NAME = "BBBBBBBBBB";
@@ -52,8 +60,17 @@ public class ProductResourceIT {
     private static final BigDecimal DEFAULT_PRICE = new BigDecimal(0);
     private static final BigDecimal UPDATED_PRICE = new BigDecimal(1);
 
+    private static final Boolean DEFAULT_KATALOG_ONLY = false;
+    private static final Boolean UPDATED_KATALOG_ONLY = true;
+
     @Autowired
     private ProductRepository productRepository;
+
+    @Mock
+    private ProductRepository productRepositoryMock;
+
+    @Mock
+    private ProductService productServiceMock;
 
     @Autowired
     private ProductService productService;
@@ -101,10 +118,12 @@ public class ProductResourceIT {
     public static Product createEntity(EntityManager em) {
         Product product = new Product()
             .erpId(DEFAULT_ERP_ID)
+            .refined(DEFAULT_REFINED)
             .name(DEFAULT_NAME)
             .description(DEFAULT_DESCRIPTION)
             .herstArtNr(DEFAULT_HERST_ART_NR)
-            .price(DEFAULT_PRICE);
+            .price(DEFAULT_PRICE)
+            .katalogOnly(DEFAULT_KATALOG_ONLY);
         return product;
     }
     /**
@@ -116,10 +135,12 @@ public class ProductResourceIT {
     public static Product createUpdatedEntity(EntityManager em) {
         Product product = new Product()
             .erpId(UPDATED_ERP_ID)
+            .refined(UPDATED_REFINED)
             .name(UPDATED_NAME)
             .description(UPDATED_DESCRIPTION)
             .herstArtNr(UPDATED_HERST_ART_NR)
-            .price(UPDATED_PRICE);
+            .price(UPDATED_PRICE)
+            .katalogOnly(UPDATED_KATALOG_ONLY);
         return product;
     }
 
@@ -144,10 +165,12 @@ public class ProductResourceIT {
         assertThat(productList).hasSize(databaseSizeBeforeCreate + 1);
         Product testProduct = productList.get(productList.size() - 1);
         assertThat(testProduct.getErpId()).isEqualTo(DEFAULT_ERP_ID);
+        assertThat(testProduct.isRefined()).isEqualTo(DEFAULT_REFINED);
         assertThat(testProduct.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(testProduct.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
         assertThat(testProduct.getHerstArtNr()).isEqualTo(DEFAULT_HERST_ART_NR);
         assertThat(testProduct.getPrice()).isEqualTo(DEFAULT_PRICE);
+        assertThat(testProduct.isKatalogOnly()).isEqualTo(DEFAULT_KATALOG_ONLY);
     }
 
     @Test
@@ -176,6 +199,24 @@ public class ProductResourceIT {
         int databaseSizeBeforeTest = productRepository.findAll().size();
         // set the field null
         product.setErpId(null);
+
+        // Create the Product, which fails.
+
+        restProductMockMvc.perform(post("/api/products")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(product)))
+            .andExpect(status().isBadRequest());
+
+        List<Product> productList = productRepository.findAll();
+        assertThat(productList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
+    public void checkRefinedIsRequired() throws Exception {
+        int databaseSizeBeforeTest = productRepository.findAll().size();
+        // set the field null
+        product.setRefined(null);
 
         // Create the Product, which fails.
 
@@ -254,12 +295,47 @@ public class ProductResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(product.getId().intValue())))
             .andExpect(jsonPath("$.[*].erpId").value(hasItem(DEFAULT_ERP_ID.toString())))
+            .andExpect(jsonPath("$.[*].refined").value(hasItem(DEFAULT_REFINED.booleanValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
             .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
             .andExpect(jsonPath("$.[*].herstArtNr").value(hasItem(DEFAULT_HERST_ART_NR.toString())))
-            .andExpect(jsonPath("$.[*].price").value(hasItem(DEFAULT_PRICE.intValue())));
+            .andExpect(jsonPath("$.[*].price").value(hasItem(DEFAULT_PRICE.intValue())))
+            .andExpect(jsonPath("$.[*].katalogOnly").value(hasItem(DEFAULT_KATALOG_ONLY.booleanValue())));
     }
     
+    @SuppressWarnings({"unchecked"})
+    public void getAllProductsWithEagerRelationshipsIsEnabled() throws Exception {
+        ProductResource productResource = new ProductResource(productServiceMock, productQueryService);
+        when(productServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+
+        MockMvc restProductMockMvc = MockMvcBuilders.standaloneSetup(productResource)
+            .setCustomArgumentResolvers(pageableArgumentResolver)
+            .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
+            .setMessageConverters(jacksonMessageConverter).build();
+
+        restProductMockMvc.perform(get("/api/products?eagerload=true"))
+        .andExpect(status().isOk());
+
+        verify(productServiceMock, times(1)).findAllWithEagerRelationships(any());
+    }
+
+    @SuppressWarnings({"unchecked"})
+    public void getAllProductsWithEagerRelationshipsIsNotEnabled() throws Exception {
+        ProductResource productResource = new ProductResource(productServiceMock, productQueryService);
+            when(productServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+            MockMvc restProductMockMvc = MockMvcBuilders.standaloneSetup(productResource)
+            .setCustomArgumentResolvers(pageableArgumentResolver)
+            .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
+            .setMessageConverters(jacksonMessageConverter).build();
+
+        restProductMockMvc.perform(get("/api/products?eagerload=true"))
+        .andExpect(status().isOk());
+
+            verify(productServiceMock, times(1)).findAllWithEagerRelationships(any());
+    }
+
     @Test
     @Transactional
     public void getProduct() throws Exception {
@@ -272,10 +348,12 @@ public class ProductResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(product.getId().intValue()))
             .andExpect(jsonPath("$.erpId").value(DEFAULT_ERP_ID.toString()))
+            .andExpect(jsonPath("$.refined").value(DEFAULT_REFINED.booleanValue()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
             .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION.toString()))
             .andExpect(jsonPath("$.herstArtNr").value(DEFAULT_HERST_ART_NR.toString()))
-            .andExpect(jsonPath("$.price").value(DEFAULT_PRICE.intValue()));
+            .andExpect(jsonPath("$.price").value(DEFAULT_PRICE.intValue()))
+            .andExpect(jsonPath("$.katalogOnly").value(DEFAULT_KATALOG_ONLY.booleanValue()));
     }
 
     @Test
@@ -315,6 +393,45 @@ public class ProductResourceIT {
 
         // Get all the productList where erpId is null
         defaultProductShouldNotBeFound("erpId.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllProductsByRefinedIsEqualToSomething() throws Exception {
+        // Initialize the database
+        productRepository.saveAndFlush(product);
+
+        // Get all the productList where refined equals to DEFAULT_REFINED
+        defaultProductShouldBeFound("refined.equals=" + DEFAULT_REFINED);
+
+        // Get all the productList where refined equals to UPDATED_REFINED
+        defaultProductShouldNotBeFound("refined.equals=" + UPDATED_REFINED);
+    }
+
+    @Test
+    @Transactional
+    public void getAllProductsByRefinedIsInShouldWork() throws Exception {
+        // Initialize the database
+        productRepository.saveAndFlush(product);
+
+        // Get all the productList where refined in DEFAULT_REFINED or UPDATED_REFINED
+        defaultProductShouldBeFound("refined.in=" + DEFAULT_REFINED + "," + UPDATED_REFINED);
+
+        // Get all the productList where refined equals to UPDATED_REFINED
+        defaultProductShouldNotBeFound("refined.in=" + UPDATED_REFINED);
+    }
+
+    @Test
+    @Transactional
+    public void getAllProductsByRefinedIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        productRepository.saveAndFlush(product);
+
+        // Get all the productList where refined is not null
+        defaultProductShouldBeFound("refined.specified=true");
+
+        // Get all the productList where refined is null
+        defaultProductShouldNotBeFound("refined.specified=false");
     }
 
     @Test
@@ -475,6 +592,45 @@ public class ProductResourceIT {
 
     @Test
     @Transactional
+    public void getAllProductsByKatalogOnlyIsEqualToSomething() throws Exception {
+        // Initialize the database
+        productRepository.saveAndFlush(product);
+
+        // Get all the productList where katalogOnly equals to DEFAULT_KATALOG_ONLY
+        defaultProductShouldBeFound("katalogOnly.equals=" + DEFAULT_KATALOG_ONLY);
+
+        // Get all the productList where katalogOnly equals to UPDATED_KATALOG_ONLY
+        defaultProductShouldNotBeFound("katalogOnly.equals=" + UPDATED_KATALOG_ONLY);
+    }
+
+    @Test
+    @Transactional
+    public void getAllProductsByKatalogOnlyIsInShouldWork() throws Exception {
+        // Initialize the database
+        productRepository.saveAndFlush(product);
+
+        // Get all the productList where katalogOnly in DEFAULT_KATALOG_ONLY or UPDATED_KATALOG_ONLY
+        defaultProductShouldBeFound("katalogOnly.in=" + DEFAULT_KATALOG_ONLY + "," + UPDATED_KATALOG_ONLY);
+
+        // Get all the productList where katalogOnly equals to UPDATED_KATALOG_ONLY
+        defaultProductShouldNotBeFound("katalogOnly.in=" + UPDATED_KATALOG_ONLY);
+    }
+
+    @Test
+    @Transactional
+    public void getAllProductsByKatalogOnlyIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        productRepository.saveAndFlush(product);
+
+        // Get all the productList where katalogOnly is not null
+        defaultProductShouldBeFound("katalogOnly.specified=true");
+
+        // Get all the productList where katalogOnly is null
+        defaultProductShouldNotBeFound("katalogOnly.specified=false");
+    }
+
+    @Test
+    @Transactional
     public void getAllProductsByShopImageIsEqualToSomething() throws Exception {
         // Initialize the database
         ShopImage shopImage = ShopImageResourceIT.createEntity(em);
@@ -489,6 +645,44 @@ public class ProductResourceIT {
 
         // Get all the productList where shopImage equals to shopImageId + 1
         defaultProductShouldNotBeFound("shopImageId.equals=" + (shopImageId + 1));
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllProductsByReferenceIsEqualToSomething() throws Exception {
+        // Initialize the database
+        ProductReference reference = ProductReferenceResourceIT.createEntity(em);
+        em.persist(reference);
+        em.flush();
+        product.addReference(reference);
+        productRepository.saveAndFlush(product);
+        Long referenceId = reference.getId();
+
+        // Get all the productList where reference equals to referenceId
+        defaultProductShouldBeFound("referenceId.equals=" + referenceId);
+
+        // Get all the productList where reference equals to referenceId + 1
+        defaultProductShouldNotBeFound("referenceId.equals=" + (referenceId + 1));
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllProductsBySubstitutionIsEqualToSomething() throws Exception {
+        // Initialize the database
+        Product substitution = ProductResourceIT.createEntity(em);
+        em.persist(substitution);
+        em.flush();
+        product.addSubstitution(substitution);
+        productRepository.saveAndFlush(product);
+        Long substitutionId = substitution.getId();
+
+        // Get all the productList where substitution equals to substitutionId
+        defaultProductShouldBeFound("substitutionId.equals=" + substitutionId);
+
+        // Get all the productList where substitution equals to substitutionId + 1
+        defaultProductShouldNotBeFound("substitutionId.equals=" + (substitutionId + 1));
     }
 
 
@@ -510,6 +704,25 @@ public class ProductResourceIT {
         defaultProductShouldNotBeFound("productCategoryId.equals=" + (productCategoryId + 1));
     }
 
+
+    @Test
+    @Transactional
+    public void getAllProductsByProductIsEqualToSomething() throws Exception {
+        // Initialize the database
+        Product product = ProductResourceIT.createEntity(em);
+        em.persist(product);
+        em.flush();
+        product.addProduct(product);
+        productRepository.saveAndFlush(product);
+        Long productId = product.getId();
+
+        // Get all the productList where product equals to productId
+        defaultProductShouldBeFound("productId.equals=" + productId);
+
+        // Get all the productList where product equals to productId + 1
+        defaultProductShouldNotBeFound("productId.equals=" + (productId + 1));
+    }
+
     /**
      * Executes the search, and checks that the default entity is returned.
      */
@@ -519,10 +732,12 @@ public class ProductResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(product.getId().intValue())))
             .andExpect(jsonPath("$.[*].erpId").value(hasItem(DEFAULT_ERP_ID)))
+            .andExpect(jsonPath("$.[*].refined").value(hasItem(DEFAULT_REFINED.booleanValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
             .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
             .andExpect(jsonPath("$.[*].herstArtNr").value(hasItem(DEFAULT_HERST_ART_NR)))
-            .andExpect(jsonPath("$.[*].price").value(hasItem(DEFAULT_PRICE.intValue())));
+            .andExpect(jsonPath("$.[*].price").value(hasItem(DEFAULT_PRICE.intValue())))
+            .andExpect(jsonPath("$.[*].katalogOnly").value(hasItem(DEFAULT_KATALOG_ONLY.booleanValue())));
 
         // Check, that the count call also returns 1
         restProductMockMvc.perform(get("/api/products/count?sort=id,desc&" + filter))
@@ -571,10 +786,12 @@ public class ProductResourceIT {
         em.detach(updatedProduct);
         updatedProduct
             .erpId(UPDATED_ERP_ID)
+            .refined(UPDATED_REFINED)
             .name(UPDATED_NAME)
             .description(UPDATED_DESCRIPTION)
             .herstArtNr(UPDATED_HERST_ART_NR)
-            .price(UPDATED_PRICE);
+            .price(UPDATED_PRICE)
+            .katalogOnly(UPDATED_KATALOG_ONLY);
 
         restProductMockMvc.perform(put("/api/products")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -586,10 +803,12 @@ public class ProductResourceIT {
         assertThat(productList).hasSize(databaseSizeBeforeUpdate);
         Product testProduct = productList.get(productList.size() - 1);
         assertThat(testProduct.getErpId()).isEqualTo(UPDATED_ERP_ID);
+        assertThat(testProduct.isRefined()).isEqualTo(UPDATED_REFINED);
         assertThat(testProduct.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testProduct.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
         assertThat(testProduct.getHerstArtNr()).isEqualTo(UPDATED_HERST_ART_NR);
         assertThat(testProduct.getPrice()).isEqualTo(UPDATED_PRICE);
+        assertThat(testProduct.isKatalogOnly()).isEqualTo(UPDATED_KATALOG_ONLY);
     }
 
     @Test

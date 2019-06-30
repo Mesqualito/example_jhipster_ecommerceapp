@@ -2,6 +2,9 @@ package net.generica.store.service;
 
 import io.github.jhipster.service.QueryService;
 import net.generica.store.domain.Invoice;
+import net.generica.store.domain.Invoice_;
+import net.generica.store.domain.ProductOrder_;
+import net.generica.store.domain.Shipment_;
 import net.generica.store.repository.InvoiceRepository;
 import net.generica.store.service.dto.InvoiceCriteria;
 import org.slf4j.Logger;

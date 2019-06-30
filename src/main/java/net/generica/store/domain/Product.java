@@ -1,5 +1,6 @@
 package net.generica.store.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.annotations.ApiModel;
 import org.hibernate.annotations.Cache;
@@ -33,6 +34,10 @@ public class Product implements Serializable {
     private String erpId;
 
     @NotNull
+    @Column(name = "refined", nullable = false)
+    private Boolean refined;
+
+    @NotNull
     @Column(name = "name", nullable = false)
     private String name;
 
@@ -48,13 +53,32 @@ public class Product implements Serializable {
     @Column(name = "price", precision = 21, scale = 2, nullable = false)
     private BigDecimal price;
 
+    @Column(name = "katalog_only")
+    private Boolean katalogOnly;
+
     @OneToMany(mappedBy = "product")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<ShopImage> shopImages = new HashSet<>();
 
+    @OneToMany(mappedBy = "product")
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    private Set<ProductReference> references = new HashSet<>();
+
+    @ManyToMany
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @JoinTable(name = "product_substitution",
+               joinColumns = @JoinColumn(name = "product_id", referencedColumnName = "id"),
+               inverseJoinColumns = @JoinColumn(name = "substitution_id", referencedColumnName = "id"))
+    private Set<Product> substitutions = new HashSet<>();
+
     @ManyToOne
     @JsonIgnoreProperties("products")
     private ProductCategory productCategory;
+
+    @ManyToMany(mappedBy = "substitutions")
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @JsonIgnore
+    private Set<Product> products = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -76,6 +100,19 @@ public class Product implements Serializable {
 
     public void setErpId(String erpId) {
         this.erpId = erpId;
+    }
+
+    public Boolean isRefined() {
+        return refined;
+    }
+
+    public Product refined(Boolean refined) {
+        this.refined = refined;
+        return this;
+    }
+
+    public void setRefined(Boolean refined) {
+        this.refined = refined;
     }
 
     public String getName() {
@@ -130,6 +167,19 @@ public class Product implements Serializable {
         this.price = price;
     }
 
+    public Boolean isKatalogOnly() {
+        return katalogOnly;
+    }
+
+    public Product katalogOnly(Boolean katalogOnly) {
+        this.katalogOnly = katalogOnly;
+        return this;
+    }
+
+    public void setKatalogOnly(Boolean katalogOnly) {
+        this.katalogOnly = katalogOnly;
+    }
+
     public Set<ShopImage> getShopImages() {
         return shopImages;
     }
@@ -155,6 +205,56 @@ public class Product implements Serializable {
         this.shopImages = shopImages;
     }
 
+    public Set<ProductReference> getReferences() {
+        return references;
+    }
+
+    public Product references(Set<ProductReference> productReferences) {
+        this.references = productReferences;
+        return this;
+    }
+
+    public Product addReference(ProductReference productReference) {
+        this.references.add(productReference);
+        productReference.setProduct(this);
+        return this;
+    }
+
+    public Product removeReference(ProductReference productReference) {
+        this.references.remove(productReference);
+        productReference.setProduct(null);
+        return this;
+    }
+
+    public void setReferences(Set<ProductReference> productReferences) {
+        this.references = productReferences;
+    }
+
+    public Set<Product> getSubstitutions() {
+        return substitutions;
+    }
+
+    public Product substitutions(Set<Product> products) {
+        this.substitutions = products;
+        return this;
+    }
+
+    public Product addSubstitution(Product product) {
+        this.substitutions.add(product);
+        product.getProducts().add(this);
+        return this;
+    }
+
+    public Product removeSubstitution(Product product) {
+        this.substitutions.remove(product);
+        product.getProducts().remove(this);
+        return this;
+    }
+
+    public void setSubstitutions(Set<Product> products) {
+        this.substitutions = products;
+    }
+
     public ProductCategory getProductCategory() {
         return productCategory;
     }
@@ -166,6 +266,31 @@ public class Product implements Serializable {
 
     public void setProductCategory(ProductCategory productCategory) {
         this.productCategory = productCategory;
+    }
+
+    public Set<Product> getProducts() {
+        return products;
+    }
+
+    public Product products(Set<Product> products) {
+        this.products = products;
+        return this;
+    }
+
+    public Product addProduct(Product product) {
+        this.products.add(product);
+        product.getSubstitutions().add(this);
+        return this;
+    }
+
+    public Product removeProduct(Product product) {
+        this.products.remove(product);
+        product.getSubstitutions().remove(this);
+        return this;
+    }
+
+    public void setProducts(Set<Product> products) {
+        this.products = products;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
@@ -190,10 +315,12 @@ public class Product implements Serializable {
         return "Product{" +
             "id=" + getId() +
             ", erpId='" + getErpId() + "'" +
+            ", refined='" + isRefined() + "'" +
             ", name='" + getName() + "'" +
             ", description='" + getDescription() + "'" +
             ", herstArtNr='" + getHerstArtNr() + "'" +
             ", price=" + getPrice() +
+            ", katalogOnly='" + isKatalogOnly() + "'" +
             "}";
     }
 }

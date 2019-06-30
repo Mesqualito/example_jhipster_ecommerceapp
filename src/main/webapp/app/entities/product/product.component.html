@@ -19,10 +19,12 @@
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
             <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="erpId"><span jhiTranslate="storeApp.product.erpId">Erp Id</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="refined"><span jhiTranslate="storeApp.product.refined">Refined</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="name"><span jhiTranslate="storeApp.product.name">Name</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="description"><span jhiTranslate="storeApp.product.description">Description</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="herstArtNr"><span jhiTranslate="storeApp.product.herstArtNr">Herst Art Nr</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="price"><span jhiTranslate="storeApp.product.price">Price</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="katalogOnly"><span jhiTranslate="storeApp.product.katalogOnly">Katalog Only</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="productCategory.name"><span jhiTranslate="storeApp.product.productCategory">Product Category</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th></th>
             </tr>
@@ -31,10 +33,12 @@
             <tr *ngFor="let product of products ;trackBy: trackId">
                 <td><a [routerLink]="['/product', product.id, 'view' ]">{{product.id}}</a></td>
                 <td>{{product.erpId}}</td>
+                <td>{{product.refined}}</td>
                 <td>{{product.name}}</td>
                 <td>{{product.description}}</td>
                 <td>{{product.herstArtNr}}</td>
                 <td>{{product.price}}</td>
+                <td>{{product.katalogOnly}}</td>
                 <td>
                     <div *ngIf="product.productCategory">
                         <a [routerLink]="['../product-category', product.productCategory?.id, 'view' ]" >{{product.productCategory?.name}}</a>

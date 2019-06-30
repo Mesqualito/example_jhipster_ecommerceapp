@@ -6,10 +6,12 @@
  */
 entity Product (product) {
   erpId String required,
+  refined Boolean required,
   name String required,
   description String,
   herstArtNr String required,
-  price BigDecimal required min(0)
+  price BigDecimal required min(0),
+  katalogOnly Boolean
 }
 entity ShopImage (shop_image) {
   name String required,
@@ -19,6 +21,18 @@ entity ShopImage (shop_image) {
   description String,
   image ImageBlob
 }
+entity ProductReference (product_reference){
+  name String,
+  refName String required,
+  reference String,
+  type String
+}
+entity ProductSubstitution (product_substitution){
+  name String,
+  exchangeable Boolean required,
+  checked Boolean
+}
+
 entity ProductCategory (product_category) {
   name String required,
   description String
@@ -140,12 +154,18 @@ relationship ManyToOne {
 */
 relationship OneToMany {
   Product{shopImage} to ShopImage{product(name)},
+  Product{reference} to ProductReference{product(name)},
   ProductCategory{product} to Product{productCategory(name)},
   Customer{order} to ProductOrder{customer(email) required},
   ProductOrder{orderItem} to OrderItem{order(code) required},
   ProductOrder{invoice} to Invoice{order(code) required},
   Invoice{shipment} to Shipment{invoice(code) required}
 }
+
+relationship ManyToMany {
+  Product{substitution} to Product{product(name)}
+}
+
 
 // options for entities
 

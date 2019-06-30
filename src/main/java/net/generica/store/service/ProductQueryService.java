@@ -1,7 +1,7 @@
 package net.generica.store.service;
 
 import io.github.jhipster.service.QueryService;
-import net.generica.store.domain.Product;
+import net.generica.store.domain.*;
 import net.generica.store.repository.ProductRepository;
 import net.generica.store.service.dto.ProductCriteria;
 import org.slf4j.Logger;
@@ -84,6 +84,9 @@ public class ProductQueryService extends QueryService<Product> {
             if (criteria.getErpId() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getErpId(), Product_.erpId));
             }
+            if (criteria.getRefined() != null) {
+                specification = specification.and(buildSpecification(criteria.getRefined(), Product_.refined));
+            }
             if (criteria.getName() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getName(), Product_.name));
             }
@@ -96,13 +99,28 @@ public class ProductQueryService extends QueryService<Product> {
             if (criteria.getPrice() != null) {
                 specification = specification.and(buildRangeSpecification(criteria.getPrice(), Product_.price));
             }
+            if (criteria.getKatalogOnly() != null) {
+                specification = specification.and(buildSpecification(criteria.getKatalogOnly(), Product_.katalogOnly));
+            }
             if (criteria.getShopImageId() != null) {
                 specification = specification.and(buildSpecification(criteria.getShopImageId(),
                     root -> root.join(Product_.shopImages, JoinType.LEFT).get(ShopImage_.id)));
             }
+            if (criteria.getReferenceId() != null) {
+                specification = specification.and(buildSpecification(criteria.getReferenceId(),
+                    root -> root.join(Product_.references, JoinType.LEFT).get(ProductReference_.id)));
+            }
+            if (criteria.getSubstitutionId() != null) {
+                specification = specification.and(buildSpecification(criteria.getSubstitutionId(),
+                    root -> root.join(Product_.substitutions, JoinType.LEFT).get(Product_.id)));
+            }
             if (criteria.getProductCategoryId() != null) {
                 specification = specification.and(buildSpecification(criteria.getProductCategoryId(),
                     root -> root.join(Product_.productCategory, JoinType.LEFT).get(ProductCategory_.id)));
+            }
+            if (criteria.getProductId() != null) {
+                specification = specification.and(buildSpecification(criteria.getProductId(),
+                    root -> root.join(Product_.products, JoinType.LEFT).get(Product_.id)));
             }
         }
         return specification;

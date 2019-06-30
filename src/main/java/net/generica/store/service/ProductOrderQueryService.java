@@ -1,7 +1,7 @@
 package net.generica.store.service;
 
 import io.github.jhipster.service.QueryService;
-import net.generica.store.domain.ProductOrder;
+import net.generica.store.domain.*;
 import net.generica.store.repository.ProductOrderRepository;
 import net.generica.store.service.dto.ProductOrderCriteria;
 import org.slf4j.Logger;

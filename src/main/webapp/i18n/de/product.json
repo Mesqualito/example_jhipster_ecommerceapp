@@ -17,12 +17,17 @@
         "title": "Product"
       },
       "erpId": "Erp Id",
+      "refined": "Refined",
       "name": "Name",
       "description": "Description",
       "herstArtNr": "Herst Art Nr",
       "price": "Price",
+      "katalogOnly": "Katalog Only",
       "shopImage": "Shop Image",
-      "productCategory": "Product Category"
+      "reference": "Reference",
+      "substitution": "Substitution",
+      "productCategory": "Product Category",
+      "product": "Product"
     }
   }
 }

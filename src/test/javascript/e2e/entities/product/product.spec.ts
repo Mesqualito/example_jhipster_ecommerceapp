@@ -45,13 +45,30 @@ describe('Product e2e test', () => {
       productUpdatePage.setDescriptionInput('description'),
       productUpdatePage.setHerstArtNrInput('herstArtNr'),
       productUpdatePage.setPriceInput('5'),
+      // productUpdatePage.substitutionSelectLastOption(),
       productUpdatePage.productCategorySelectLastOption()
     ]);
     expect(await productUpdatePage.getErpIdInput()).to.eq('erpId', 'Expected ErpId value to be equals to erpId');
+    const selectedRefined = productUpdatePage.getRefinedInput();
+    if (await selectedRefined.isSelected()) {
+      await productUpdatePage.getRefinedInput().click();
+      expect(await productUpdatePage.getRefinedInput().isSelected(), 'Expected refined not to be selected').to.be.false;
+    } else {
+      await productUpdatePage.getRefinedInput().click();
+      expect(await productUpdatePage.getRefinedInput().isSelected(), 'Expected refined to be selected').to.be.true;
+    }
     expect(await productUpdatePage.getNameInput()).to.eq('name', 'Expected Name value to be equals to name');
     expect(await productUpdatePage.getDescriptionInput()).to.eq('description', 'Expected Description value to be equals to description');
     expect(await productUpdatePage.getHerstArtNrInput()).to.eq('herstArtNr', 'Expected HerstArtNr value to be equals to herstArtNr');
     expect(await productUpdatePage.getPriceInput()).to.eq('5', 'Expected price value to be equals to 5');
+    const selectedKatalogOnly = productUpdatePage.getKatalogOnlyInput();
+    if (await selectedKatalogOnly.isSelected()) {
+      await productUpdatePage.getKatalogOnlyInput().click();
+      expect(await productUpdatePage.getKatalogOnlyInput().isSelected(), 'Expected katalogOnly not to be selected').to.be.false;
+    } else {
+      await productUpdatePage.getKatalogOnlyInput().click();
+      expect(await productUpdatePage.getKatalogOnlyInput().isSelected(), 'Expected katalogOnly to be selected').to.be.true;
+    }
     await productUpdatePage.save();
     expect(await productUpdatePage.getSaveButton().isPresent(), 'Expected save button disappear').to.be.false;
 

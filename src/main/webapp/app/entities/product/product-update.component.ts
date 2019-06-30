@@ -17,15 +17,20 @@ import { ProductCategoryService } from 'app/entities/product-category';
 export class ProductUpdateComponent implements OnInit {
   isSaving: boolean;
 
+  products: IProduct[];
+
   productcategories: IProductCategory[];
 
   editForm = this.fb.group({
     id: [],
     erpId: [null, [Validators.required]],
+    refined: [null, [Validators.required]],
     name: [null, [Validators.required]],
     description: [],
     herstArtNr: [null, [Validators.required]],
     price: [null, [Validators.required, Validators.min(0)]],
+    katalogOnly: [],
+    substitutions: [],
     productCategory: []
   });
 
@@ -42,6 +47,13 @@ export class ProductUpdateComponent implements OnInit {
     this.activatedRoute.data.subscribe(({ product }) => {
       this.updateForm(product);
     });
+    this.productService
+      .query()
+      .pipe(
+        filter((mayBeOk: HttpResponse<IProduct[]>) => mayBeOk.ok),
+        map((response: HttpResponse<IProduct[]>) => response.body)
+      )
+      .subscribe((res: IProduct[]) => (this.products = res), (res: HttpErrorResponse) => this.onError(res.message));
     this.productCategoryService
       .query()
       .pipe(
@@ -55,10 +67,13 @@ export class ProductUpdateComponent implements OnInit {
     this.editForm.patchValue({
       id: product.id,
       erpId: product.erpId,
+      refined: product.refined,
       name: product.name,
       description: product.description,
       herstArtNr: product.herstArtNr,
       price: product.price,
+      katalogOnly: product.katalogOnly,
+      substitutions: product.substitutions,
       productCategory: product.productCategory
     });
   }
@@ -82,10 +97,13 @@ export class ProductUpdateComponent implements OnInit {
       ...new Product(),
       id: this.editForm.get(['id']).value,
       erpId: this.editForm.get(['erpId']).value,
+      refined: this.editForm.get(['refined']).value,
       name: this.editForm.get(['name']).value,
       description: this.editForm.get(['description']).value,
       herstArtNr: this.editForm.get(['herstArtNr']).value,
       price: this.editForm.get(['price']).value,
+      katalogOnly: this.editForm.get(['katalogOnly']).value,
+      substitutions: this.editForm.get(['substitutions']).value,
       productCategory: this.editForm.get(['productCategory']).value
     };
   }
@@ -106,7 +124,22 @@ export class ProductUpdateComponent implements OnInit {
     this.jhiAlertService.error(errorMessage, null, null);
   }
 
+  trackProductById(index: number, item: IProduct) {
+    return item.id;
+  }
+
   trackProductCategoryById(index: number, item: IProductCategory) {
     return item.id;
+  }
+
+  getSelected(selectedVals: Array<any>, option: any) {
+    if (selectedVals) {
+      for (let i = 0; i < selectedVals.length; i++) {
+        if (option.id === selectedVals[i].id) {
+          return selectedVals[i];
+        }
+      }
+    }
+    return option;
   }
 }

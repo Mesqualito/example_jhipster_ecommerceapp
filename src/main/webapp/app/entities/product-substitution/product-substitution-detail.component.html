@@ -1,0 +1,35 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="productSubstitution">
+            <h2><span jhiTranslate="storeApp.productSubstitution.detail.title">Product Substitution</span> {{productSubstitution.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span jhiTranslate="storeApp.productSubstitution.name">Name</span></dt>
+                <dd>
+                    <span>{{productSubstitution.name}}</span>
+                </dd>
+                <dt><span jhiTranslate="storeApp.productSubstitution.exchangeable">Exchangeable</span></dt>
+                <dd>
+                    <span>{{productSubstitution.exchangeable}}</span>
+                </dd>
+                <dt><span jhiTranslate="storeApp.productSubstitution.checked">Checked</span></dt>
+                <dd>
+                    <span>{{productSubstitution.checked}}</span>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/product-substitution', productSubstitution.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,45 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="productReference">
+            <h2><span jhiTranslate="storeApp.productReference.detail.title">Product Reference</span> {{productReference.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span jhiTranslate="storeApp.productReference.name">Name</span></dt>
+                <dd>
+                    <span>{{productReference.name}}</span>
+                </dd>
+                <dt><span jhiTranslate="storeApp.productReference.refName">Ref Name</span></dt>
+                <dd>
+                    <span>{{productReference.refName}}</span>
+                </dd>
+                <dt><span jhiTranslate="storeApp.productReference.reference">Reference</span></dt>
+                <dd>
+                    <span>{{productReference.reference}}</span>
+                </dd>
+                <dt><span jhiTranslate="storeApp.productReference.type">Type</span></dt>
+                <dd>
+                    <span>{{productReference.type}}</span>
+                </dd>
+                <dt><span jhiTranslate="storeApp.productReference.product">Product</span></dt>
+                <dd>
+                    <div *ngIf="productReference.product">
+                        <a [routerLink]="['/product', productReference.product?.id, 'view']">{{productReference.product?.name}}</a>
+                    </div>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/product-reference', productReference.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

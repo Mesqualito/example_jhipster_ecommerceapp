@@ -1,0 +1,26 @@
+{
+  "storeApp": {
+    "productReference": {
+      "home": {
+        "title": "Product References",
+        "createLabel": "Product Reference erstellen",
+        "createOrEditLabel": "Product Reference erstellen oder bearbeiten",
+        "notFound": "No Product Reference found"
+      },
+      "created": "Product Reference erstellt mit ID {{ param }}",
+      "updated": "Product Reference aktualisiert mit ID {{ param }}",
+      "deleted": "Product Reference gelöscht mit ID {{ param }}",
+      "delete": {
+        "question": "Soll Product Reference {{ id }} wirklich dauerhaft gelöscht werden?"
+      },
+      "detail": {
+        "title": "Product Reference"
+      },
+      "name": "Name",
+      "refName": "Ref Name",
+      "reference": "Reference",
+      "type": "Type",
+      "product": "Product"
+    }
+  }
+}

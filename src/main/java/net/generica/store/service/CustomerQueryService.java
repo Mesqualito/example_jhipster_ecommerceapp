@@ -2,6 +2,8 @@ package net.generica.store.service;
 
 import io.github.jhipster.service.QueryService;
 import net.generica.store.domain.Customer;
+import net.generica.store.domain.Customer_;
+import net.generica.store.domain.ProductOrder_;
 import net.generica.store.domain.User_;
 import net.generica.store.repository.CustomerRepository;
 import net.generica.store.service.dto.CustomerCriteria;

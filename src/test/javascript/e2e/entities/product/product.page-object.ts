@@ -27,10 +27,13 @@ export class ProductUpdatePage {
   saveButton = element(by.id('save-entity'));
   cancelButton = element(by.id('cancel-save'));
   erpIdInput = element(by.id('field_erpId'));
+  refinedInput = element(by.id('field_refined'));
   nameInput = element(by.id('field_name'));
   descriptionInput = element(by.id('field_description'));
   herstArtNrInput = element(by.id('field_herstArtNr'));
   priceInput = element(by.id('field_price'));
+  katalogOnlyInput = element(by.id('field_katalogOnly'));
+  substitutionSelect = element(by.id('field_substitution'));
   productCategorySelect = element(by.id('field_productCategory'));
 
   async getPageTitle() {
@@ -45,6 +48,9 @@ export class ProductUpdatePage {
     return await this.erpIdInput.getAttribute('value');
   }
 
+  getRefinedInput(timeout?: number) {
+    return this.refinedInput;
+  }
   async setNameInput(name) {
     await this.nameInput.sendKeys(name);
   }
@@ -75,6 +81,29 @@ export class ProductUpdatePage {
 
   async getPriceInput() {
     return await this.priceInput.getAttribute('value');
+  }
+
+  getKatalogOnlyInput(timeout?: number) {
+    return this.katalogOnlyInput;
+  }
+
+  async substitutionSelectLastOption(timeout?: number) {
+    await this.substitutionSelect
+      .all(by.tagName('option'))
+      .last()
+      .click();
+  }
+
+  async substitutionSelectOption(option) {
+    await this.substitutionSelect.sendKeys(option);
+  }
+
+  getSubstitutionSelect(): ElementFinder {
+    return this.substitutionSelect;
+  }
+
+  async getSubstitutionSelectedOption() {
+    return await this.substitutionSelect.element(by.css('option:checked')).getText();
   }
 
   async productCategorySelectLastOption(timeout?: number) {
