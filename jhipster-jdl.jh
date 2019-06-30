@@ -42,7 +42,7 @@ entity Customer (customer) {
   name1 String required,
   name2 String,
   name3 String,
-  email String required pattern(/^[^@\s]+@[^@\s]+\.[^@\s]+$/),
+  email String required /* pattern(/^[^@\s]+@[^@\s]+\.[^@\s]+$/) */,
   phone String required,
   addressLine1 String required,
   addressLine2 String,
