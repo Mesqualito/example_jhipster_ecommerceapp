@@ -102,16 +102,6 @@ public class ProductSubstitutionResourceIT {
             .productName(DEFAULT_PRODUCT_NAME)
             .exchangeable(DEFAULT_EXCHANGEABLE)
             .checked(DEFAULT_CHECKED);
-        // Add required entity
-        Product product;
-        if (TestUtil.findAll(em, Product.class).isEmpty()) {
-            product = ProductResourceIT.createEntity(em);
-            em.persist(product);
-            em.flush();
-        } else {
-            product = TestUtil.findAll(em, Product.class).get(0);
-        }
-        productSubstitution.getProducts().add(product);
         return productSubstitution;
     }
     /**
@@ -125,16 +115,6 @@ public class ProductSubstitutionResourceIT {
             .productName(UPDATED_PRODUCT_NAME)
             .exchangeable(UPDATED_EXCHANGEABLE)
             .checked(UPDATED_CHECKED);
-        // Add required entity
-        Product product;
-        if (TestUtil.findAll(em, Product.class).isEmpty()) {
-            product = ProductResourceIT.createUpdatedEntity(em);
-            em.persist(product);
-            em.flush();
-        } else {
-            product = TestUtil.findAll(em, Product.class).get(0);
-        }
-        productSubstitution.getProducts().add(product);
         return productSubstitution;
     }
 
@@ -356,8 +336,11 @@ public class ProductSubstitutionResourceIT {
     @Test
     @Transactional
     public void getAllProductSubstitutionsByProductIsEqualToSomething() throws Exception {
-        // Get already existing entity
-        Product product = productSubstitution.getProduct();
+        // Initialize the database
+        Product product = ProductResourceIT.createEntity(em);
+        em.persist(product);
+        em.flush();
+        productSubstitution.addProduct(product);
         productSubstitutionRepository.saveAndFlush(productSubstitution);
         Long productId = product.getId();
 

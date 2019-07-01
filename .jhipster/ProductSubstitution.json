@@ -22,13 +22,12 @@
             "relationshipType": "many-to-many",
             "otherEntityName": "product",
             "otherEntityRelationshipName": "productSubstitution",
-            "relationshipValidateRules": "required",
             "relationshipName": "product",
             "otherEntityField": "id",
             "ownerSide": false
         }
     ],
-    "changelogDate": "20190701211456",
+    "changelogDate": "20190701211647",
     "entityTableName": "prod_substitution",
     "dto": "mapstruct",
     "pagination": "no",

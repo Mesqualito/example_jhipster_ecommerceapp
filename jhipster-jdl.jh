@@ -163,7 +163,7 @@ relationship OneToMany {
 }
 
 relationship ManyToMany {
-  Product{productSubstitution(substitution)} to ProductSubstitution{product required}
+  Product{productSubstitution(substitution)} to ProductSubstitution{product}
 }
 
 
