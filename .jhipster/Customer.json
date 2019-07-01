@@ -76,7 +76,6 @@
             "relationshipType": "one-to-one",
             "otherEntityName": "user",
             "otherEntityRelationshipName": "customer",
-            "relationshipValidateRules": "required",
             "relationshipName": "user",
             "otherEntityField": "login",
             "ownerSide": true
@@ -88,7 +87,7 @@
             "relationshipName": "order"
         }
     ],
-    "changelogDate": "20190630194209",
+    "changelogDate": "20190701211124",
     "entityTableName": "customer",
     "dto": "mapstruct",
     "pagination": "pagination",

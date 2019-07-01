@@ -30,7 +30,7 @@
             "otherEntityField": "name"
         }
     ],
-    "changelogDate": "20190630194206",
+    "changelogDate": "20190701211121",
     "entityTableName": "prod_reference",
     "dto": "mapstruct",
     "pagination": "no",

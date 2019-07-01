@@ -32,7 +32,7 @@ export class CustomerUpdateComponent implements OnInit {
     plz: [null, [Validators.required]],
     city: [null, [Validators.required]],
     country: [],
-    userId: [null, Validators.required]
+    userId: []
   });
 
   constructor(

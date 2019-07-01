@@ -139,11 +139,6 @@ public class CustomerResourceIT {
             .plz(DEFAULT_PLZ)
             .city(DEFAULT_CITY)
             .country(DEFAULT_COUNTRY);
-        // Add required entity
-        User user = UserResourceIT.createEntity(em);
-        em.persist(user);
-        em.flush();
-        customer.setUser(user);
         return customer;
     }
     /**
@@ -166,11 +161,6 @@ public class CustomerResourceIT {
             .plz(UPDATED_PLZ)
             .city(UPDATED_CITY)
             .country(UPDATED_COUNTRY);
-        // Add required entity
-        User user = UserResourceIT.createEntity(em);
-        em.persist(user);
-        em.flush();
-        customer.setUser(user);
         return customer;
     }
 
@@ -884,8 +874,11 @@ public class CustomerResourceIT {
     @Test
     @Transactional
     public void getAllCustomersByUserIsEqualToSomething() throws Exception {
-        // Get already existing entity
-        User user = customer.getUser();
+        // Initialize the database
+        User user = UserResourceIT.createEntity(em);
+        em.persist(user);
+        em.flush();
+        customer.setUser(user);
         customerRepository.saveAndFlush(customer);
         Long userId = user.getId();
 

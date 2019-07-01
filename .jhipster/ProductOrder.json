@@ -46,7 +46,7 @@
             "otherEntityField": "email"
         }
     ],
-    "changelogDate": "20190630194210",
+    "changelogDate": "20190701211125",
     "entityTableName": "product_order",
     "dto": "mapstruct",
     "pagination": "pagination",
