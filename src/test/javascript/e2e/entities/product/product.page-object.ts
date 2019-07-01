@@ -33,7 +33,7 @@ export class ProductUpdatePage {
   herstArtNrInput = element(by.id('field_herstArtNr'));
   priceInput = element(by.id('field_price'));
   katalogOnlyInput = element(by.id('field_katalogOnly'));
-  substitutionSelect = element(by.id('field_substitution'));
+  productSubstitutionSelect = element(by.id('field_productSubstitution'));
   productCategorySelect = element(by.id('field_productCategory'));
 
   async getPageTitle() {
@@ -87,23 +87,23 @@ export class ProductUpdatePage {
     return this.katalogOnlyInput;
   }
 
-  async substitutionSelectLastOption(timeout?: number) {
-    await this.substitutionSelect
+  async productSubstitutionSelectLastOption(timeout?: number) {
+    await this.productSubstitutionSelect
       .all(by.tagName('option'))
       .last()
       .click();
   }
 
-  async substitutionSelectOption(option) {
-    await this.substitutionSelect.sendKeys(option);
+  async productSubstitutionSelectOption(option) {
+    await this.productSubstitutionSelect.sendKeys(option);
   }
 
-  getSubstitutionSelect(): ElementFinder {
-    return this.substitutionSelect;
+  getProductSubstitutionSelect(): ElementFinder {
+    return this.productSubstitutionSelect;
   }
 
-  async getSubstitutionSelectedOption() {
-    return await this.substitutionSelect.element(by.css('option:checked')).getText();
+  async getProductSubstitutionSelectedOption() {
+    return await this.productSubstitutionSelect.element(by.css('option:checked')).getText();
   }
 
   async productCategorySelectLastOption(timeout?: number) {

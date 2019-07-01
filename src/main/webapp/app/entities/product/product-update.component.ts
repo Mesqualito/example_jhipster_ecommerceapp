@@ -32,7 +32,7 @@ export class ProductUpdateComponent implements OnInit {
     herstArtNr: [null, [Validators.required]],
     price: [null, [Validators.required, Validators.min(0)]],
     katalogOnly: [],
-    substitutions: [],
+    productSubstitutions: [],
     productCategoryId: []
   });
 
@@ -76,7 +76,7 @@ export class ProductUpdateComponent implements OnInit {
       herstArtNr: product.herstArtNr,
       price: product.price,
       katalogOnly: product.katalogOnly,
-      substitutions: product.substitutions,
+      productSubstitutions: product.productSubstitutions,
       productCategoryId: product.productCategoryId
     });
   }
@@ -106,7 +106,7 @@ export class ProductUpdateComponent implements OnInit {
       herstArtNr: this.editForm.get(['herstArtNr']).value,
       price: this.editForm.get(['price']).value,
       katalogOnly: this.editForm.get(['katalogOnly']).value,
-      substitutions: this.editForm.get(['substitutions']).value,
+      productSubstitutions: this.editForm.get(['productSubstitutions']).value,
       productCategoryId: this.editForm.get(['productCategoryId']).value
     };
   }

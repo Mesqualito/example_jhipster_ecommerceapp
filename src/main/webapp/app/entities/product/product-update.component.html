@@ -84,9 +84,9 @@
                 </div>
 
                 <div class="form-group">
-                    <label jhiTranslate="storeApp.product.substitution" for="field_substitutions">Substitution</label>
-                    <select class="form-control" id="field_substitutions" multiple name="substitutions" formControlName="substitutions">
-                        <option [ngValue]="getSelected(editForm.get('substitutions').value, productSubstitutionOption)" *ngFor="let productSubstitutionOption of productsubstitutions; trackBy: trackProductSubstitutionById">{{productSubstitutionOption.id}}</option>
+                    <label jhiTranslate="storeApp.product.productSubstitution" for="field_productSubstitutions">Product Substitution</label>
+                    <select class="form-control" id="field_productSubstitutions" multiple name="productSubstitutions" formControlName="productSubstitutions">
+                        <option [ngValue]="getSelected(editForm.get('productSubstitutions').value, productSubstitutionOption)" *ngFor="let productSubstitutionOption of productsubstitutions; trackBy: trackProductSubstitutionById">{{productSubstitutionOption.substitution}}</option>
                     </select>
                 </div>
                 <div class="form-group">

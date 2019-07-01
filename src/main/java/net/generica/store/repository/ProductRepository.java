@@ -16,14 +16,14 @@ import java.util.Optional;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product> {
 
-    @Query(value = "select distinct product from Product product left join fetch product.substitutions",
+    @Query(value = "select distinct product from Product product left join fetch product.productSubstitutions",
         countQuery = "select count(distinct product) from Product product")
     Page<Product> findAllWithEagerRelationships(Pageable pageable);
 
-    @Query("select distinct product from Product product left join fetch product.substitutions")
+    @Query("select distinct product from Product product left join fetch product.productSubstitutions")
     List<Product> findAllWithEagerRelationships();
 
-    @Query("select product from Product product left join fetch product.substitutions where product.id =:id")
+    @Query("select product from Product product left join fetch product.productSubstitutions where product.id =:id")
     Optional<Product> findOneWithEagerRelationships(@Param("id") Long id);
 
 }

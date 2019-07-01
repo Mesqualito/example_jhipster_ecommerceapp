@@ -36,7 +36,7 @@ public class ProductDTO implements Serializable {
     private Boolean katalogOnly;
 
 
-    private Set<ProductSubstitutionDTO> substitutions = new HashSet<>();
+    private Set<ProductSubstitutionDTO> productSubstitutions = new HashSet<>();
 
     private Long productCategoryId;
 
@@ -106,12 +106,12 @@ public class ProductDTO implements Serializable {
         this.katalogOnly = katalogOnly;
     }
 
-    public Set<ProductSubstitutionDTO> getSubstitutions() {
-        return substitutions;
+    public Set<ProductSubstitutionDTO> getProductSubstitutions() {
+        return productSubstitutions;
     }
 
-    public void setSubstitutions(Set<ProductSubstitutionDTO> productSubstitutions) {
-        this.substitutions = productSubstitutions;
+    public void setProductSubstitutions(Set<ProductSubstitutionDTO> productSubstitutions) {
+        this.productSubstitutions = productSubstitutions;
     }
 
     public Long getProductCategoryId() {

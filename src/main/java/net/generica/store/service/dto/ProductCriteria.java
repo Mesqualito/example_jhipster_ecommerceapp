@@ -45,7 +45,7 @@ public class ProductCriteria implements Serializable, Criteria {
 
     private LongFilter referenceId;
 
-    private LongFilter substitutionId;
+    private LongFilter productSubstitutionId;
 
     private LongFilter productCategoryId;
 
@@ -63,7 +63,7 @@ public class ProductCriteria implements Serializable, Criteria {
         this.katalogOnly = other.katalogOnly == null ? null : other.katalogOnly.copy();
         this.shopImageId = other.shopImageId == null ? null : other.shopImageId.copy();
         this.referenceId = other.referenceId == null ? null : other.referenceId.copy();
-        this.substitutionId = other.substitutionId == null ? null : other.substitutionId.copy();
+        this.productSubstitutionId = other.productSubstitutionId == null ? null : other.productSubstitutionId.copy();
         this.productCategoryId = other.productCategoryId == null ? null : other.productCategoryId.copy();
     }
 
@@ -152,12 +152,12 @@ public class ProductCriteria implements Serializable, Criteria {
         this.referenceId = referenceId;
     }
 
-    public LongFilter getSubstitutionId() {
-        return substitutionId;
+    public LongFilter getProductSubstitutionId() {
+        return productSubstitutionId;
     }
 
-    public void setSubstitutionId(LongFilter substitutionId) {
-        this.substitutionId = substitutionId;
+    public void setProductSubstitutionId(LongFilter productSubstitutionId) {
+        this.productSubstitutionId = productSubstitutionId;
     }
 
     public LongFilter getProductCategoryId() {
@@ -189,7 +189,7 @@ public class ProductCriteria implements Serializable, Criteria {
             Objects.equals(katalogOnly, that.katalogOnly) &&
             Objects.equals(shopImageId, that.shopImageId) &&
             Objects.equals(referenceId, that.referenceId) &&
-            Objects.equals(substitutionId, that.substitutionId) &&
+            Objects.equals(productSubstitutionId, that.productSubstitutionId) &&
             Objects.equals(productCategoryId, that.productCategoryId);
     }
 
@@ -206,7 +206,7 @@ public class ProductCriteria implements Serializable, Criteria {
         katalogOnly,
         shopImageId,
         referenceId,
-        substitutionId,
+        productSubstitutionId,
         productCategoryId
         );
     }
@@ -224,7 +224,7 @@ public class ProductCriteria implements Serializable, Criteria {
                 (katalogOnly != null ? "katalogOnly=" + katalogOnly + ", " : "") +
                 (shopImageId != null ? "shopImageId=" + shopImageId + ", " : "") +
                 (referenceId != null ? "referenceId=" + referenceId + ", " : "") +
-                (substitutionId != null ? "substitutionId=" + substitutionId + ", " : "") +
+                (productSubstitutionId != null ? "productSubstitutionId=" + productSubstitutionId + ", " : "") +
                 (productCategoryId != null ? "productCategoryId=" + productCategoryId + ", " : "") +
             "}";
     }

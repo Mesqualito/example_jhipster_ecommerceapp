@@ -62,10 +62,10 @@ public class Product implements Serializable {
 
     @ManyToMany
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    @JoinTable(name = "product_substitution",
+    @JoinTable(name = "product_product_substitution",
                joinColumns = @JoinColumn(name = "product_id", referencedColumnName = "id"),
-               inverseJoinColumns = @JoinColumn(name = "substitution_id", referencedColumnName = "id"))
-    private Set<ProductSubstitution> substitutions = new HashSet<>();
+               inverseJoinColumns = @JoinColumn(name = "product_substitution_id", referencedColumnName = "id"))
+    private Set<ProductSubstitution> productSubstitutions = new HashSet<>();
 
     @ManyToOne
     @JsonIgnoreProperties("products")
@@ -221,29 +221,29 @@ public class Product implements Serializable {
         this.references = productReferences;
     }
 
-    public Set<ProductSubstitution> getSubstitutions() {
-        return substitutions;
+    public Set<ProductSubstitution> getProductSubstitutions() {
+        return productSubstitutions;
     }
 
-    public Product substitutions(Set<ProductSubstitution> productSubstitutions) {
-        this.substitutions = productSubstitutions;
+    public Product productSubstitutions(Set<ProductSubstitution> productSubstitutions) {
+        this.productSubstitutions = productSubstitutions;
         return this;
     }
 
-    public Product addSubstitution(ProductSubstitution productSubstitution) {
-        this.substitutions.add(productSubstitution);
+    public Product addProductSubstitution(ProductSubstitution productSubstitution) {
+        this.productSubstitutions.add(productSubstitution);
         productSubstitution.getProducts().add(this);
         return this;
     }
 
-    public Product removeSubstitution(ProductSubstitution productSubstitution) {
-        this.substitutions.remove(productSubstitution);
+    public Product removeProductSubstitution(ProductSubstitution productSubstitution) {
+        this.productSubstitutions.remove(productSubstitution);
         productSubstitution.getProducts().remove(this);
         return this;
     }
 
-    public void setSubstitutions(Set<ProductSubstitution> productSubstitutions) {
-        this.substitutions = productSubstitutions;
+    public void setProductSubstitutions(Set<ProductSubstitution> productSubstitutions) {
+        this.productSubstitutions = productSubstitutions;
     }
 
     public ProductCategory getProductCategory() {

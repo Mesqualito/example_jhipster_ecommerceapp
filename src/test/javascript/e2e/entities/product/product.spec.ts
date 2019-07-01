@@ -45,7 +45,7 @@ describe('Product e2e test', () => {
       productUpdatePage.setDescriptionInput('description'),
       productUpdatePage.setHerstArtNrInput('herstArtNr'),
       productUpdatePage.setPriceInput('5'),
-      // productUpdatePage.substitutionSelectLastOption(),
+      // productUpdatePage.productSubstitutionSelectLastOption(),
       productUpdatePage.productCategorySelectLastOption()
     ]);
     expect(await productUpdatePage.getErpIdInput()).to.eq('erpId', 'Expected ErpId value to be equals to erpId');

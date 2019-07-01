@@ -33,10 +33,10 @@
                 <dd>
                     <span>{{product.katalogOnly}}</span>
                 </dd>
-                <dt><span jhiTranslate="storeApp.product.substitution">Substitution</span></dt>
+                <dt><span jhiTranslate="storeApp.product.productSubstitution">Product Substitution</span></dt>
                 <dd>
-                    <span *ngFor="let substitution of product.substitutions; let last = last">
-                        <a [routerLink]="['/product-substitution', substitution?.id, 'view' ]">{{substitution.id}}</a>{{last ? '' : ', '}}
+                    <span *ngFor="let productSubstitution of product.productSubstitutions; let last = last">
+                        <a [routerLink]="['/product-substitution', productSubstitution?.id, 'view' ]">{{productSubstitution.substitution}}</a>{{last ? '' : ', '}}
                     </span>
                 </dd>
                 <dt><span jhiTranslate="storeApp.product.productCategory">Product Category</span></dt>

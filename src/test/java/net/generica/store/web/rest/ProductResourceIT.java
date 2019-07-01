@@ -685,20 +685,20 @@ public class ProductResourceIT {
 
     @Test
     @Transactional
-    public void getAllProductsBySubstitutionIsEqualToSomething() throws Exception {
+    public void getAllProductsByProductSubstitutionIsEqualToSomething() throws Exception {
         // Initialize the database
-        ProductSubstitution substitution = ProductSubstitutionResourceIT.createEntity(em);
-        em.persist(substitution);
+        ProductSubstitution productSubstitution = ProductSubstitutionResourceIT.createEntity(em);
+        em.persist(productSubstitution);
         em.flush();
-        product.addSubstitution(substitution);
+        product.addProductSubstitution(productSubstitution);
         productRepository.saveAndFlush(product);
-        Long substitutionId = substitution.getId();
+        Long productSubstitutionId = productSubstitution.getId();
 
-        // Get all the productList where substitution equals to substitutionId
-        defaultProductShouldBeFound("substitutionId.equals=" + substitutionId);
+        // Get all the productList where productSubstitution equals to productSubstitutionId
+        defaultProductShouldBeFound("productSubstitutionId.equals=" + productSubstitutionId);
 
-        // Get all the productList where substitution equals to substitutionId + 1
-        defaultProductShouldNotBeFound("substitutionId.equals=" + (substitutionId + 1));
+        // Get all the productList where productSubstitution equals to productSubstitutionId + 1
+        defaultProductShouldNotBeFound("productSubstitutionId.equals=" + (productSubstitutionId + 1));
     }
 
 

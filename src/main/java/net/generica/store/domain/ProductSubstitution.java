@@ -34,7 +34,7 @@ public class ProductSubstitution implements Serializable {
     @Column(name = "checked")
     private Boolean checked;
 
-    @ManyToMany(mappedBy = "substitutions")
+    @ManyToMany(mappedBy = "productSubstitutions")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JsonIgnore
     private Set<Product> products = new HashSet<>();
@@ -98,13 +98,13 @@ public class ProductSubstitution implements Serializable {
 
     public ProductSubstitution addProduct(Product product) {
         this.products.add(product);
-        product.getSubstitutions().add(this);
+        product.getProductSubstitutions().add(this);
         return this;
     }
 
     public ProductSubstitution removeProduct(Product product) {
         this.products.remove(product);
-        product.getSubstitutions().remove(this);
+        product.getProductSubstitutions().remove(this);
         return this;
     }
 

@@ -13,7 +13,7 @@ export interface IProduct {
   katalogOnly?: boolean;
   shopImages?: IShopImage[];
   references?: IProductReference[];
-  substitutions?: IProductSubstitution[];
+  productSubstitutions?: IProductSubstitution[];
   productCategoryName?: string;
   productCategoryId?: number;
 }
@@ -30,7 +30,7 @@ export class Product implements IProduct {
     public katalogOnly?: boolean,
     public shopImages?: IShopImage[],
     public references?: IProductReference[],
-    public substitutions?: IProductSubstitution[],
+    public productSubstitutions?: IProductSubstitution[],
     public productCategoryName?: string,
     public productCategoryId?: number
   ) {

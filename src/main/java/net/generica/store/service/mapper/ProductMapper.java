@@ -19,7 +19,7 @@ public interface ProductMapper extends EntityMapper<ProductDTO, Product> {
     @Mapping(target = "removeShopImage", ignore = true)
     @Mapping(target = "references", ignore = true)
     @Mapping(target = "removeReference", ignore = true)
-    @Mapping(target = "removeSubstitution", ignore = true)
+    @Mapping(target = "removeProductSubstitution", ignore = true)
     @Mapping(source = "productCategoryId", target = "productCategory")
     Product toEntity(ProductDTO productDTO);
 

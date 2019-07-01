@@ -64,8 +64,8 @@
             "relationshipType": "many-to-many",
             "otherEntityName": "productSubstitution",
             "otherEntityRelationshipName": "product",
-            "relationshipName": "substitution",
-            "otherEntityField": "id",
+            "relationshipName": "productSubstitution",
+            "otherEntityField": "substitution",
             "ownerSide": true
         },
         {
@@ -76,7 +76,7 @@
             "otherEntityField": "name"
         }
     ],
-    "changelogDate": "20190630194204",
+    "changelogDate": "20190701211453",
     "javadoc": "Product sold by the online-store",
     "entityTableName": "product",
     "dto": "mapstruct",
