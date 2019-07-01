@@ -173,3 +173,5 @@ dto * with mapstruct
 service * with serviceImpl
 paginate Product, Customer, ProductOrder, OrderItem, Invoice, Shipment with pagination
 filter *
+
+/* passed */
